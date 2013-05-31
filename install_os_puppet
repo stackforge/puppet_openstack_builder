@@ -1,0 +1,130 @@
+#!/bin/bash
+# install_os_puppet by Cisco Systems, Inc. is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License.
+#
+# This script runs the basic steps for preparing to auto-deploy OpenStack as per the Cisco Edition process
+# The manual steps are documented at http://docwiki.cisco.com/wiki/OpenStack:Folsom
+#
+# This script: updates apt, and makes sure that the system is up to date with the current Ubuntu baseline
+# It then downloads the current set of Cisco validated puppet modules and a set of baseline manifests from the
+#  Cisco github repository
+# If a proxy is necessary in order to download files from the internet, then either a proxy target can be passed
+#  to the script, or the environmet variables can be pre-set before running the script locally.
+#
+
+
+set -o errexit
+
+usage() {
+cat <<EOF
+usage: $0 options
+
+OPTIONS:
+  -h           Show this message
+  -p           http proxy i.e. -p http://username:password@host:port/
+EOF
+}
+
+# wrapper all commands with sudo in case this is not run as root
+# also map in a proxy in case it was passed as a command line argument
+function run_cmd () {
+  if [ -z "$PROXY" ]; then
+    sudo $*
+  else
+    sudo env http_proxy=$PROXY https_proxy=$PROXY $*
+  fi
+}
+
+# Define some useful APT parameters to make sure you get the latest versions of code
+
+APT_CONFIG="-o Acquire::http::No-Cache=True -o Acquire::BrokenProxy=true -o Acquire::Retries=3"
+
+# check if the environment is set up for http and https proxies
+if [ -n "$http_proxy" ]; then
+  if [ -z "$https_proxy" ]; then
+    echo "Please set https_proxy env variable."
+    exit 1
+  fi
+  PROXY=$http_proxy
+fi
+
+# parse CLI options
+while getopts "h:p:" OPTION
+do
+  case $OPTION in
+    h)
+      usage
+      exit 1
+      ;;
+    p)
+      PROXY=$OPTARG
+      export http_proxy=$PROXY
+      export https_proxy=$PROXY
+  esac
+done
+
+# Make sure the apt repository list is up to date
+echo -e "\n\nUpdate apt repository...\n\n"
+if ! run_cmd apt-get $APT_CONFIG update; then
+  echo "Can't update apt repository"
+  exit 1
+fi
+
+# Install prerequisite packages
+echo "Installing prerequisite apps: git, puppet, ipmitool, python-software-properties.."
+if ! run_cmd apt-get $APT_CONFIG install -qym git puppet ipmitool python-software-properties; then
+  echo "Can't install prerequisites!..."
+  exit 1
+fi
+
+# Grab the Cisco puppet global manifests (site.pp, etc.), try to update a previously downloaded set first
+echo "Cloning grizzly-manifests multi-node repository branch from github.com..."
+if [ -d /root/cisco-grizzly-manifests ] ; then
+	echo -e "Looks like perhaps you ran this script before? We'll try to update your os-docs directory, just in case..."
+	if ! run_cmd git --git-dir=/root/cisco-grizzly-manifests/.git/ pull ; then
+	   echo "That did not work.  Perhaps rename your os-docs directory, and try again?"
+	   exit 1
+        fi
+fi
+
+# Get a new set, as there was no previous download
+if [ ! -d /root/cisco-grizzly-manifests ] ; then
+	if ! run_cmd git clone -b multi-node https://github.com/CiscoSystems/grizzly-manifests /root/cisco-grizzly-manifests ; then
+ 	  echo "Can't run git clone!"
+	  exit 1
+	fi
+fi
+
+echo "Copying manifests examples to manifest dir..."
+if ! run_cmd cp /root/cisco-grizzly-manifests/manifests/* /etc/puppet/manifests/ ;then
+  echo "Can't copy sample manifests!!!"
+  exit 1
+fi
+
+# Update APT again, to capture any changes and updates driven by the newly loaded code
+echo -e "\n\nUpdated apt repository...\n\n"
+if ! run_cmd apt-get $APT_CONFIG update; then
+  echo "Can't update apt repository"
+  exit 1
+fi
+
+# Make sure the distro is up to date
+echo -e "\n\nUpdate packages...\n\n"
+if ! run_cmd apt-get $APT_CONFIG dist-upgrade -y; then
+  echo "Can't update packages"
+  exit 1
+fi
+
+# Change to the manifests directory, as the puppet-modules.sh script expects to find a file in the local
+# directory that lists the modules to download
+cd /etc/puppet/manifests
+
+# Load the lateast modules.
+echo -e "\n\nInstalling Cisco Validated puppet openstack modules...\n\n"
+if ! run_cmd sh puppet-modules.sh ; then
+  echo "Can't install puppet  modules..."
+  exit 1
+fi
+
+echo -e "\n\nSUCCESS!!!!\n\n Now, go edit your site.pp file in /etc/puppet/manifests, and then run 'puppet apply -v /etc/puppet/manifests/site.pp"
+
+exit 0

@@ -133,7 +133,7 @@ Vagrant::Config.run do |config|
     end
 
     control_config.vm.provision :shell do |shell|
-      shell.inline = 'echo "192.168.242.100 build-server build-server.domain.name" >> /etc/hosts;echo \"%s\" > /etc/apt/apt.conf.d/01apt-cacher-ng-proxy; apt-get update;apt-get install ubuntu-cloud-keyring' % apt_cache_proxy
+      shell.inline = 'echo "192.168.242.100 build-server build-server.domain.name" >> /etc/hosts;echo "%s" > /etc/apt/apt.conf.d/01apt-cacher-ng-proxy; apt-get update;apt-get install ubuntu-cloud-keyring' % apt_cache_proxy
     end
 
     control_config.vm.provision(:puppet_server) do |puppet|
@@ -171,7 +171,7 @@ Vagrant::Config.run do |config|
     end
 
     compute_config.vm.provision :shell do |shell|
-      shell.inline = 'echo "192.168.242.100 build-server build-server.domain.name" >> /etc/hosts;echo \"%s\" > /etc/apt/apt.conf.d/01apt-cacher-ng-proxy; apt-get update;apt-get install ubuntu-cloud-keyring' % apt_cache_proxy
+      shell.inline = 'echo "192.168.242.100 build-server build-server.domain.name" >> /etc/hosts;echo "%s" > /etc/apt/apt.conf.d/01apt-cacher-ng-proxy; apt-get update;apt-get install ubuntu-cloud-keyring' % apt_cache_proxy
     end
 
     compute_config.vm.provision(:puppet_server) do |puppet|

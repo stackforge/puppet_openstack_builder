@@ -34,9 +34,9 @@ base_url = "#{git_protocol}://github.com"
 #
 # Installer Manifests
 #
-user_name = 'CiscoSystems'
+user_name = 'bodepd'
 release = 'grizzly'
-manifest_branch = 'multi-node'
+manifest_branch = 'master'
 mod 'manifests', :git => "#{base_url}/#{user_name}/#{release}-manifests", :ref => manifest_branch
 
 #

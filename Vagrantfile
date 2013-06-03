@@ -68,19 +68,19 @@ Vagrant::Config.run do |config|
     build_config.vm.customize ["modifyvm", :id, "--nicpromisc3", "allow-all"]
     build_config.vm.network :hostonly, "10.3.3.100"
 
-    # Use user-provided sources.list if available
+    # Configure apt mirror
     build_config.vm.provision :shell do |shell|
-      shell.inline = 'if [ -f /vagrant/sources.list ]; then cp /vagrant/sources.list /etc/apt; fi;'
+      shell.inline = "sed -i 's/us.archive.ubuntu.com/%s/g' /etc/apt/sources.list" % v_config['apt_mirror']
     end
 
     # configure apt and basic packages needed for install
     build_config.vm.provision :shell do |shell|
-      shell.inline = "cp /vagrant/dhclient.conf /etc/dhcp;echo \"%s\" > /etc/apt/apt.conf.d/01apt-cacher-ng-proxy; apt-get update; dhclient -r eth0 && dhclient eth0; apt-get install -y git vim puppet curl; cp /vagrant/templates/* /etc/puppet/templates" % apt_cache_proxy
+      shell.inline = "cp /vagrant/dhclient.conf /etc/dhcp;echo \"%s\" > /etc/apt/apt.conf.d/01apt-cacher-ng-proxy; apt-get update; dhclient -r eth0 && dhclient eth0; apt-get install -y git vim puppet curl; ln -s /vagrant/templates /etc/puppet/templates" % apt_cache_proxy
     end
 
     # pre-import the ubuntu image from an appropriate mirror
     build_config.vm.provision :shell do |shell|
-      shell.inline = "if [ -f /vagrant/sources.list ]; then apt-get install -y cobbler; cobbler-ubuntu-import -m $(cat /vagrant/sources.list | grep deb | cut -d ' ' -f 2 | grep http | grep -v security | head -1) precise-x86_64; fi;"
+      shell.inline = "apt-get install -y cobbler; cobbler-ubuntu-import -m http://%s/ubuntu precise-x86_64;" % v_config['apt_mirror']
     end
 
     # now run puppet to install the build server

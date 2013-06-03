@@ -52,9 +52,9 @@ Next, bring up the build server:
 
 Now, bring up the blank boxes so that they can PXE boot against the master
 
-    vagrant up control
+    vagrant up control_basevm
 
-    vagrant up compute
+    vagrant up compute_basevm
 
 
 Now, you have created a fully functional openstack environment, now have a look at some services:

@@ -73,9 +73,16 @@ Vagrant::Config.run do |config|
       shell.inline = "sed -i 's/us.archive.ubuntu.com/%s/g' /etc/apt/sources.list" % v_config['apt_mirror']
     end
 
+    # Ensure DHCP isn't going to join us to a domain other than domain.name
+    # since puppet has to sign its cert against the domain it makes when it runs.
+    build_config.vm.provision :shell do |shell|
+      shell.inline = "sed -i 's/\#supersede/supersede/g' /etc/dhcp/dhclient.conf; sed -i 's/fugue.com home.vix.com/%s/g' /etc/dhcp/dhclient.conf; sed -i 's/domain-name,//g' /etc/dhcp/dhclient.conf" % v_config['domain']
+    end
+
+
     # configure apt and basic packages needed for install
     build_config.vm.provision :shell do |shell|
-      shell.inline = "cp /vagrant/dhclient.conf /etc/dhcp;echo \"%s\" > /etc/apt/apt.conf.d/01apt-cacher-ng-proxy; apt-get update; dhclient -r eth0 && dhclient eth0; apt-get install -y git vim puppet curl; ln -s /vagrant/templates /etc/puppet/templates" % apt_cache_proxy
+      shell.inline = "echo \"%s\" > /etc/apt/apt.conf.d/01apt-cacher-ng-proxy; apt-get update; dhclient -r eth0 && dhclient eth0; apt-get install -y git vim puppet curl; ln -s /vagrant/templates /etc/puppet/templates" % apt_cache_proxy
     end
 
     # pre-import the ubuntu image from an appropriate mirror

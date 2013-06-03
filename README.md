@@ -1,4 +1,4 @@
-Grizzly-manifests
+Openstack Installer
 ================
 
 Project for building out OpenStack COE.
@@ -9,11 +9,6 @@ This setup requires that a few additional dependencies are installed:
 
 * virtualbox
 * vagrant
-
-## User instructions
-
-	git clone https://github.com/CiscoSystems/grizzly-manifests
-	cp grizzly-manifests/* /etc/puppet/manifests
 
 ## Developer instructions
 
@@ -27,15 +22,20 @@ Developers should be started by installing the following simple utility:
     export PATH=`pwd`/vendor/librarian-puppet-simple/bin/:$PATH
 
 Once this library is installed, you can run the following command from this project's
-root directory:
+root directory. This will use the Puppetfile to clone the openstack modules and the COE manifests, into the modules directory, and can be easily configured to pull from your own repo instead of the Cisco or Stackforge repos.
 
     librarian-puppet install --verbose
 
-Add the basebox
+If you want to test the PXE deployment system, add the basebox
 
     vagrant box add blank blank.box
 
-This command will clone all required modules into the modules directory.
+## Configuration ##
+
+There is a config.yaml file that can be edited to suit the environment. 
+The apt_cache server can be any server running apt-cacher-ng - it doesn't have to be the cache instance mentioned below if you already have one handy.
+The apt_mirror will be used to set sources.list on each machine, and on the build server it will be used to import the 30MB ubuntu netboot image used during the PXE deploy process.
+Make sure the domain matches the domain specified in the site.pp in the manifests you intend to use. 
 
 ## Spinning up virtual machines with vagrant
 

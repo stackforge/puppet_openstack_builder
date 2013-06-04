@@ -62,44 +62,47 @@ mod 'stackforge/swift',     :git => "#{openstack_repo_prefix}-swift",     :ref =
 #
 # coe specific modules
 #
-mod 'CiscoSystems/coe', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-coe", :ref => 'origin/grizzly'
-mod 'CiscoSystems/openstack_admin', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-openstack_admin", :ref => 'origin/grizzly'
+mod 'CiscoSystems/coe', :git => "#{base_url}/CiscoSystems/puppet-coe", :ref => 'origin/grizzly'
+mod 'CiscoSystems/openstack_admin', :git => "#{base_url}/CiscoSystems/puppet-openstack_admin", :ref => 'origin/grizzly'
 
 
 # middleware modules
-mod 'CiscoSystems/apache', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-apache", :ref => branch_name
-mod 'CiscoSystems/memcached', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-memcached", :ref => branch_name
+mod 'CiscoSystems/apache', :git => "#{base_url}/CiscoSystems/puppet-apache", :ref => branch_name
+mod 'CiscoSystems/memcached', :git => "#{base_url}/CiscoSystems/puppet-memcached", :ref => branch_name
 #
 # I cannot remember if this is necessary
 #
-mod 'CiscoSystems/mysql', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-mysql", :ref => 'master'
-mod 'CiscoSystems/rabbitmq', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-rabbitmq", :ref => branch_name
+mod 'CiscoSystems/mysql', :git => "#{base_url}/CiscoSystems/puppet-mysql", :ref => 'master'
+mod 'CiscoSystems/rabbitmq', :git => "#{base_url}/CiscoSystems/puppet-rabbitmq", :ref => branch_name
 
 # linux tools
-mod 'CiscoSystems/apt', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-apt", :ref => branch_name
-mod 'CiscoSystems/apt-cacher-ng', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-apt-cacher-ng", :ref => branch_name
-mod 'CiscoSystems/cobbler', :git => "#{git_protocol}://github.com/bodepd/puppet-cobbler", :ref => 'origin/fix_cobbler_sync_issue'
-mod 'CiscoSystems/collectd', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-collectd", :ref => branch_name
-mod 'CiscoSystems/corosync', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-corosync", :ref => branch_name
-mod 'CiscoSystems/dnsmasq', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-dnsmasq", :ref => branch_name
-mod 'CiscoSystems/drbd', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-drbd", :ref => branch_name
-mod 'CiscoSystems/graphite', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-graphite", :ref => branch_name
-mod 'CiscoSystems/monit', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-monit", :ref => branch_name
-mod 'CiscoSystems/naginator', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-naginator", :ref => branch_name
-mod 'CiscoSystems/ntp', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-ntp", :ref => branch_name
-mod 'CiscoSystems/pip', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-pip", :ref => branch_name
-mod 'CiscoSystems/puppet', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-puppet", :ref => branch_name
-mod 'CiscoSystems/rsync', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-rsync", :ref => branch_name
-mod 'CiscoSystems/sysctl', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-sysctl", :ref => branch_name
-mod 'CiscoSystems/vswitch', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-vswitch", :ref => branch_name
-mod 'CiscoSystems/xinetd', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-xinetd", :ref => branch_name
-mod 'CiscoSystems/network', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-network", :ref => branch_name
-mod 'CiscoSystems/filemapper', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-filemapper", :ref => branch_name
-mod 'CiscoSystems/boolean', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-boolean", :ref => branch_name
-#mod 'CiscoSystems/ssh', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-ssh", :ref => branch_name
+mod 'CiscoSystems/apt', :git => "#{base_url}/CiscoSystems/puppet-apt", :ref => branch_name
+mod 'CiscoSystems/apt-cacher-ng', :git => "#{base_url}/CiscoSystems/puppet-apt-cacher-ng", :ref => branch_name
+#
+# TODO - this is still pointing at my fork
+#
+mod 'CiscoSystems/cobbler', :git => "#{base_url}/bodepd/puppet-cobbler", :ref => 'origin/fix_cobbler_sync_issue'
+mod 'CiscoSystems/collectd', :git => "#{base_url}/CiscoSystems/puppet-collectd", :ref => branch_name
+mod 'CiscoSystems/corosync', :git => "#{base_url}/CiscoSystems/puppet-corosync", :ref => branch_name
+mod 'CiscoSystems/dnsmasq', :git => "#{base_url}/CiscoSystems/puppet-dnsmasq", :ref => branch_name
+mod 'CiscoSystems/drbd', :git => "#{base_url}/CiscoSystems/puppet-drbd", :ref => branch_name
+mod 'CiscoSystems/graphite', :git => "#{base_url}/CiscoSystems/puppet-graphite", :ref => branch_name
+mod 'CiscoSystems/monit', :git => "#{base_url}/CiscoSystems/puppet-monit", :ref => branch_name
+mod 'CiscoSystems/naginator', :git => "#{base_url}/CiscoSystems/puppet-naginator", :ref => branch_name
+mod 'CiscoSystems/ntp', :git => "#{base_url}/CiscoSystems/puppet-ntp", :ref => branch_name
+mod 'CiscoSystems/pip', :git => "#{base_url}/CiscoSystems/puppet-pip", :ref => branch_name
+mod 'CiscoSystems/puppet', :git => "#{base_url}/CiscoSystems/puppet-puppet", :ref => branch_name
+mod 'CiscoSystems/rsync', :git => "#{base_url}/CiscoSystems/puppet-rsync", :ref => branch_name
+mod 'CiscoSystems/sysctl', :git => "#{base_url}/CiscoSystems/puppet-sysctl", :ref => branch_name
+mod 'CiscoSystems/vswitch', :git => "#{base_url}/CiscoSystems/puppet-vswitch", :ref => branch_name
+mod 'CiscoSystems/xinetd', :git => "#{base_url}/CiscoSystems/puppet-xinetd", :ref => branch_name
+mod 'CiscoSystems/network', :git => "#{base_url}/CiscoSystems/puppet-network", :ref => branch_name
+mod 'CiscoSystems/filemapper', :git => "#{base_url}/CiscoSystems/puppet-filemapper", :ref => branch_name
+mod 'CiscoSystems/boolean', :git => "#{base_url}/CiscoSystems/puppet-boolean", :ref => branch_name
+#mod 'CiscoSystems/ssh', :git => "#{base_url}/CiscoSystems/puppet-ssh", :ref => branch_name
 
 # puppet utilities
-mod 'CiscoSystems/concat', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-concat", :ref => branch_name
+mod 'CiscoSystems/concat', :git => "#{base_url}/CiscoSystems/puppet-concat", :ref => branch_name
 # need the latest changes here
-mod 'CiscoSystems/inifile', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-inifile", :ref => branch_name
-mod 'CiscoSystems/stdlib', :git => "#{git_protocol}://github.com/CiscoSystems/puppet-stdlib", :ref => branch_name
+mod 'CiscoSystems/inifile', :git => "#{base_url}/CiscoSystems/puppet-inifile", :ref => branch_name
+mod 'CiscoSystems/stdlib', :git => "#{base_url}/CiscoSystems/puppet-stdlib", :ref => branch_name

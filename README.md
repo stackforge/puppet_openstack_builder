@@ -37,7 +37,7 @@ The apt_cache server can be any server running apt-cacher-ng - it doesn't have t
 The apt_mirror will be used to set sources.list on each machine, and on the build server it will be used to import the 30MB ubuntu netboot image used during the PXE deploy process.
 Make sure the domain matches the domain specified in the site.pp in the manifests you intend to use. 
 
-The puppet modules used are taken from staskforge. To use the CiscoSystems releases of the puppet modules:
+The puppet modules used are taken from stackforge. To use the CiscoSystems releases of the puppet modules:
 
     export repos_to_use=downstream
 

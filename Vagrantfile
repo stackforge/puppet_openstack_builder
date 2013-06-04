@@ -158,9 +158,9 @@ Vagrant::Config.run do |config|
     # you cannot boot this at the same time as the control_pxe b/c they have the same ip address
     setup_networks(config, '10')
 
-    # Use user-provided sources.list if available
+    # Configure apt mirror
     config.vm.provision :shell do |shell|
-      shell.inline = 'if [ -f /vagrant/sources.list ]; then cp /vagrant/sources.list /etc/apt; fi;'
+      shell.inline = "sed -i 's/us.archive.ubuntu.com/%s/g' /etc/apt/sources.list" % v_config['apt_mirror']
     end
 
     config.vm.provision :shell do |shell|
@@ -189,9 +189,9 @@ Vagrant::Config.run do |config|
     config.vm.customize ["modifyvm", :id, "--memory", 2512]
     setup_networks(config, '21')
 
-    # Use user-provided sources.list if available
+    # Configure apt mirror
     config.vm.provision :shell do |shell|
-      shell.inline = 'if [ -f /vagrant/sources.list ]; then cp /vagrant/sources.list /etc/apt; fi;'
+      shell.inline = "sed -i 's/us.archive.ubuntu.com/%s/g' /etc/apt/sources.list" % v_config['apt_mirror']
     end
 
     config.vm.provision :shell do |shell|

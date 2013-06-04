@@ -1,0 +1,7 @@
+modules
+module/*
+vendor
+templates
+manifests
+.tmp
+.vagrant

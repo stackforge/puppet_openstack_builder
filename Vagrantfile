@@ -80,10 +80,6 @@ Vagrant::Config.run do |config|
     File.symlink("./modules/manifests/manifests", "./manifests")
   end
 
-  if !File.file?("./manifests/site.pp") && File.file?("./manifests/site.pp.example")
-    FileUtils.mv("./manifests/site.pp.example", "./manifests/site.pp")
-  end
-
   v_config = parse_vagrant_config
 
   apt_cache_proxy = 'Acquire::http { Proxy \"http://%s:3142\"; };' % v_config['apt_cache']

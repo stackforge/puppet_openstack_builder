@@ -224,6 +224,16 @@ node /build-node/ inherits master-node {
 
 
 ### End repeated nodes ###
+  # Deploy a script that can be used to test nova
+  class { 'openstack::test_file':
+    image_type => 'cirros',
+  }
+  # Auth file used by test script
+  class { 'openstack::auth_file':
+          admin_password       => $admin_password,
+          keystone_admin_token => $keystone_admin_token,
+          controller_node      => $controller_node_internal,
+  }
 }
 
 ### Node types ###

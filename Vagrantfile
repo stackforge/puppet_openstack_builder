@@ -153,7 +153,7 @@ Vagrant::Config.run do |config|
     node_name = "control-server-#{Time.now.strftime('%Y%m%d%m%s')}.domain.name"
     get_box(config, 'precise64')
     setup_hostname(config, node_name)
-    config.vm.customize ["modifyvm", :id, "--memory", 1024]
+    config.vm.customize ["modifyvm", :id, "--memory", 1280]
     config.vm.host_name = node_name
     # you cannot boot this at the same time as the control_pxe b/c they have the same ip address
     setup_networks(config, '10')

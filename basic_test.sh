@@ -1,9 +1,9 @@
 #!/bin/bash
 
 vagrant destroy -f
-vagrant up build
-vagrant up control_basevm
-vagrant up compute_basevm
+vagrant up build 2>&1 | tee -a build.log
+vagrant up control_basevm 2>&1 | tee -a control.log
+vagrant up compute_basevm 2>&1 | tee -a compute.log
 PORT=`vagrant ssh-config build | grep Port | grep -o '[0-9]\+'`
 ssh -q \
     -o UserKnownHostsFile=/dev/null \

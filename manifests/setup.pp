@@ -14,7 +14,7 @@
 # with the correct version
 include puppet::repo::puppetlabs
 package { 'puppet':
-  # I really wish this could be a
+  # is this the real version that I should be using?
   ensure => '3.2.1-1puppetlabs1',
 }
 
@@ -38,7 +38,10 @@ file { "${settings::confdir}/hiera.yaml":
    :datadir: /etc/puppet/hiera_data'
 }
 
-# lay down a file that you run run for testing
+# lay down a file that can be used for subsequent runs to puppet. Often, the
+# only thing that you want to do after the initial provisioning of a box is
+# to run puppet again. This command lays down a script that can be simply used for
+# subsequent runs
 file { '/root/run_puppet.sh':
   content =>
   "#!/bin/bash

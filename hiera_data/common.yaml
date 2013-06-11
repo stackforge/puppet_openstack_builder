@@ -1,0 +1,6 @@
+ntp_servers:
+  - time-server.domain.name
+domain_name: domain.name
+public_interface: eth0
+private_interface: eth0
+external_interface: eth1

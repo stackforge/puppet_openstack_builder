@@ -108,7 +108,7 @@ mod 'CiscoSystems/vswitch', :git => "#{base_url}/CiscoSystems/puppet-vswitch", :
 
 # TODO - this is still pointing at my fork
 mod 'CiscoSystems/coe', :git => "#{base_url}/CiscoSystems/puppet-coe", :ref => branch_name
-mod 'CiscoSystems/cobbler', :git => "#{base_url}/CiscoSystems/puppet-cobbler", :ref => branch_name
+mod 'CiscoSystems/cobbler', :git => "#{base_url}/bodepd/puppet-cobbler", :ref => branch_name
 mod 'CiscoSystems/apt-cacher-ng', :git => "#{base_url}/CiscoSystems/puppet-apt-cacher-ng", :ref => branch_name
 mod 'CiscoSystems/collectd', :git => "#{base_url}/CiscoSystems/puppet-collectd", :ref => branch_name
 mod 'CiscoSystems/graphite', :git => "#{base_url}/CiscoSystems/puppet-graphite", :ref => branch_name

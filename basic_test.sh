@@ -1,9 +1,10 @@
 #!/bin/bash
+ret=0
 datestamp=`date "+%Y%m%d%H%M%S"`
 vagrant destroy -f
-vagrant up build 2>&1 | tee -a build.log
-vagrant up control_basevm 2>&1 | tee -a control.log
-vagrant up compute_basevm 2>&1 | tee -a compute.log
+vagrant up build 2>&1 | tee -a build.log.$datestamp  
+vagrant up control_basevm 2>&1 | tee -a control.log.$datestamp
+vagrant up compute_basevm 2>&1 | tee -a compute.log.$datestamp
 PORT=`vagrant ssh-config build | grep Port | grep -o '[0-9]\+'`
 ssh -q \
     -o UserKnownHostsFile=/dev/null \
@@ -32,13 +33,28 @@ if [ $? -eq 0 ]
   then 
     echo "##########################"
     echo "      Test Passed!"
-    mv build.log build.log.$datestamp.success
-    mv control.log control.log.$datestamp.success
-    mv compute.log compute.log.$datestamp.success
+    echo "OVS ON CONTROL:" >> control.log.$datestamp
+    vagrant ssh control_basevm -c 'sudo ovs-vsctl show' >> control.log.$datestamp
+    echo "OVS ON COMPUTE:" >> compute.log.$datestamp
+    vagrant ssh compute_basevm -c 'sudo ovs-vsctl show' >> compute.log.$datestamp
+    mv build.log.$datestamp build.log.$datestamp.success
+    mv control.log.$datestamp control.log.$datestamp.success
+    mv compute.log.$datestamp compute.log.$datestamp.success
+    ret=1
 else
     echo "##########################"
     echo "Ping failed to reach VM :("
-    mv build.log build.log.$datestamp.failed
-    mv control.log control.log.$datestamp.failed
-    mv compute.log compute.log.$datestamp.failed
+    echo "OVS ON CONTROL:" >> control.log.$datestamp
+    vagrant ssh control_basevm -c 'sudo ovs-vsctl show' >> control.log.$datestamp
+    echo "OVS ON COMPUTE:" >> compute.log.$datestamp
+    vagrant ssh compute_basevm -c 'sudo ovs-vsctl show' >> compute.log.$datestamp
+    vagrant ssh control_basevm -c 'sudo service quantum-plugin-openvswitch-agent restart'
+    sleep 2
+    echo "OVS ON CONTROL AFTER AGENT RESTART:" >> control.log.$datestamp
+    vagrant ssh control_basevm -c 'sudo vs-vsctl show' >> control.log.$datestamp
+    mv build.log.$datestamp build.log.$datestamp.failed
+    mv control.log.$datestamp control.log.$datestamp.failed
+    mv compute.log.$datestamp compute.log.$datestamp.failed
+    ret=0
 fi
+exit $ret

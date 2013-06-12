@@ -5,29 +5,9 @@ vagrant destroy -f
 vagrant up build 2>&1 | tee -a build.log.$datestamp  
 vagrant up control_basevm 2>&1 | tee -a control.log.$datestamp
 vagrant up compute_basevm 2>&1 | tee -a compute.log.$datestamp
-PORT=`vagrant ssh-config build | grep Port | grep -o '[0-9]\+'`
-ssh -q \
-    -o UserKnownHostsFile=/dev/null \
-    -o StrictHostKeyChecking=no \
-    -i ~/.vagrant.d/insecure_private_key \
-    vagrant@localhost \
-    -p $PORT \
-    'sudo apt-get install -y -q python-novaclient python-glanceclient python-quantumclient python-keystoneclient'
-ssh -q \
-    -o UserKnownHostsFile=/dev/null \
-    -o StrictHostKeyChecking=no \
-    -i ~/.vagrant.d/insecure_private_key \
-    vagrant@localhost \
-    -p $PORT \
-    'sudo /tmp/test_nova.sh'
-
-ssh -q \
-    -o UserKnownHostsFile=/dev/null \
-    -o StrictHostKeyChecking=no \
-    -i ~/.vagrant.d/insecure_private_key \
-    vagrant@localhost \
-    -p $PORT \
-    'ping -c 2 172.16.2.129'
+vagrant ssh build -c 'sudo apt-get install -y -q python-novaclient python-glanceclient python-quantumclient python-keystoneclient'
+vagrant ssh build -c 'sudo /tmp/test_nova.sh'
+vagrant ssh build -c 'ping -c 2 172.16.2.129'
 
 if [ $? -eq 0 ]
   then 

@@ -36,10 +36,10 @@ base_url = "#{git_protocol}://github.com"
 #
 # Installer Manifests
 #
-user_name = 'bodepd'
+user_name = 'CiscoSystems'
 release = 'grizzly'
 manifest_branch = 'master'
-mod 'manifests', :git => "#{base_url}/#{user_name}/#{release}-manifests", :ref => manifest_branch
+mod 'manifests', :git => "#{base_url}/#{user_name}/#{release}-manifests", :ref => 'origin/multi-node'
 
 ###### stackforge openstack modules #####
 
@@ -63,7 +63,7 @@ mod 'CiscoSystems/stdlib', :git => "#{base_url}/CiscoSystems/puppet-stdlib", :re
 mod 'CiscoSystems/xinetd', :git => "#{base_url}/CiscoSystems/puppet-xinetd", :ref => branch_name
 mod 'CiscoSystems/ntp', :git => "#{base_url}/CiscoSystems/puppet-ntp", :ref => branch_name
 mod 'CiscoSystems/rsync', :git => "#{base_url}/CiscoSystems/puppet-rsync", :ref => branch_name
-mod 'CiscoSystems/mysql', :git => "#{base_url}/CiscoSystems/puppet-mysql", :ref => 'master'
+mod 'CiscoSystems/mysql', :git => "#{base_url}/CiscoSystems/puppet-mysql", :ref => branch_name
 mod 'CiscoSystems/rabbitmq', :git => "#{base_url}/CiscoSystems/puppet-rabbitmq", :ref => branch_name
 mod 'CiscoSystems/apache', :git => "#{base_url}/CiscoSystems/puppet-apache", :ref => branch_name
 
@@ -88,8 +88,8 @@ mod 'CiscoSystems/vswitch', :git => "#{base_url}/CiscoSystems/puppet-vswitch", :
 ##### Modules without upstreams #####
 
 # TODO - this is still pointing at my fork
-mod 'CiscoSystems/coe', :git => "#{base_url}/CiscoSystems/puppet-coe", :ref => 'origin/grizzly'
-mod 'CiscoSystems/cobbler', :git => "#{base_url}/bodepd/puppet-cobbler", :ref => 'origin/fix_cobbler_sync_issue'
+mod 'CiscoSystems/coe', :git => "#{base_url}/CiscoSystems/puppet-coe", :ref => branch_name
+mod 'CiscoSystems/cobbler', :git => "#{base_url}/CiscoSystems/puppet-cobbler", :ref => branch_name
 mod 'CiscoSystems/apt-cacher-ng', :git => "#{base_url}/CiscoSystems/puppet-apt-cacher-ng", :ref => branch_name
 mod 'CiscoSystems/collectd', :git => "#{base_url}/CiscoSystems/puppet-collectd", :ref => branch_name
 mod 'CiscoSystems/graphite', :git => "#{base_url}/CiscoSystems/puppet-graphite", :ref => branch_name

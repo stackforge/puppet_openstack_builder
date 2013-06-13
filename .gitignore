@@ -5,3 +5,4 @@ templates
 manifests
 .tmp
 .vagrant
+*.log*

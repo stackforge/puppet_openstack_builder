@@ -82,14 +82,18 @@ Vagrant::Config.run do |config|
 
   v_config = parse_vagrant_config
 
-  apt_cache_proxy = 'Acquire::http { Proxy \"http://%s:3142\"; };' % v_config['apt_cache']
+  if v_config['apt_cache'] != 'false'
+   apt_cache_proxy = 'echo \"Acquire::http { Proxy \"http://%s:3142\"; };\" > /etc/apt/apt.conf.d/01apt-cacher-ng-proxy;' % v_config['apt_cache'] 
+  end
+
+  apt_cache_proxy = ''
 
   config.vm.define :cache do |config|
     get_box(config, 'precise64')
     setup_networks(config, '99')
     setup_hostname(config, 'cache')
     config.vm.provision :shell do |shell|
-      shell.inline = "apt-get update; apt-get install apt-cacher-ng -y; cp /vagrant/01apt-cacher-ng-proxy /etc/apt/apt.conf.d; apt-get update;sysctl -w net.ipv4.ip_forward=1;"#iptables –A FORWARD –i eth0 –o eth2 –j ACCEPT;iptables –A FORWARD –i eth2 –o eth0 –j ACCEPT;iptables –t nat –A POSTROUTING –o eth0 –j MASQUERADE"
+      shell.inline = "apt-get update; apt-get install apt-cacher-ng -y; %s apt-get update;sysctl -w net.ipv4.ip_forward=1;" % apt_cache_proxy
     end
   end
 
@@ -113,7 +117,7 @@ Vagrant::Config.run do |config|
 
     # configure apt and basic packages needed for install
     config.vm.provision :shell do |shell|
-      shell.inline = "echo \"%s\" > /etc/apt/apt.conf.d/01apt-cacher-ng-proxy; apt-get update; dhclient -r eth0 && dhclient eth0; apt-get install -y git vim puppet curl; if [ ! -h /etc/puppet/templates ]; then rmdir /etc/puppet/templates;ln -s /vagrant/templates /etc/puppet/; fi" % apt_cache_proxy
+      shell.inline = "%s apt-get update; dhclient -r eth0 && dhclient eth0; apt-get install -y git vim puppet curl; if [ ! -h /etc/puppet/templates ]; then rmdir /etc/puppet/templates;ln -s /vagrant/templates /etc/puppet/; fi" % apt_cache_proxy
     end
 
     # pre-import the ubuntu image from an appropriate mirror
@@ -164,7 +168,7 @@ Vagrant::Config.run do |config|
     end
 
     config.vm.provision :shell do |shell|
-      shell.inline = 'echo "192.168.242.100 build-server build-server.domain.name" >> /etc/hosts;echo "%s" > /etc/apt/apt.conf.d/01apt-cacher-ng-proxy; apt-get update;apt-get install ubuntu-cloud-keyring' % apt_cache_proxy
+      shell.inline = 'echo "192.168.242.100 build-server build-server.domain.name" >> /etc/hosts;%s apt-get update;apt-get install ubuntu-cloud-keyring' % apt_cache_proxy
     end
 
     config.vm.provision(:puppet_server) do |puppet|
@@ -195,7 +199,7 @@ Vagrant::Config.run do |config|
     end
 
     config.vm.provision :shell do |shell|
-      shell.inline = 'echo "192.168.242.100 build-server build-server.domain.name" >> /etc/hosts;echo "%s" > /etc/apt/apt.conf.d/01apt-cacher-ng-proxy; apt-get update;apt-get install ubuntu-cloud-keyring' % apt_cache_proxy
+      shell.inline = 'echo "192.168.242.100 build-server build-server.domain.name" >> /etc/hosts;%s apt-get update;apt-get install ubuntu-cloud-keyring' % apt_cache_proxy
     end
 
     config.vm.provision(:puppet_server) do |puppet|

@@ -1,7 +1,9 @@
 #!/bin/bash
 ret=0
 datestamp=`date "+%Y%m%d%H%M%S"`
-vagrant destroy -f
+vagrant destroy build
+vagrant destroy control_basevm 
+vagrant destroy compute_basevm 
 vagrant up build 2>&1 | tee -a build.log.$datestamp  
 vagrant up control_basevm 2>&1 | tee -a control.log.$datestamp
 vagrant up compute_basevm 2>&1 | tee -a compute.log.$datestamp

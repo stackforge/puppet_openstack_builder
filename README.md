@@ -33,7 +33,7 @@ If you want to test the PXE deployment system, add the basebox
 ## Configuration ##
 
 There is a config.yaml file that can be edited to suit the environment. 
-The apt_cache server can be any server running apt-cacher-ng - it doesn't have to be the cache instance mentioned below if you already have one handy.
+The apt_cache server can be any server running apt-cacher-ng - it doesn't have to be the cache instance mentioned below if you already have one handy. It can be set to false to disable use of apt-cacher altogether.
 The apt_mirror will be used to set sources.list on each machine, and on the build server it will be used to import the 30MB ubuntu netboot image used during the PXE deploy process.
 Make sure the domain matches the domain specified in the site.pp in the manifests you intend to use. 
 

@@ -22,9 +22,23 @@ Developers should be started by installing the following simple utility:
     export PATH=`pwd`/vendor/librarian-puppet-simple/bin/:$PATH
 
 Once this library is installed, you can run the following command from this project's
-root directory. This will use the Puppetfile to clone the openstack modules and the COE manifests, into the modules directory, and can be easily configured to pull from your own repo instead of the Cisco or Stackforge repos.
+root directory. This will use the Puppetfile to clone the openstack modules and the COE manifests, into the modules directory, and can be easily configured to pull from your own repo instead of the Cisco or Stackforge repos. The default is to use the stackforge modules
+
+To use the CiscoSystems releases of the puppet modules:
+
+    export repos_to_use=downstream
+
+To download modules
 
     librarian-puppet install --verbose
+
+Now, if you are using the Cisco modules:
+
+    cp site.pp.downstream modules/manifests/manifests
+
+If you are using the stackforge modules:
+
+    cp site.pp modules/manifests/manifests
 
 If you want to test the PXE deployment system, add the basebox
 

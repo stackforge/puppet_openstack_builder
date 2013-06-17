@@ -1,9 +1,9 @@
 #!/bin/bash
 ret=0
 datestamp=`date "+%Y%m%d%H%M%S"`
-vagrant destroy build
-vagrant destroy control_basevm 
-vagrant destroy compute_basevm 
+vagrant destroy build -f
+vagrant destroy control_basevm -f
+vagrant destroy compute_basevm -f
 vagrant up build 2>&1 | tee -a build.log.$datestamp  
 vagrant up control_basevm 2>&1 | tee -a control.log.$datestamp
 vagrant up compute_basevm 2>&1 | tee -a compute.log.$datestamp
@@ -33,7 +33,7 @@ else
     vagrant ssh control_basevm -c 'sudo service quantum-plugin-openvswitch-agent restart'
     sleep 2
     echo "OVS ON CONTROL AFTER AGENT RESTART:" >> control.log.$datestamp
-    vagrant ssh control_basevm -c 'sudo vs-vsctl show' >> control.log.$datestamp
+    vagrant ssh control_basevm -c 'sudo ovs-vsctl show' >> control.log.$datestamp
     mv build.log.$datestamp build.log.$datestamp.failed
     mv control.log.$datestamp control.log.$datestamp.failed
     mv compute.log.$datestamp compute.log.$datestamp.failed

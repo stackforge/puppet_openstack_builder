@@ -120,9 +120,11 @@ Vagrant::Config.run do |config|
       shell.inline = "%s apt-get update; dhclient -r eth0 && dhclient eth0; apt-get install -y git vim puppet curl; if [ ! -h /etc/puppet/templates ]; then rmdir /etc/puppet/templates;ln -s /vagrant/templates /etc/puppet/; fi" % apt_cache_proxy
     end
 
-    # pre-import the ubuntu image from an appropriate mirror
-    config.vm.provision :shell do |shell|
-      shell.inline = "apt-get install -y cobbler; cobbler-ubuntu-import -m http://%s/ubuntu precise-x86_64;" % v_config['apt_mirror']
+    # pre-import the ubuntu image if we are using a custom mirror
+    if v_config['apt-mirror'] != 'us.archive.ubuntu.com'
+      config.vm.provision :shell do |shell|
+        shell.inline = "cobbler-ubuntu-import -c precise-x86_64; if [ $? == '0' ]; then apt-get install -y cobbler; cobbler-ubuntu-import -m http://%s/ubuntu precise-x86_64; fi" % v_config['apt_mirror']
+      end
     end
 
     # now run puppet to install the build server

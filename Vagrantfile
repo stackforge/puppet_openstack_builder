@@ -84,7 +84,7 @@ Vagrant::Config.run do |config|
 
   apt_cache_proxy = ''
   if v_config['apt_cache'] != 'false'
-   apt_cache_proxy = 'echo \"Acquire::http { Proxy \"http://%s:3142\"; };\" > /etc/apt/apt.conf.d/01apt-cacher-ng-proxy;' % v_config['apt_cache'] 
+   apt_cache_proxy = 'echo "Acquire::http { Proxy \"http://%s:3142\"; };" > /etc/apt/apt.conf.d/01apt-cacher-ng-proxy;' % v_config['apt_cache'] 
   end
 
   config.vm.define :cache do |config|

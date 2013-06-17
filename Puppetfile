@@ -23,23 +23,26 @@ if ENV['repos_to_use']  == 'downstream'
   openstack_module_branch   = branch_name
   openstack_module_account  = 'CiscoSystems'
   puppetlabs_module_account = 'CiscoSystems'
+  # manifests
+  user_name = 'CiscoSystems'
+  release = 'grizzly'
+  manifest_branch = 'origin/multi-node'
 else
   # use the upstream modules where they exist
   branch_name               = 'origin/grizzly'
   openstack_module_branch   = 'master'
   openstack_module_account  = 'stackforge'
   puppetlabs_module_account = 'puppetlabs'
+  # manifests
+  user_name = 'bodepd'
+  release = 'grizzly'
+  manifest_branch = 'origin/master'
 end
 
 base_url = "#{git_protocol}://github.com"
 
-#
-# Installer Manifests
-#
-user_name = 'CiscoSystems'
-release = 'grizzly'
-manifest_branch = 'master'
-mod 'manifests', :git => "#{base_url}/#{user_name}/#{release}-manifests", :ref => 'origin/multi-node'
+###### Installer Manifests ##############
+mod 'manifests', :git => "#{base_url}/#{user_name}/#{release}-manifests", :ref => "#{manifest_branch}"
 
 ###### stackforge openstack modules #####
 

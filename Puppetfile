@@ -112,7 +112,8 @@ mod 'CiscoSystems/cobbler', :git => "#{base_url}/CiscoSystems/puppet-cobbler", :
 mod 'CiscoSystems/apt-cacher-ng', :git => "#{base_url}/CiscoSystems/puppet-apt-cacher-ng", :ref => branch_name
 mod 'CiscoSystems/collectd', :git => "#{base_url}/CiscoSystems/puppet-collectd", :ref => branch_name
 # based on pradeep's fork
-mod 'CiscoSystems/graphite', :git => "#{base_url}/pkilambi/puppet-graphite/", :ref => 'master'
+# this is forked and needs to be updated
+mod 'CiscoSystems/graphite', :git => "#{base_url}/bodepd/puppet-graphite/", :ref => 'master'
 mod 'CiscoSystems/monit', :git => "#{base_url}/CiscoSystems/puppet-monit", :ref => branch_name
 mod 'CiscoSystems/pip', :git => "#{base_url}/CiscoSystems/puppet-pip", :ref => branch_name
 

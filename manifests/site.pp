@@ -25,3 +25,11 @@ node build-server {
   }
 
 }
+
+node /control-server/ {
+  include coi::roles::controller
+}
+
+node /compute-server\d+/ {
+  include coi::roles::compute
+}

@@ -47,7 +47,7 @@ mod 'manifests', :git => "#{base_url}/#{user_name}/#{release}-manifests", :ref =
 
 # This top level module contains the roles that are used to deploy openstack
 
-mod 'CiscoSystems/puppet-coi', :git => "#{base_url}/bodepd/puppet-COI", :ref => 'master'
+mod 'CiscoSystems/coi', :git => "#{base_url}/bodepd/puppet-COI", :ref => 'master'
 # no existing downstream module
 mod 'puppetlabs/postgresql', :git => "#{base_url}/puppetlabs/puppetlabs-postgresql", :ref => 'master'
 mod 'puppetlabs/puppetdb', :git => "#{base_url}/puppetlabs/puppetlabs-puppetdb", :ref => 'master'
@@ -56,7 +56,7 @@ mod 'puppetlabs/firewall', :git => "#{base_url}/puppetlabs/puppetlabs-firewall",
 # stephenrjohnson
 # this what I am testing Puppet 3.2 deploys with
 # I am pointing it at me until my patch is accepted
-mod 'stephenjohnson/puppet', :git => "#{base_url}/boded/puppetlabs-puppet", :ref => 'origin/add_repo'
+mod 'stephenjohrnson/puppet', :git => "#{base_url}/stephenrjohnson/puppetlabs-puppet", :ref => 'master'
 
 ###### stackforge openstack modules #####
 
@@ -88,7 +88,7 @@ mod 'CiscoSystems/apache', :git => "#{base_url}/CiscoSystems/puppet-apache", :re
 ##### modules with other upstreams #####
 
 # upstream is ripienaar
-mod 'ripienaar/concat', :git => "#{base_url}/ripienaar/puppet-concat", :ref => 'master'
+mod 'ripienaar/concat', :git => "#{base_url}/CiscoSystems/puppet-concat", :ref => 'origin/grizzly'
 
 # upstream is cprice-puppet/puppetlabs-inifile
 mod 'CiscoSystems/inifile', :git => "#{base_url}/CiscoSystems/puppet-inifile", :ref => branch_name
@@ -108,10 +108,11 @@ mod 'CiscoSystems/vswitch', :git => "#{base_url}/CiscoSystems/puppet-vswitch", :
 
 # TODO - this is still pointing at my fork
 mod 'CiscoSystems/coe', :git => "#{base_url}/CiscoSystems/puppet-coe", :ref => branch_name
-mod 'CiscoSystems/cobbler', :git => "#{base_url}/bodepd/puppet-cobbler", :ref => branch_name
+mod 'CiscoSystems/cobbler', :git => "#{base_url}/CiscoSystems/puppet-cobbler", :ref => branch_name
 mod 'CiscoSystems/apt-cacher-ng', :git => "#{base_url}/CiscoSystems/puppet-apt-cacher-ng", :ref => branch_name
 mod 'CiscoSystems/collectd', :git => "#{base_url}/CiscoSystems/puppet-collectd", :ref => branch_name
-mod 'CiscoSystems/graphite', :git => "#{base_url}/CiscoSystems/puppet-graphite", :ref => branch_name
+# based on pradeep's fork
+mod 'CiscoSystems/graphite', :git => "#{base_url}/pkilambi/puppet-graphite/", :ref => 'master'
 mod 'CiscoSystems/monit', :git => "#{base_url}/CiscoSystems/puppet-monit", :ref => branch_name
 mod 'CiscoSystems/pip', :git => "#{base_url}/CiscoSystems/puppet-pip", :ref => branch_name
 

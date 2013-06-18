@@ -1,6 +1,69 @@
 ntp_servers:
   - time-server.domain.name
 domain_name: domain.name
-public_interface: eth0
-private_interface: eth0
-external_interface: eth1
+# network interfaces that various parts of openstack should use
+public_interface: eth1
+private_interface: eth1
+external_interface: eth2
+# controller information
+controller_node_internal: 192.168.242.10 
+controller_node_public: 192.168.242.10
+controller_hostname:  control-server
+# build node connection information
+build_node_name: build-server
+# openstack-config
+admin_password: Cisco123
+keystone_admin_token: keystone_admin_token
+# middleware config
+mysql_root_password: mysql_pass
+libvirt_type: qemu
+
+# information for package repos
+openstack_release: precise-updates/grizzly
+package_repo: cloud_archive
+# you can set this, but for now it is false
+# default_gateway
+
+verbose: false
+
+# networking related config
+auto_assign_floating_ip: false
+multi_host: true
+
+#
+# image to use for testing
+# supports cirros or kvm
+test_file_image_type: cirros
+
+# advanced options
+proxy: http://proxy-server:port-number
+
+admin_email: root@localhost
+admin_password: Cisco123
+keystone_db_password: keystone_db_password
+keystone_admin_token: keystone_admin_token
+glance_db_password: glance_pass
+glance_user_password: glance_pass
+
+glance_backend: file
+
+nova_db_password:   nova_pass
+nova_user_password: nova_pass
+
+quantum_db_password:   quantum_pass
+quantum_user_password: quantum_pass
+
+rabbit_password: openstack_rabbit_password
+rabbit_user: openstack_rabbit_user
+
+metadata_shared_secret: mmetadata_shared_secret,
+# ovs config
+tunnel_ip: %{ipaddress_eth3}
+internal_ip: %{ipaddress_eth3}
+
+# horizon
+horizon_secret_key: horizon_secret_key
+
+# cinder
+cinder_user_password: cinder_pass
+cinder_db_password: cinder_pass

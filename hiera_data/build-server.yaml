@@ -1,6 +1,5 @@
 # set my puppet_master_address to be fqdn
 puppet_master_address: %{fqdn}
-build_node_name: build-server
 cobbler_node_ip: '192.168.242.100'
 node_subnet: '192.168.242.0'
 node_netmask: '255.255.255.0'

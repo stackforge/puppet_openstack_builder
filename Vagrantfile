@@ -90,7 +90,7 @@ Vagrant::Config.run do |config|
     get_box(config, 'precise64')
     setup_networks(config, '100')
     setup_hostname(config, 'build-server')
-
+    config.vm.customize ["modifyvm", :id, "--memory", 1024]
     # Configure apt mirror
     config.vm.provision :shell do |shell|
       shell.inline = "sed -i 's/us.archive.ubuntu.com/%s/g' /etc/apt/sources.list" % v_config['apt_mirror']
@@ -109,9 +109,9 @@ Vagrant::Config.run do |config|
     end
 
     # pre-import the ubuntu image from an appropriate mirror
-    config.vm.provision :shell do |shell|
-      shell.inline = "apt-get install -y cobbler; cobbler-ubuntu-import -m http://%s/ubuntu precise-x86_64;" % v_config['apt_mirror']
-    end
+    #config.vm.provision :shell do |shell|
+    #  shell.inline = "apt-get install -y cobbler; cobbler-ubuntu-import -m http://%s/ubuntu precise-x86_64;" % v_config['apt_mirror']
+    #end
 
     config.vm.share_folder("hiera_data", '/etc/puppet/hiera_data', './hiera_data/')
 
@@ -168,6 +168,13 @@ Vagrant::Config.run do |config|
       shell.inline = 'echo "192.168.242.100 build-server build-server.domain.name" >> /etc/hosts;echo "%s" > /etc/apt/apt.conf.d/01apt-cacher-ng-proxy; apt-get update;apt-get install ubuntu-cloud-keyring' % apt_cache_proxy
     end
 
+    config.vm.provision(:puppet, :pp_path => "/etc/puppet") do |puppet|
+      puppet.manifests_path = 'manifests'
+      puppet.manifest_file  = "setup.pp"
+      puppet.module_path    = 'modules'
+      puppet.options        = ['--verbose', '--trace', '--debug', '--show_diff']
+    end
+
     config.vm.provision(:puppet_server) do |puppet|
       puppet.puppet_server = 'build-server.domain.name'
       puppet.options       = ['-t', '--pluginsync', '--trace', "--certname #{node_name}"]
@@ -199,6 +206,12 @@ Vagrant::Config.run do |config|
       shell.inline = 'echo "192.168.242.100 build-server build-server.domain.name" >> /etc/hosts;echo "%s" > /etc/apt/apt.conf.d/01apt-cacher-ng-proxy; apt-get update;apt-get install ubuntu-cloud-keyring' % apt_cache_proxy
     end
 
+    config.vm.provision(:puppet, :pp_path => "/etc/puppet") do |puppet|
+      puppet.manifests_path = 'manifests'
+      puppet.manifest_file  = "setup.pp"
+      puppet.module_path    = 'modules'
+      puppet.options        = ['--verbose', '--trace', '--debug', '--show_diff']
+    end
     config.vm.provision(:puppet_server) do |puppet|
       puppet.puppet_server = 'build-server.domain.name'
       puppet.options       = ['-t', '--pluginsync', '--trace', "--certname #{node_name}"]

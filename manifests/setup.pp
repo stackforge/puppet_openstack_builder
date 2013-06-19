@@ -33,6 +33,8 @@ file { "${settings::confdir}/hiera.yaml":
 :hierarchy:
   - "%{hostname}"
   - jenkins
+  - "%{openstack_role}"
+  - "%{role}"
   - common
 :yaml:
    :datadir: /etc/puppet/hiera_data'

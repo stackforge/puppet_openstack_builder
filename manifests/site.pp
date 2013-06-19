@@ -2,6 +2,8 @@ node build-server {
 
   Exec { logoutput => on_failure }
 
+  $role = 'build'
+
   include coi::roles::build_server
 
   # I want these nodes to eventuall be moved to
@@ -27,9 +29,13 @@ node build-server {
 }
 
 node /control-server/ {
+  $role = 'openstack'
+  $openstack_role = 'controller'
   include coi::roles::controller
 }
 
 node /compute-server\d+/ {
+  $role           = 'openstack'
+  $openstack_role = 'compute'
   include coi::roles::compute
 }

@@ -2,7 +2,7 @@ node build-server {
 
   Exec { logoutput => on_failure }
 
-  $role = 'build'
+  $role = 'openstack'
 
   include coi::roles::build_server
 
@@ -25,7 +25,6 @@ node build-server {
     ip            => "192.168.242.21",
     power_address => "192.168.242.121"
   }
-
 }
 
 node /control-server/ {

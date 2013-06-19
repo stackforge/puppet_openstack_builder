@@ -15,7 +15,7 @@
 include puppet::repo::puppetlabs
 package { 'puppet':
   # is this the real version that I should be using?
-  ensure => '3.2.1-1puppetlabs1',
+  ensure => '3.2.2-1puppetlabs1',
 }
 
 # dns resolution should be setup correctly

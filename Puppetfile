@@ -10,7 +10,6 @@ git_protocol=ENV['git_protocol'] || 'git'
 # that they are derived from (and should be maintained in sync with)
 #
 
-
 #
 # this is just targeting the upstream stackforge modules
 # right now, and the logic for using downstream does not
@@ -41,6 +40,24 @@ release = 'grizzly'
 manifest_branch = 'master'
 mod 'manifests', :git => "#{base_url}/#{user_name}/#{release}-manifests", :ref => manifest_branch
 
+###### module under development #####
+
+# this following modules are still undergoing their initial development
+# and have not yet been ported to CiscoSystems.
+
+# This top level module contains the roles that are used to deploy openstack
+
+mod 'CiscoSystems/coi', :git => "#{base_url}/bodepd/puppet-COI", :ref => 'master'
+# no existing downstream module
+mod 'puppetlabs/postgresql', :git => "#{base_url}/puppetlabs/puppetlabs-postgresql", :ref => 'master'
+mod 'puppetlabs/puppetdb', :git => "#{base_url}/puppetlabs/puppetlabs-puppetdb", :ref => 'master'
+# do I really need this firewall module?
+mod 'puppetlabs/firewall', :git => "#{base_url}/puppetlabs/puppetlabs-firewall", :ref => 'master'
+# stephenrjohnson
+# this what I am testing Puppet 3.2 deploys with
+# I am pointing it at me until my patch is accepted
+mod 'stephenjohrnson/puppet', :git => "#{base_url}/stephenrjohnson/puppetlabs-puppet", :ref => 'master'
+
 ###### stackforge openstack modules #####
 
 openstack_repo_prefix = "#{base_url}/#{openstack_module_account}/puppet"
@@ -67,10 +84,11 @@ mod 'CiscoSystems/mysql', :git => "#{base_url}/CiscoSystems/puppet-mysql", :ref 
 mod 'CiscoSystems/rabbitmq', :git => "#{base_url}/CiscoSystems/puppet-rabbitmq", :ref => branch_name
 mod 'CiscoSystems/apache', :git => "#{base_url}/CiscoSystems/puppet-apache", :ref => branch_name
 
+
 ##### modules with other upstreams #####
 
 # upstream is ripienaar
-mod 'CiscoSystems/concat', :git => "#{base_url}/CiscoSystems/puppet-concat", :ref => branch_name
+mod 'ripienaar/concat', :git => "#{base_url}/CiscoSystems/puppet-concat", :ref => 'origin/grizzly'
 
 # upstream is cprice-puppet/puppetlabs-inifile
 mod 'CiscoSystems/inifile', :git => "#{base_url}/CiscoSystems/puppet-inifile", :ref => branch_name
@@ -85,16 +103,19 @@ mod 'CiscoSystems/sysctl', :git => "#{base_url}/CiscoSystems/puppet-sysctl", :re
 # unclear who the upstream is
 mod 'CiscoSystems/vswitch', :git => "#{base_url}/CiscoSystems/puppet-vswitch", :ref => branch_name
 
+
 ##### Modules without upstreams #####
 
 # TODO - this is still pointing at my fork
-mod 'CiscoSystems/coe', :git => "#{base_url}/CiscoSystems/puppet-coe", :ref => 'origin/grizzly'
-mod 'CiscoSystems/cobbler', :git => "#{base_url}/bodepd/puppet-cobbler", :ref => 'origin/fix_cobbler_sync_issue'
+mod 'CiscoSystems/coe', :git => "#{base_url}/CiscoSystems/puppet-coe", :ref => branch_name
+mod 'CiscoSystems/cobbler', :git => "#{base_url}/CiscoSystems/puppet-cobbler", :ref => branch_name
 mod 'CiscoSystems/apt-cacher-ng', :git => "#{base_url}/CiscoSystems/puppet-apt-cacher-ng", :ref => branch_name
 mod 'CiscoSystems/collectd', :git => "#{base_url}/CiscoSystems/puppet-collectd", :ref => branch_name
-mod 'CiscoSystems/graphite', :git => "#{base_url}/CiscoSystems/puppet-graphite", :ref => branch_name
+# based on pradeep's fork
+# this is forked and needs to be updated
+mod 'CiscoSystems/graphite', :git => "#{base_url}/bodepd/puppet-graphite/", :ref => 'master'
 mod 'CiscoSystems/monit', :git => "#{base_url}/CiscoSystems/puppet-monit", :ref => branch_name
 mod 'CiscoSystems/pip', :git => "#{base_url}/CiscoSystems/puppet-pip", :ref => branch_name
-mod 'CiscoSystems/puppet', :git => "#{base_url}/CiscoSystems/puppet-puppet", :ref => branch_name
+
 mod 'CiscoSystems/dnsmasq', :git => "#{base_url}/CiscoSystems/puppet-dnsmasq", :ref => branch_name
 mod 'CiscoSystems/naginator', :git => "#{base_url}/CiscoSystems/puppet-naginator", :ref => branch_name

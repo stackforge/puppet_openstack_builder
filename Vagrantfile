@@ -69,6 +69,25 @@ def setup_hostname(config, hostname)
   config.vm.host_name = hostname
 end
 
+#
+# run puppet apply on the site manifest
+#
+def apply_manifest(config, v_config, manifest_name='site.pp')
+
+  options = []
+
+  if v_config[:verbose]
+    options = options + ['--verbose', '--trace', '--debug', '--show_diff']
+  end
+
+  config.vm.provision(:puppet, :pp_path => "/etc/puppet") do |puppet|
+    puppet.manifests_path = 'manifests'
+    puppet.manifest_file  = manifest_name
+    puppet.module_path    = 'modules'
+    puppet.options        = options
+  end
+end
+
 Vagrant::Config.run do |config|
   require 'fileutils'
 
@@ -83,9 +102,9 @@ Vagrant::Config.run do |config|
     get_box(config, 'precise64')
     setup_networks(config, '99')
     setup_hostname(config, 'cache')
-    config.vm.provision :shell do |shell|
-      shell.inline = "apt-get update; apt-get install apt-cacher-ng -y; %s apt-get update;sysctl -w net.ipv4.ip_forward=1;" % apt_cache_proxy
-    end
+    config.vm.share_folder("hiera_data", '/etc/puppet/hiera_data', './hiera_data/')
+    apply_manifest(config, v_config, 'setup.pp')
+    apply_manifest(config, v_config)
   end
 
   # Cobbler based "build" server
@@ -93,7 +112,9 @@ Vagrant::Config.run do |config|
     get_box(config, 'precise64')
     setup_networks(config, '100')
     setup_hostname(config, 'build-server')
+
     config.vm.customize ["modifyvm", :id, "--memory", 1024]
+
     # Configure apt mirror
     config.vm.provision :shell do |shell|
       shell.inline = "sed -i 's/us.archive.ubuntu.com/%s/g' /etc/apt/sources.list" % v_config['apt_mirror']
@@ -105,8 +126,6 @@ Vagrant::Config.run do |config|
       shell.inline = "sed -i 's/\#supersede/supersede/g' /etc/dhcp/dhclient.conf; sed -i 's/fugue.com home.vix.com/%s/g' /etc/dhcp/dhclient.conf; sed -i 's/domain-name,//g' /etc/dhcp/dhclient.conf" % v_config['domain']
     end
 
-
-    # configure apt and basic packages needed for install
     config.vm.provision :shell do |shell|
       shell.inline = "%s apt-get update; dhclient -r eth0 && dhclient eth0; apt-get install -y git vim curl;" % apt_cache_proxy
     end
@@ -120,20 +139,8 @@ Vagrant::Config.run do |config|
 
     config.vm.share_folder("hiera_data", '/etc/puppet/hiera_data', './hiera_data/')
 
-    # perform some initial setup before our 'real' puppetrun
-    config.vm.provision(:puppet, :pp_path => "/etc/puppet") do |puppet|
-      puppet.manifests_path = 'manifests'
-      puppet.manifest_file  = "setup.pp"
-      puppet.module_path    = 'modules'
-      puppet.options        = ['--verbose', '--trace', '--debug', '--show_diff']
-    end
-    # now run puppet to install the build server
-    config.vm.provision(:puppet, :pp_path => "/etc/puppet") do |puppet|
-      puppet.manifests_path = 'manifests'
-      puppet.manifest_file  = "site.pp"
-      puppet.module_path    = 'modules'
-      puppet.options        = ['--verbose', '--trace', '--debug', '--show_diff']
-    end
+    apply_manifest(config, v_config, 'setup.pp')
+    apply_manifest(config, v_config)
 
     # Configure puppet
     config.vm.provision :shell do |shell|
@@ -170,15 +177,10 @@ Vagrant::Config.run do |config|
     end
 
     config.vm.provision :shell do |shell|
-      shell.inline = 'echo "192.168.242.100 build-server build-server.domain.name" >> /etc/hosts;%s apt-get update;apt-get install ubuntu-cloud-keyring' % apt_cache_proxy
+      shell.inline = '%s apt-get update;apt-get install ubuntu-cloud-keyring' % apt_cache_proxy
     end
 
-    config.vm.provision(:puppet, :pp_path => "/etc/puppet") do |puppet|
-      puppet.manifests_path = 'manifests'
-      puppet.manifest_file  = "setup.pp"
-      puppet.module_path    = 'modules'
-      puppet.options        = ['--verbose', '--trace', '--debug', '--show_diff']
-    end
+    apply_manifest(config, v_config, 'setup.pp')
 
     config.vm.provision(:puppet_server) do |puppet|
       puppet.puppet_server = 'build-server.domain.name'
@@ -208,15 +210,11 @@ Vagrant::Config.run do |config|
     end
 
     config.vm.provision :shell do |shell|
-      shell.inline = 'echo "192.168.242.100 build-server build-server.domain.name" >> /etc/hosts;%s apt-get update;apt-get install ubuntu-cloud-keyring' % apt_cache_proxy
+      shell.inline = '%s apt-get update;apt-get install ubuntu-cloud-keyring' % apt_cache_proxy
     end
 
-    config.vm.provision(:puppet, :pp_path => "/etc/puppet") do |puppet|
-      puppet.manifests_path = 'manifests'
-      puppet.manifest_file  = "setup.pp"
-      puppet.module_path    = 'modules'
-      puppet.options        = ['--verbose', '--trace', '--debug', '--show_diff']
-    end
+    apply_manifest(config, v_config, 'setup.pp')
+
     config.vm.provision(:puppet_server) do |puppet|
       puppet.puppet_server = 'build-server.domain.name'
       puppet.options       = ['-t', '--pluginsync', '--trace', "--certname #{node_name}"]

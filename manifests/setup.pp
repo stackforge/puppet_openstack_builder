@@ -49,3 +49,7 @@ file { '/root/run_puppet.sh':
   "#!/bin/bash
   puppet apply --modulepath /etc/puppet/modules-0/ --certname ${clientcert} /etc/puppet/manifests/site.pp $*"
 }
+
+package { ['git', 'curl', 'vim']:
+  ensure => present,
+}

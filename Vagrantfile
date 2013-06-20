@@ -80,12 +80,25 @@ def apply_manifest(config, v_config, manifest_name='site.pp')
     options = options + ['--verbose', '--trace', '--debug', '--show_diff']
   end
 
+  # ensure that when puppet applies the site manifest, it has hiera configured
+  if manifest_name == 'site.pp'
+    config.vm.share_folder("hiera_data", '/etc/puppet/hiera_data', './hiera_data/')
+  end
+
   config.vm.provision(:puppet, :pp_path => "/etc/puppet") do |puppet|
     puppet.manifests_path = 'manifests'
     puppet.manifest_file  = manifest_name
     puppet.module_path    = 'modules'
     puppet.options        = options
   end
+
+  # uninstall the puppet gem b/c setup.pp installs the puppet package
+  if manifest_name == 'setup.pp'
+    config.vm.provision :shell do |shell|
+      shell.inline = "gem uninstall -x -a puppet;echo -e '#!/bin/bash\npuppet agent $@' > /sbin/puppetd;chmod a+x /sbin/puppetd"
+    end
+  end
+
 end
 
 Vagrant::Config.run do |config|
@@ -102,7 +115,6 @@ Vagrant::Config.run do |config|
     get_box(config, 'precise64')
     setup_networks(config, '99')
     setup_hostname(config, 'cache')
-    config.vm.share_folder("hiera_data", '/etc/puppet/hiera_data', './hiera_data/')
     apply_manifest(config, v_config, 'setup.pp')
     apply_manifest(config, v_config)
   end
@@ -113,7 +125,7 @@ Vagrant::Config.run do |config|
     setup_networks(config, '100')
     setup_hostname(config, 'build-server')
 
-    config.vm.customize ["modifyvm", :id, "--memory", 1024]
+    config.vm.customize ["modifyvm", :id, "--memory", 2525]
 
     # Configure apt mirror
     config.vm.provision :shell do |shell|
@@ -136,8 +148,6 @@ Vagrant::Config.run do |config|
         shell.inline = "cobbler-ubuntu-import -c precise-x86_64; if [ $? == '0' ]; then apt-get install -y cobbler; cobbler-ubuntu-import -m http://%s/ubuntu precise-x86_64; fi" % v_config['apt_mirror']
       end
     end
-
-    config.vm.share_folder("hiera_data", '/etc/puppet/hiera_data', './hiera_data/')
 
     apply_manifest(config, v_config, 'setup.pp')
     apply_manifest(config, v_config)

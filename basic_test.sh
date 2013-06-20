@@ -7,7 +7,6 @@ vagrant destroy compute_basevm -f
 vagrant up build 2>&1 | tee -a build.log.$datestamp  
 vagrant up control_basevm 2>&1 | tee -a control.log.$datestamp
 vagrant up compute_basevm 2>&1 | tee -a compute.log.$datestamp
-vagrant ssh build -c 'sudo apt-get install -y -q python-novaclient glance-client python-quantumclient python-keystoneclient'
 vagrant ssh build -c 'sudo /tmp/test_nova.sh'
 vagrant ssh build -c 'ping -c 2 172.16.2.129'
 

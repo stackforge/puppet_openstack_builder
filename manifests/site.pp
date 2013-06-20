@@ -4,7 +4,7 @@ node build-server {
 
   $role = 'openstack'
 
-  include coi::roles::build_server
+  include coi::roles::build_server::test
 
   # I want these nodes to eventuall be moved to
   # some data format that can just be parsed
@@ -37,4 +37,13 @@ node /compute-server\d+/ {
   $role           = 'openstack'
   $openstack_role = 'compute'
   include coi::roles::compute
+}
+
+# cache node that we use for testing so that we do not have to always reinstall
+# packaged for every test
+# TODO - we are not sure what to do with this role. it is useful be able to boot up from scratch.
+# 
+#
+node /cache/ {
+  include coi::roles::cache
 }

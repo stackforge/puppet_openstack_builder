@@ -10,4 +10,4 @@ external_interface: eth2
 # build node connection information
 build_node_name: build-server
 # advanced options
-proxy: http://proxy-server:port-number
+#proxy: http://proxy-server:port-number

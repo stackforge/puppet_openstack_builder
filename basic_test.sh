@@ -20,7 +20,7 @@ fi
 
 # we need to kill any existing machines on the same
 # system that conflict with the ones we want to spin up
-for i in build-server control_basevm compute_basevm ; do
+for i in build-server  compute-server02 control-server ; do
   if VBoxManage list vms | grep $i; then
     VBoxManage controlvm $i poweroff || true
     # occassionally, the VM is not really powered off when the above

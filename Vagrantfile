@@ -175,7 +175,7 @@ Vagrant::Config.run do |config|
   config.vm.define :control_basevm do |config|
     node_name = "control-server-#{Time.now.strftime('%Y%m%d%m%s')}.domain.name"
     get_box(config, 'precise64')
-    setup_hostname(config, node_name)
+    setup_hostname(config, 'control-server')
     config.vm.customize ["modifyvm", :id, "--memory", 1280]
     config.vm.host_name = node_name
     # you cannot boot this at the same time as the control_pxe b/c they have the same ip address
@@ -210,7 +210,7 @@ Vagrant::Config.run do |config|
   config.vm.define :compute_basevm do |config|
     node_name = "compute-server02-#{Time.now.strftime('%Y%m%d%m%s')}.domain.name"
     get_box(config, 'precise64')
-    setup_hostname(config, node_name)
+    setup_hostname(config, 'compute-server02')
     config.vm.customize ["modifyvm", :id, "--memory", 2512]
     setup_networks(config, '21')
 

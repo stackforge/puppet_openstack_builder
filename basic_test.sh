@@ -20,7 +20,7 @@ fi
 
 # we need to kill any existing machines on the same
 # system that conflict with the ones we want to spin up
-for i in build control_basevm compute_basevm ; do
+for i in build-server control_basevm compute_basevm ; do
   if VBoxManage list vms | grep $i; then
     VBoxManage controlvm $i poweroff || true
     VBoxManage unregistervm $i --delete

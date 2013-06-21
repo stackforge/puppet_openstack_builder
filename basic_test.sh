@@ -20,7 +20,7 @@ fi
 
 # we need to kill any existing machines on the same
 # system that conflict with the ones we want to spin up
-for i in build control_basevm compute_basevm ; do
+for i in build-server control_basevm compute_basevm ; do
   if VBoxManage list vms | grep $i; then
     VBoxManage controlvm $i poweroff || true
     VBoxManage unregistervm $i --delete
@@ -62,7 +62,7 @@ if [ $? -eq 0 ]
     mv build.log.$datestamp build.log.$datestamp.success
     mv control.log.$datestamp control.log.$datestamp.success
     mv compute.log.$datestamp compute.log.$datestamp.success
-    ret=1
+    ret=0
 else
     echo "##########################"
     echo "Ping failed to reach VM :("
@@ -77,6 +77,6 @@ else
     mv build.log.$datestamp build.log.$datestamp.failed
     mv control.log.$datestamp control.log.$datestamp.failed
     mv compute.log.$datestamp compute.log.$datestamp.failed
-    ret=0
+    ret=1
 fi
 exit $ret

@@ -1,9 +1,40 @@
 #!/bin/bash
 ret=0
 datestamp=`date "+%Y%m%d%H%M%S"`
+
+# install librarian-puppet-simple
+mkdir vendor
+export GEM_HOME=`pwd`/vendor
+gem install thor --no-ri --no-rdoc
+git clone git://github.com/bodepd/librarian-puppet-simple vendor/librarian-puppet-simple
+export PATH=`pwd`/vendor/librarian-puppet-simple/bin/:$PATH
+
+# install modules
+export module_install_method=librarian
+if [ $module_install_method = 'librarian' ]; then
+  librarian-puppet install --clean --verbose
+else
+  echo 'librarian is the only supported install method'
+  exit 1
+fi
+
 vagrant destroy build -f
 vagrant destroy control_basevm -f
 vagrant destroy compute_basevm -f
+
+# check out a specific branch that we want to test
+if [ -n "${module_repo:-}" ]; then
+  if [ ! "${module_repo:-}" = 'openstack_dev_env' ]; then
+    pushd $module_repo
+  fi
+  if [ -n "${checkout_branch_command:-}" ]; then
+    eval $checkout_branch_command
+  fi
+  if [ ! "${module_repo:-}" = 'openstack_dev_env' ]; then
+    popd
+  fi
+fi
+
 vagrant up build 2>&1 | tee -a build.log.$datestamp  
 vagrant up control_basevm 2>&1 | tee -a control.log.$datestamp
 vagrant up compute_basevm 2>&1 | tee -a compute.log.$datestamp

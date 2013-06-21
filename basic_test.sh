@@ -18,9 +18,14 @@ else
   exit 1
 fi
 
-vagrant destroy build -f
-vagrant destroy control_basevm -f
-vagrant destroy compute_basevm -f
+# we need to kill any existing machines on the same
+# system that conflict with the ones we want to spin up
+for i in build control_basevm compute_basevm ; do
+  if VBoxManage list vms | grep $i; then
+    VBoxManage controlvm $i poweroff || true
+    VBoxManage unregistervm $i --delete
+  fi
+done
 
 # check out a specific branch that we want to test
 if [ -n "${module_repo:-}" ]; then
@@ -33,6 +38,11 @@ if [ -n "${module_repo:-}" ]; then
   if [ ! "${module_repo:-}" = 'openstack_dev_env' ]; then
     popd
   fi
+fi
+
+# build a cache vm if one does not already exist
+if ! VBoxManage list vms | grep cache ; then
+  vagrant up cache 2>&1 | tee -a cache.log.$datestamp
 fi
 
 vagrant up build 2>&1 | tee -a build.log.$datestamp  

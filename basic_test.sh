@@ -23,6 +23,10 @@ fi
 for i in build-server control_basevm compute_basevm ; do
   if VBoxManage list vms | grep $i; then
     VBoxManage controlvm $i poweroff || true
+    # occassionally, the VM is not really powered off when the above
+    # command executed, and I wound up with the error:
+    #  Cannot unregister the machine 'build-server' while it is locked 
+    sleep 1
     VBoxManage unregistervm $i --delete
   fi
 done

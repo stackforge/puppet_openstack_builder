@@ -62,7 +62,7 @@ if [ $? -eq 0 ]
     mv build.log.$datestamp build.log.$datestamp.success
     mv control.log.$datestamp control.log.$datestamp.success
     mv compute.log.$datestamp compute.log.$datestamp.success
-    ret=1
+    ret=0
 else
     echo "##########################"
     echo "Ping failed to reach VM :("
@@ -77,6 +77,6 @@ else
     mv build.log.$datestamp build.log.$datestamp.failed
     mv control.log.$datestamp control.log.$datestamp.failed
     mv compute.log.$datestamp compute.log.$datestamp.failed
-    ret=0
+    ret=1
 fi
 exit $ret

@@ -53,9 +53,12 @@ fi
 if [ -n "${openstack_package_repo:-}" ]; then
   if [ $openstack_package_repo = 'cisco_repo' ]; then
     echo 'package_repo: cisco_repo' >> hiera_data/jenkins.yaml
-    echo 'openstack_repo_location: ftp://ftpeng.cisco.com/openstack/cisco' >> hiera_data/jenkins.yaml
+    echo 'openstack_repo_location: http://openstack-repo.cisco.com/openstack/cisco' >> hiera_data/jenkins.yaml
+    #echo 'openstack_repo_location: ftp://ftpeng.cisco.com/openstack/cisco' >> hiera_data/jenkins.yaml
+    echo 'openstack_release: grizzly-proposed' >> hiera_data/jenkins.yaml
   elif [ $openstack_package_repo = 'cloud_archive' ]; then
     echo 'package_repo: cloud_archive' >> hiera_data/jenkins.yaml
+    echo 'openstack_release: precise-updates/grizzly' >> hiera_data/jenkins.yaml
   else
     echo "Unsupported repo type: ${openstack_package_repo}"
   fi

@@ -51,7 +51,14 @@ fi
 
 # set up jenkins specific data overrides
 if [ -n "${openstack_package_repo:-}" ]; then
-  echo "package_repo: ${openstack_package_repo}" >> hiera_data/jenkins.yaml
+  if [ $openstack_package_repo = 'cisco_repo' ]; then
+    echo 'package_repo: cisco_repo' >> hiera_data/jenkins.yaml
+    echo 'openstack_repo_location: ftp://ftpeng.cisco.com/openstack/cisco' >> hiera_data/jenkins.yaml
+  elif [ $openstack_package_repo = 'cloud_archive' ]; then
+    echo 'package_repo: cloud_archive' >> hiera_data/jenkins.yaml
+  else
+    echo "Unsupported repo type: ${openstack_package_repo}"
+  fi
 fi
 
 # clean up old vms from previous tests

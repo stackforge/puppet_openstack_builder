@@ -1,4 +1,15 @@
 #!/bin/bash
+#
+# This script is a quick and dirty implementation
+# that is able to run integration tests for coi
+# on jenkins
+#
+set -e
+set -u
+
+# pull in functions that test multi-node
+source tests/multi_node.sh
+
 ret=0
 datestamp=`date "+%Y%m%d%H%M%S"`
 
@@ -9,27 +20,21 @@ gem install thor --no-ri --no-rdoc
 git clone git://github.com/bodepd/librarian-puppet-simple vendor/librarian-puppet-simple
 export PATH=`pwd`/vendor/librarian-puppet-simple/bin/:$PATH
 
+# puppet_repos_to_use
+if [ -n "${puppet_modules_to_use:-}" ]; then
+  # this only supports upstream and downstream at the moment
+  export repos_to_use=$puppet_modules_to_use
+fi
+
 # install modules
 export module_install_method=librarian
 if [ $module_install_method = 'librarian' ]; then
   librarian-puppet install --clean --verbose
 else
+  # eventually, this could do something like install packages
   echo 'librarian is the only supported install method'
   exit 1
 fi
-
-# we need to kill any existing machines on the same
-# system that conflict with the ones we want to spin up
-for i in build-server  compute-server02 control-server ; do
-  if VBoxManage list vms | grep $i; then
-    VBoxManage controlvm $i poweroff || true
-    # occassionally, the VM is not really powered off when the above
-    # command executed, and I wound up with the error:
-    #  Cannot unregister the machine 'build-server' while it is locked 
-    sleep 1
-    VBoxManage unregistervm $i --delete
-  fi
-done
 
 # check out a specific branch that we want to test
 if [ -n "${module_repo:-}" ]; then
@@ -44,19 +49,32 @@ if [ -n "${module_repo:-}" ]; then
   fi
 fi
 
-# build a cache vm if one does not already exist
-if ! VBoxManage list vms | grep cache ; then
-  vagrant up cache 2>&1 | tee -a cache.log.$datestamp
+# set up jenkins specific data overrides
+if [ -n "${openstack_package_repo:-}" ]; then
+  if [ $openstack_package_repo = 'cisco_repo' ]; then
+    echo 'package_repo: cisco_repo' >> hiera_data/jenkins.yaml
+    echo 'openstack_repo_location: http://openstack-repo.cisco.com/openstack/cisco' >> hiera_data/jenkins.yaml
+    #echo 'openstack_repo_location: ftp://ftpeng.cisco.com/openstack/cisco' >> hiera_data/jenkins.yaml
+    echo 'openstack_release: grizzly-proposed' >> hiera_data/jenkins.yaml
+  elif [ $openstack_package_repo = 'cloud_archive' ]; then
+    echo 'package_repo: cloud_archive' >> hiera_data/jenkins.yaml
+    echo 'openstack_release: precise-updates/grizzly' >> hiera_data/jenkins.yaml
+  else
+    echo "Unsupported repo type: ${openstack_package_repo}"
+  fi
 fi
 
-vagrant up build 2>&1 | tee -a build.log.$datestamp  
-vagrant up control_basevm 2>&1 | tee -a control.log.$datestamp
-vagrant up compute_basevm 2>&1 | tee -a compute.log.$datestamp
+# clean up old vms from previous tests
+destroy_multi_node_vms
+
+# deploy the vms for a multi-node deployment
+deploy_multi_node_vms
+
 vagrant ssh build -c 'sudo /tmp/test_nova.sh;exit $?'
 vagrant ssh build -c 'ping -c 2 172.16.2.129;exit $?'
 
 if [ $? -eq 0 ]
-  then 
+  then
     echo "##########################"
     echo "      Test Passed!"
     echo "OVS ON CONTROL:" >> control.log.$datestamp

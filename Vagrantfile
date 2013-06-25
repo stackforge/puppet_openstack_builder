@@ -101,6 +101,64 @@ def apply_manifest(config, v_config, manifest_name='site.pp')
 
 end
 
+# run the puppet agent
+def run_puppet_agent(
+  config,
+  node_name,
+  v_config = {},
+  master = 'build-server.domain.name'
+)
+  options = ["--certname #{node_name}", '-t', '--pluginsync']
+
+  if v_config[:verbose]
+    options = options + ['--verbose', '--trace', '--debug', '--show_diff']
+  end
+
+  config.vm.provision(:puppet_server) do |puppet|
+    puppet.puppet_server = 'build-server.domain.name'
+    puppet.options       = options
+  end
+end
+
+#
+# configure apt repos with mirrors and proxies and what-not
+# I really want to move this to puppet
+#
+def configure_apt_mirror(config, apt_mirror, apt_cache_proxy)
+  # Configure apt mirror
+  config.vm.provision :shell do |shell|
+    shell.inline = "sed -i 's/us.archive.ubuntu.com/%s/g' /etc/apt/sources.list" % apt_mirror
+  end
+
+  config.vm.provision :shell do |shell|
+    shell.inline = '%s apt-get update;apt-get install ubuntu-cloud-keyring' % apt_cache_proxy
+  end
+end
+
+#
+# methods that performs all openstack config
+#
+def configure_openstack_node(
+  config,
+  node_name,
+  memory,
+  box_name,
+  net_id,
+  apt_cache_proxy,
+  v_config
+)
+  cert_name = "#{node_name}-#{Time.now.strftime('%Y%m%d%m%s')}.domain.name"
+  get_box(config, box_name)
+  setup_hostname(config, node_name)
+  config.vm.customize ["modifyvm", :id, "--memory", memory]
+  setup_networks(config, net_id)
+
+  configure_apt_mirror(config, v_config['apt_mirror'], apt_cache_proxy)
+
+  apply_manifest(config, v_config, 'setup.pp')
+  run_puppet_agent(config, cert_name, v_config)
+end
+
 Vagrant::Config.run do |config|
   require 'fileutils'
 
@@ -173,30 +231,15 @@ Vagrant::Config.run do |config|
   end
 
   config.vm.define :control_basevm do |config|
-    node_name = "control-server-#{Time.now.strftime('%Y%m%d%m%s')}.domain.name"
-    get_box(config, 'precise64')
-    setup_hostname(config, 'control-server')
-    config.vm.customize ["modifyvm", :id, "--memory", 1280]
-    config.vm.host_name = node_name
-    # you cannot boot this at the same time as the control_pxe b/c they have the same ip address
-    setup_networks(config, '10')
-
-    # Configure apt mirror
-    config.vm.provision :shell do |shell|
-      shell.inline = "sed -i 's/us.archive.ubuntu.com/%s/g' /etc/apt/sources.list" % v_config['apt_mirror']
-    end
-
-    config.vm.provision :shell do |shell|
-      shell.inline = '%s apt-get update;apt-get install ubuntu-cloud-keyring' % apt_cache_proxy
-    end
-
-    apply_manifest(config, v_config, 'setup.pp')
-
-    config.vm.provision(:puppet_server) do |puppet|
-      puppet.puppet_server = 'build-server.domain.name'
-      puppet.options       = ['-t', '--pluginsync', '--trace', "--certname #{node_name}"]
-    end
-    # TODO install from puppet
+    configure_openstack_node(
+      config,
+      'control-server',
+      1280,
+      'precise64',
+      '10',
+      apt_cache_proxy,
+      v_config
+    )
   end
 
   # Openstack compute server
@@ -208,28 +251,15 @@ Vagrant::Config.run do |config|
   end
 
   config.vm.define :compute_basevm do |config|
-    node_name = "compute-server02-#{Time.now.strftime('%Y%m%d%m%s')}.domain.name"
-    get_box(config, 'precise64')
-    setup_hostname(config, 'compute-server02')
-    config.vm.customize ["modifyvm", :id, "--memory", 2512]
-    setup_networks(config, '21')
-
-    # Configure apt mirror
-    config.vm.provision :shell do |shell|
-      shell.inline = "sed -i 's/us.archive.ubuntu.com/%s/g' /etc/apt/sources.list" % v_config['apt_mirror']
-    end
-
-    config.vm.provision :shell do |shell|
-      shell.inline = '%s apt-get update;apt-get install ubuntu-cloud-keyring' % apt_cache_proxy
-    end
-
-    apply_manifest(config, v_config, 'setup.pp')
-
-    config.vm.provision(:puppet_server) do |puppet|
-      puppet.puppet_server = 'build-server.domain.name'
-      puppet.options       = ['-t', '--pluginsync', '--trace', "--certname #{node_name}"]
-    end
-    # TODO install from puppet
+    configure_openstack_node(
+      config,
+      'compute-server02',
+      2512,
+      'precise64',
+      '21',
+      apt_cache_proxy,
+      v_config
+    )
   end
 
 end

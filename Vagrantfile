@@ -197,8 +197,10 @@ Vagrant::Config.run do |config|
     end
 
     config.vm.provision :shell do |shell|
-      shell.inline = "%s apt-get update; dhclient -r eth0 && dhclient eth0; apt-get install -y git vim curl;" % apt_cache_proxy
+      shell.inline = "%s apt-get update; dhclient -r eth0 && dhclient eth0;" % apt_cache_proxy
     end
+
+    apply_manifest(config, v_config, 'setup.pp')
 
     # pre-import the ubuntu image if we are using a custom mirror
     if v_config['apt-mirror'] != 'us.archive.ubuntu.com'
@@ -207,7 +209,6 @@ Vagrant::Config.run do |config|
       end
     end
 
-    apply_manifest(config, v_config, 'setup.pp')
     apply_manifest(config, v_config)
 
     # Configure puppet

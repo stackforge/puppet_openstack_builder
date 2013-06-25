@@ -14,10 +14,16 @@ ret=0
 datestamp=`date "+%Y%m%d%H%M%S"`
 
 # install librarian-puppet-simple
-mkdir vendor
+mkdir -p vendor
 export GEM_HOME=`pwd`/vendor
 gem install thor --no-ri --no-rdoc
-git clone git://github.com/bodepd/librarian-puppet-simple vendor/librarian-puppet-simple
+if [ -d vendor/librarian-puppet-simple ]; then
+  cd vendor/librarian-puppet-simple
+  git pull
+  cd ../..
+else
+  git clone git://github.com/bodepd/librarian-puppet-simple vendor/librarian-puppet-simple
+fi
 export PATH=`pwd`/vendor/librarian-puppet-simple/bin/:$PATH
 
 # puppet_repos_to_use

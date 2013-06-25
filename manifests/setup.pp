@@ -50,6 +50,6 @@ file { '/root/run_puppet.sh':
   puppet apply --modulepath /etc/puppet/modules-0/ --certname ${clientcert} /etc/puppet/manifests/site.pp $*"
 }
 
-package { ['git', 'curl', 'vim']:
+package { ['git', 'curl', 'vim', 'cobbler']:
   ensure => present,
 }

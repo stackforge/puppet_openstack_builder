@@ -7,9 +7,6 @@
 set -e
 set -u
 
-# pull in functions that test multi-node
-source tests/multi_node.sh
-
 ret=0
 datestamp=`date "+%Y%m%d%H%M%S"`
 
@@ -35,7 +32,8 @@ fi
 # install modules
 export module_install_method=librarian
 if [ $module_install_method = 'librarian' ]; then
-  librarian-puppet install --clean --verbose
+  #librarian-puppet install --clean --verbose
+  librarian-puppet install --verbose
 else
   # eventually, this could do something like install packages
   echo 'librarian is the only supported install method'
@@ -70,41 +68,58 @@ if [ -n "${openstack_package_repo:-}" ]; then
   fi
 fi
 
-# clean up old vms from previous tests
-destroy_multi_node_vms
+if [ "${test_type:-}" = 'swift' ]; then
 
-# deploy the vms for a multi-node deployment
-deploy_multi_node_vms
+  source tests/swift.sh
 
-vagrant ssh build -c 'sudo /tmp/test_nova.sh;exit $?'
-vagrant ssh build -c 'ping -c 2 172.16.2.129;exit $?'
+  destroy_swift
+  deploy_swift_multi
 
-if [ $? -eq 0 ]
-  then
-    echo "##########################"
-    echo "      Test Passed!"
-    echo "OVS ON CONTROL:" >> control.log.$datestamp
-    vagrant ssh control_basevm -c 'sudo ovs-vsctl show;exit $?' >> control.log.$datestamp
-    echo "OVS ON COMPUTE:" >> compute.log.$datestamp
-    vagrant ssh compute_basevm -c 'sudo ovs-vsctl show;exit $?' >> compute.log.$datestamp
-    mv build.log.$datestamp build.log.$datestamp.success
-    mv control.log.$datestamp control.log.$datestamp.success
-    mv compute.log.$datestamp compute.log.$datestamp.success
-    ret=0
+  vagrant ssh build -c 'ruby /tmp/swift_test_file.rb;exit $?'
+
 else
-    echo "##########################"
-    echo "Ping failed to reach VM :("
-    echo "OVS ON CONTROL:" >> control.log.$datestamp
-    vagrant ssh control_basevm -c 'sudo ovs-vsctl show;exit $?' >> control.log.$datestamp
-    echo "OVS ON COMPUTE:" >> compute.log.$datestamp
-    vagrant ssh compute_basevm -c 'sudo ovs-vsctl show' >> compute.log.$datestamp
-    vagrant ssh control_basevm -c 'sudo service quantum-plugin-openvswitch-agent restart'
-    sleep 2
-    echo "OVS ON CONTROL AFTER AGENT RESTART:" >> control.log.$datestamp
-    vagrant ssh control_basevm -c 'sudo ovs-vsctl show;exit $?' >> control.log.$datestamp
-    mv build.log.$datestamp build.log.$datestamp.failed
-    mv control.log.$datestamp control.log.$datestamp.failed
-    mv compute.log.$datestamp compute.log.$datestamp.failed
-    ret=1
+
+  # pull in functions that test multi-node
+  source tests/multi_node.sh
+
+  # perform a multi-node openstack installation test by default
+  # clean up old vms from previous tests
+  destroy_multi_node_vms
+  
+  # deploy the vms for a multi-node deployment
+  deploy_multi_node_vms
+  
+  vagrant ssh build -c 'sudo /tmp/test_nova.sh;exit $?'
+  vagrant ssh build -c 'ping -c 2 172.16.2.129;exit $?'
+  
+  if [ $? -eq 0 ]
+    then
+      echo "##########################"
+      echo "      Test Passed!"
+      echo "OVS ON CONTROL:" >> control.log.$datestamp
+      vagrant ssh control_basevm -c 'sudo ovs-vsctl show;exit $?' >> control.log.$datestamp
+      echo "OVS ON COMPUTE:" >> compute.log.$datestamp
+      vagrant ssh compute_basevm -c 'sudo ovs-vsctl show;exit $?' >> compute.log.$datestamp
+      mv build.log.$datestamp build.log.$datestamp.success
+      mv control.log.$datestamp control.log.$datestamp.success
+      mv compute.log.$datestamp compute.log.$datestamp.success
+      ret=0
+  else
+      echo "##########################"
+      echo "Ping failed to reach VM :("
+      echo "OVS ON CONTROL:" >> control.log.$datestamp
+      vagrant ssh control_basevm -c 'sudo ovs-vsctl show;exit $?' >> control.log.$datestamp
+      echo "OVS ON COMPUTE:" >> compute.log.$datestamp
+      vagrant ssh compute_basevm -c 'sudo ovs-vsctl show' >> compute.log.$datestamp
+      vagrant ssh control_basevm -c 'sudo service quantum-plugin-openvswitch-agent restart'
+      sleep 2
+      echo "OVS ON CONTROL AFTER AGENT RESTART:" >> control.log.$datestamp
+      vagrant ssh control_basevm -c 'sudo ovs-vsctl show;exit $?' >> control.log.$datestamp
+      mv build.log.$datestamp build.log.$datestamp.failed
+      mv control.log.$datestamp control.log.$datestamp.failed
+      mv compute.log.$datestamp compute.log.$datestamp.failed
+      ret=1
+  fi
 fi
+
 exit $ret

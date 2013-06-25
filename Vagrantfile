@@ -111,7 +111,7 @@ def run_puppet_agent(
   options = ["--certname #{node_name}", '-t', '--pluginsync']
 
   if v_config[:verbose]
-    options = options + ['--verbose', '--trace', '--debug', '--show_diff']
+    options = options + ['--trace', '--debug', '--show_diff']
   end
 
   config.vm.provision(:puppet_server) do |puppet|
@@ -258,6 +258,54 @@ Vagrant::Config.run do |config|
       2512,
       'precise64',
       '21',
+      apt_cache_proxy,
+      v_config
+    )
+  end
+
+  config.vm.define :swift_proxy do |config|
+    configure_openstack_node(
+      config,
+      'swift-proxy01',
+      512,
+      'precise64',
+      '41',
+      apt_cache_proxy,
+      v_config
+    )
+  end
+
+  config.vm.define :swift_storage_1 do |config|
+    configure_openstack_node(
+      config,
+      'swift-storage01',
+      512,
+      'precise64',
+      '51',
+      apt_cache_proxy,
+      v_config
+    )
+  end
+
+  config.vm.define :swift_storage_2 do |config|
+    configure_openstack_node(
+      config,
+      'swift-storage02',
+      512,
+      'precise64',
+      '52',
+      apt_cache_proxy,
+      v_config
+    )
+  end
+
+  config.vm.define :swift_storage_3 do |config|
+    configure_openstack_node(
+      config,
+      'swift-storage03',
+      512,
+      'precise64',
+      '53',
       apt_cache_proxy,
       v_config
     )

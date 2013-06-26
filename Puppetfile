@@ -54,6 +54,7 @@ mod 'CiscoSystems/coi', :git => "#{base_url}/bodepd/puppet-COI", :ref => 'master
 # no existing downstream module
 mod 'puppetlabs/postgresql', :git => "#{base_url}/puppetlabs/puppetlabs-postgresql", :ref => 'master'
 mod 'puppetlabs/puppetdb', :git => "#{base_url}/puppetlabs/puppetlabs-puppetdb", :ref => 'master'
+mod 'ripienaar/ruby-puppetdb', :git => 'git://github.com/ripienaar/ruby-puppetdb'
 # do I really need this firewall module?
 mod 'puppetlabs/firewall', :git => "#{base_url}/puppetlabs/puppetlabs-firewall", :ref => 'master'
 # stephenrjohnson
@@ -98,7 +99,8 @@ mod 'CiscoSystems/inifile', :git => "#{base_url}/CiscoSystems/puppet-inifile", :
 
 # upstream is saz
 mod 'CiscoSystems/memcached', :git => "#{base_url}/CiscoSystems/puppet-memcached", :ref => branch_name
-#mod 'CiscoSystems/ssh', :git => "#{base_url}/CiscoSystems/puppet-ssh", :ref => branch_name
+# this uses master b/c the grizzly branch does not exist
+mod 'CiscoSystems/ssh',  :git => "#{base_url}/CiscoSystems/puppet-ssh", :ref => 'master'
 
 # upstream is duritong
 mod 'CiscoSystems/sysctl', :git => "#{base_url}/CiscoSystems/puppet-sysctl", :ref => branch_name

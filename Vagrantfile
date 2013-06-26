@@ -241,6 +241,12 @@ Vagrant::Config.run do |config|
       apt_cache_proxy,
       v_config
     )
+    # Add a route to the floating network via the build server,
+    # which is pretending to be the external router. This
+    # lets us run tempest from the control node.
+    config.vm.provision :shell do |shell|
+      shell.inline 'route add -net 172.16.2.0 netmask 255.255.255.0 gw 192.168.242.100'
+    end
   end
 
   # Openstack compute server

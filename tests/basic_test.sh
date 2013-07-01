@@ -75,7 +75,7 @@ if [ "${test_type:-}" = 'swift' ]; then
   destroy_swift
   deploy_swift_multi
 
-  vagrant ssh build -c 'ruby /tmp/swift_test_file.rb;exit $?'
+  vagrant ssh swift_proxy -c 'ruby /tmp/swift_test_file.rb;exit $?'
 
 else
 

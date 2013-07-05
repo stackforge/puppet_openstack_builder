@@ -46,7 +46,7 @@ if [ -n "${module_repo:-}" ]; then
     pushd $module_repo
   fi
   if [ -n "${checkout_branch_command:-}" ]; then
-    eval $checkout_branch_command
+    eval "${checkout_branch_command}"
   fi
   if [ ! "${module_repo:-}" = 'openstack_dev_env' ]; then
     popd

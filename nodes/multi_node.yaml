@@ -1,0 +1,12 @@
+nodes:
+  control_basevm:
+    hostname:    control-server
+    memory:      3000
+    image_name:  precise64
+    ip_number:   10
+    post_config: 'route add -net 172.16.2.0 netmask 255.255.255.0 gw 192.168.242.100'
+  compute_basevm:
+    hostname:   compute-server02
+    memory:     2512
+    image_name: precise64
+    ip_number:  21

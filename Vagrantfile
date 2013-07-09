@@ -1,3 +1,4 @@
+require 'yaml'
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
@@ -7,22 +8,52 @@
 # 2 - COE openstack internal
 # 3 - COE openstack external (public)
 
-
 def parse_vagrant_config(
   config_file=File.expand_path(File.join(File.dirname(__FILE__), 'config.yaml'))
 )
-  require 'yaml'
   config = {
-    'gui_mode' => false,
+    'gui_mode'        => false,
     'operatingsystem' => 'ubuntu',
-    'verbose' => false,
-    'update_repos' => true
+    'verbose'         => false,
+    'update_repos'    => true,
+    'node_group'      => 'multi_node'
   }
   if File.exists?(config_file)
     overrides = YAML.load_file(config_file)
     config.merge!(overrides)
   end
   config
+end
+
+#
+# process the node group that is used to determine the
+# nodes that should be provisioned. The group of nodes
+# can be set with the node_group param from config.yaml
+# and maps to its corresponding file in the nodes directory.
+#
+def process_nodes(config, v_config, apt_cache_proxy)
+
+  node_group      = v_config['node_group']
+  node_group_file = File.expand_path(File.join(File.dirname(__FILE__), 'nodes', "#{node_group}.yaml"))
+
+  abort('node_group much be specific in config') unless node_group
+  abort('file must exist for node group') unless File.exists?(node_group_file)
+
+  (YAML.load_file(node_group_file)['nodes'] || {}).each do |name, options|
+    config.vm.define name.intern do |config|
+      configure_openstack_node(
+        config,
+        options['hostname'],
+        options['memory'],
+        options['image_name'],
+        options['ip_number'],
+        apt_cache_proxy,
+        v_config,
+        options['post_config']
+      )
+    end
+  end
+
 end
 
 # get the correct box based on the specidied type
@@ -145,7 +176,8 @@ def configure_openstack_node(
   box_name,
   net_id,
   apt_cache_proxy,
-  v_config
+  v_config,
+  post_config = false
 )
   cert_name = "#{node_name}-#{Time.now.strftime('%Y%m%d%m%s')}.domain.name"
   get_box(config, box_name)
@@ -157,6 +189,13 @@ def configure_openstack_node(
 
   apply_manifest(config, v_config, 'setup.pp')
   run_puppet_agent(config, cert_name, v_config)
+
+  if post_config
+    config.vm.provision :shell do |shell|
+      shell.inline  = post_config
+    end
+  end
+
 end
 
 Vagrant::Config.run do |config|
@@ -231,24 +270,6 @@ Vagrant::Config.run do |config|
     setup_networks(config, '10', :eth1_mac => '001122334455')
   end
 
-  config.vm.define :control_basevm do |config|
-    configure_openstack_node(
-      config,
-      'control-server',
-      1280,
-      'precise64',
-      '10',
-      apt_cache_proxy,
-      v_config
-    )
-    # Add a route to the floating network via the build server,
-    # which is pretending to be the external router. This
-    # lets us run tempest from the control node.
-    config.vm.provision :shell do |shell|
-      shell.inline  = 'route add -net 172.16.2.0 netmask 255.255.255.0 gw 192.168.242.100'
-    end
-  end
-
   # Openstack compute server
   config.vm.define :compute_pxe do |config|
     config.vm.box = 'blank'
@@ -257,64 +278,6 @@ Vagrant::Config.run do |config|
     setup_networks(config, '10', :eth1_mac => '001122334466')
   end
 
-  config.vm.define :compute_basevm do |config|
-    configure_openstack_node(
-      config,
-      'compute-server02',
-      2512,
-      'precise64',
-      '21',
-      apt_cache_proxy,
-      v_config
-    )
-  end
-
-  config.vm.define :swift_proxy do |config|
-    configure_openstack_node(
-      config,
-      'swift-proxy01',
-      512,
-      'precise64',
-      '41',
-      apt_cache_proxy,
-      v_config
-    )
-  end
-
-  config.vm.define :swift_storage_1 do |config|
-    configure_openstack_node(
-      config,
-      'swift-storage01',
-      512,
-      'precise64',
-      '51',
-      apt_cache_proxy,
-      v_config
-    )
-  end
-
-  config.vm.define :swift_storage_2 do |config|
-    configure_openstack_node(
-      config,
-      'swift-storage02',
-      512,
-      'precise64',
-      '52',
-      apt_cache_proxy,
-      v_config
-    )
-  end
-
-  config.vm.define :swift_storage_3 do |config|
-    configure_openstack_node(
-      config,
-      'swift-storage03',
-      512,
-      'precise64',
-      '53',
-      apt_cache_proxy,
-      v_config
-    )
-  end
+  process_nodes(config, v_config, apt_cache_proxy)
 
 end

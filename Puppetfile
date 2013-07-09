@@ -50,7 +50,7 @@ mod 'manifests', :git => "#{base_url}/#{user_name}/#{release}-manifests", :ref =
 
 # This top level module contains the roles that are used to deploy openstack
 
-mod 'CiscoSystems/coi', :git => "#{base_url}/bodepd/puppet-COI", :ref => 'master'
+mod 'CiscoSystems/coi', :git => "#{base_url}/CiscoSystems/puppet-COI", :ref => 'master'
 # no existing downstream module
 mod 'puppetlabs/postgresql', :git => "#{base_url}/puppetlabs/puppetlabs-postgresql", :ref => 'master'
 mod 'puppetlabs/puppetdb', :git => "#{base_url}/puppetlabs/puppetlabs-puppetdb", :ref => 'master'

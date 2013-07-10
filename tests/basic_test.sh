@@ -42,13 +42,13 @@ fi
 
 # check out a specific branch that we want to test
 if [ -n "${module_repo:-}" ]; then
-  if [ ! "${module_repo:-}" = 'openstack_dev_env' ]; then
+  if [ ! "${module_repo:-}" = 'openstack-installer' ]; then
     pushd $module_repo
   fi
   if [ -n "${checkout_branch_command:-}" ]; then
     eval "${checkout_branch_command}"
   fi
-  if [ ! "${module_repo:-}" = 'openstack_dev_env' ]; then
+  if [ ! "${module_repo:-}" = 'openstack-installer' ]; then
     popd
   fi
 fi
@@ -75,7 +75,13 @@ if [ "${test_type:-}" = 'swift' ]; then
   destroy_swift
   deploy_swift_multi
 
-  vagrant ssh swift_proxy -c 'ruby /tmp/swift_test_file.rb;exit $?'
+  if [ "${test_mode}" = 'basic_tests' ]; then
+    vagrant ssh swift_proxy -c 'ruby /tmp/swift_test_file.rb;exit $?'
+  elif [ "${test_mode}" = 'none' ]; then
+    echo 'building an environment without running tests'
+  else
+    echo "Unsupported swift test type ${test_mode}"
+  fi
 
 else
 
@@ -85,41 +91,19 @@ else
   # perform a multi-node openstack installation test by default
   # clean up old vms from previous tests
   destroy_multi_node_vms
-  
+
   # deploy the vms for a multi-node deployment
   deploy_multi_node_vms
-  
-  vagrant ssh build -c 'sudo /tmp/test_nova.sh;exit $?'
-  vagrant ssh build -c 'ping -c 2 172.16.2.129;exit $?'
-  
-  if [ $? -eq 0 ]
-    then
-      echo "##########################"
-      echo "      Test Passed!"
-      echo "OVS ON CONTROL:" >> control.log.$datestamp
-      vagrant ssh control_basevm -c 'sudo ovs-vsctl show;exit $?' >> control.log.$datestamp
-      echo "OVS ON COMPUTE:" >> compute.log.$datestamp
-      vagrant ssh compute_basevm -c 'sudo ovs-vsctl show;exit $?' >> compute.log.$datestamp
-      mv build.log.$datestamp build.log.$datestamp.success
-      mv control.log.$datestamp control.log.$datestamp.success
-      mv compute.log.$datestamp compute.log.$datestamp.success
-      ret=0
+
+  if [ "${test_mode}" = 'basic_tests' ]; then
+    vagrant ssh build -c 'sudo /tmp/test_nova.sh;exit $?'
+    vagrant ssh build -c 'ping -c 2 172.16.2.129;exit $?'
+  elif [ "${test_mode}" = 'none' ]; then
+    echo 'building an environment without running tests'
   else
-      echo "##########################"
-      echo "Ping failed to reach VM :("
-      echo "OVS ON CONTROL:" >> control.log.$datestamp
-      vagrant ssh control_basevm -c 'sudo ovs-vsctl show;exit $?' >> control.log.$datestamp
-      echo "OVS ON COMPUTE:" >> compute.log.$datestamp
-      vagrant ssh compute_basevm -c 'sudo ovs-vsctl show' >> compute.log.$datestamp
-      vagrant ssh control_basevm -c 'sudo service quantum-plugin-openvswitch-agent restart'
-      sleep 2
-      echo "OVS ON CONTROL AFTER AGENT RESTART:" >> control.log.$datestamp
-      vagrant ssh control_basevm -c 'sudo ovs-vsctl show;exit $?' >> control.log.$datestamp
-      mv build.log.$datestamp build.log.$datestamp.failed
-      mv control.log.$datestamp control.log.$datestamp.failed
-      mv compute.log.$datestamp compute.log.$datestamp.failed
-      ret=1
+    echo "Unsupported swift test type ${test_mode}"
   fi
+
 fi
 
 exit $ret

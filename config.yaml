@@ -3,3 +3,4 @@ apt_cache: '192.168.242.99'
 apt_mirror: 'us.archive.ubuntu.com'
 domain: 'domain.name'
 verbose: true
+#node_group: multi_node

@@ -72,6 +72,7 @@ if [ "${test_type:-}" = 'swift' ]; then
 
   source tests/swift.sh
 
+  echo 'node_group: swift' >> config.yaml
   destroy_swift
   deploy_swift_multi
 
@@ -83,10 +84,17 @@ if [ "${test_type:-}" = 'swift' ]; then
     echo "Unsupported swift test type ${test_mode}"
   fi
 
-else
+elif [ "${test_type:-}" = 'openstack_multi' ]; then
 
-  # pull in functions that test multi-node
-  source tests/multi_node.sh
+  if [[ "${test_mode}" == tempest* ]]; then
+    # pull in functions to install controller with tempest
+    echo 'node_group: multi_node_tempest' >> config.yaml
+    source tests/multi_node_tempest.sh
+  else
+    echo 'node_group: multi_node' >> config.yaml
+    # pull in functions that test multi-node
+    source tests/multi_node.sh
+  fi
 
   # perform a multi-node openstack installation test by default
   # clean up old vms from previous tests
@@ -98,12 +106,23 @@ else
   if [ "${test_mode}" = 'basic_tests' ]; then
     vagrant ssh build -c 'sudo /tmp/test_nova.sh;exit $?'
     vagrant ssh build -c 'ping -c 2 172.16.2.129;exit $?'
+  elif [[ "${test_mode}" == tempest* ]]; then
+    if [ "${test_mode}" = 'tempest_smoke' ]; then
+     tempest_args='--smoke'
+    else
+     tempest_args=''
+    fi
+    vagrant ssh control_tempest_basevm -c "pushd /var/lib/tempest;pip install virtualenv;virtualenv test_env --system-site-packages;source test_env/bin/activate; pip install -I anyjson nose httplib2 pika unittest2 lxml testtools testresources paramiko boto netadr keyring testrepository sqlalchemy;pip install -I d2to1==0.2.10;pip install -I pbr>0.5;./run_tests ${tempest_args};exit $?"
+    popd
   elif [ "${test_mode}" = 'none' ]; then
     echo 'building an environment without running tests'
   else
-    echo "Unsupported swift test type ${test_mode}"
+    echo "Unsupported multi_node test type ${test_mode}"
   fi
 
+else
+  echo "Unsupported test_type ${test_type}"
+  exit 1
 fi
 
 exit $ret

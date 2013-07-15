@@ -1,6 +1,7 @@
 ---
-apt_cache: '192.168.242.99'
+apt_cache: 'false'
 apt_mirror: 'us.archive.ubuntu.com'
 domain: 'domain.name'
 verbose: true
+operatingsystem: 'redhat'
 #node_group: multi_node

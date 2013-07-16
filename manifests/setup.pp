@@ -20,7 +20,7 @@ case $::osfamily {
     $pkg_list       = ['git', 'curl', 'vim', 'httpd']
   } 
   'Debian': {
-    $puppet_version = '3.2.2-1puppetlabs1'
+    $puppet_version = '3.2.3-1puppetlabs1'
     $pkg_list       = ['git', 'curl', 'vim', 'cobbler']
   }
 }

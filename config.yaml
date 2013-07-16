@@ -3,5 +3,5 @@ apt_cache: 'false'
 apt_mirror: 'us.archive.ubuntu.com'
 domain: 'domain.name'
 verbose: true
-operatingsystem: 'redhat'
+operatingsystem: 'ubuntu'
 #node_group: multi_node

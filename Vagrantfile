@@ -201,7 +201,8 @@ def configure_openstack_node(
 
 end
 
-def setup_ubuntu_build_server(config, v_config)
+# configure ubuntu based build node
+def setup_ubuntu_build_server(config, v_config, apt_cache_proxy)
   config.vm.define :build do |config|
     get_box(config, 'precise64')
     setup_networks(config, '100')
@@ -246,6 +247,8 @@ def setup_ubuntu_build_server(config, v_config)
   end
 end
 
+
+# configure redhat based build node
 def setup_redhat_build_server(config, v_config)
   config.vm.define :build do |config|
     get_box(config, 'centos')
@@ -295,7 +298,7 @@ Vagrant::Config.run do |config|
 
   # setup "build" server
   if v_config['operatingsystem'] == 'ubuntu'
-    setup_ubuntu_build_server(config, v_config)
+    setup_ubuntu_build_server(config, v_config, apt_cache_proxy)
   elsif v_config['operatingsystem'] == 'redhat'
     setup_redhat_build_server(config, v_config)
   end

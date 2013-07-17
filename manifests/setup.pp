@@ -25,9 +25,13 @@ case $::osfamily {
   }
 }
 
-package { 'puppet':
-  # is this the real version that I should be using?
+
+package { 'puppet-common':
   ensure => $puppet_version,
+}
+package { 'puppet':
+  ensure  => $puppet_version,
+  require => Package['puppet-common'],
 }
 
 # dns resolution should be setup correctly

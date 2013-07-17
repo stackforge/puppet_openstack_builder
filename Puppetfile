@@ -122,7 +122,7 @@ mod 'CiscoSystems/collectd', :git => "#{base_url}/pkilambi/puppet-module-collect
 # based on pradeep's fork
 # this is forked and needs to be updated
 mod 'CiscoSystems/graphite', :git => "#{base_url}/bodepd/puppet-graphite/", :ref => 'master'
-mod 'CiscoSystems/monit', :git => "#{base_url}/CiscoSystems/puppet-monit", :ref => branch_name
+#mod 'CiscoSystems/monit', :git => "#{base_url}/CiscoSystems/puppet-monit", :ref => branch_name
 mod 'CiscoSystems/pip', :git => "#{base_url}/CiscoSystems/puppet-pip", :ref => branch_name
 
 mod 'CiscoSystems/dnsmasq', :git => "#{base_url}/CiscoSystems/puppet-dnsmasq", :ref => branch_name

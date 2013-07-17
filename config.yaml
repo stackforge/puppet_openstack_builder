@@ -1,7 +1,7 @@
 ---
-apt_cache: 'false'
+apt_cache: '192.168.242.99' # Apt cache server, set to 'false' to disable
 apt_mirror: 'us.archive.ubuntu.com'
 domain: 'domain.name'
 verbose: true
-operatingsystem: 'ubuntu'
+operatingsystem: 'ubuntu' # base OS for build node, use 'ubuntu' or 'redhat' 
 #node_group: multi_node

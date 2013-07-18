@@ -7,7 +7,7 @@
 function destroy_multi_node_vms() {
   # we need to kill any existing machines on the same
   # system that conflict with the ones we want to spin up
-  for i in build-server  compute-server02 control-server ; do
+  for i in build-server  compute-server02 control-server control-tempest-server ; do
     if VBoxManage list vms | grep $i; then
       VBoxManage controlvm    $i poweroff || true
       # this sleep statement is to fix an issue where

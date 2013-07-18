@@ -112,7 +112,7 @@ elif [ "${test_type:-}" = 'openstack_multi' ]; then
     else
      tempest_args=''
     fi
-    vagrant ssh control_tempest_basevm -c "pushd /var/lib/tempest;pip install virtualenv;virtualenv test_env --system-site-packages;source test_env/bin/activate; pip install -I anyjson nose httplib2 pika unittest2 lxml testtools testresources paramiko boto netadr keyring testrepository sqlalchemy;pip install -I d2to1==0.2.10;pip install -I pbr>0.5;./run_tests ${tempest_args};exit $?"
+    vagrant ssh control_tempest_basevm -c "sudo bash -c 'pushd /var/lib/tempest;pip install virtualenv;virtualenv test_env --system-site-packages;source test_env/bin/activate; pip install -I anyjson nose httplib2 pika unittest2 lxml testtools testresources paramiko boto netaddr keyring testrepository sqlalchemy;pip install -I d2to1==0.2.10;pip install -I pbr>0.5;/var/lib/tempest/run_tests.sh -N ${tempest_args}';exit $?"
     popd
   elif [ "${test_mode}" = 'none' ]; then
     echo 'building an environment without running tests'

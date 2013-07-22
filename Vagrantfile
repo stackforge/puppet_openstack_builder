@@ -119,6 +119,11 @@ def apply_manifest(config, v_config, manifest_name='site.pp')
     config.vm.share_folder("hiera_data", '/etc/puppet/hiera_data', './hiera_data/')
   end
 
+  # Explicitly mount the shared folders, so we dont break with newer versions of vagrant
+  config.vm.share_folder("modules", '/etc/puppet/modules', './modules/')
+  config.vm.share_folder("manifests", '/etc/puppet/manifests', './manifests/')
+  
+
   config.vm.provision(:puppet, :pp_path => "/etc/puppet") do |puppet|
     puppet.manifests_path = 'manifests'
     puppet.manifest_file  = manifest_name
@@ -237,7 +242,7 @@ def setup_ubuntu_build_server(config, v_config, apt_cache_proxy)
 
     # Configure puppet
     config.vm.provision :shell do |shell|
-      shell.inline = 'if [ ! -h /etc/puppet/modules ]; then rmdir /etc/puppet/modules;ln -s /etc/puppet/modules-0 /etc/puppet/modules; fi;puppet plugin download --server build-server.domain.name;service apache2 restart'
+      shell.inline = 'puppet plugin download --server build-server.domain.name;service apache2 restart'
     end
     # enable ip forwarding and NAT so that the build server can act
     # as an external gateway for the quantum router.
@@ -273,7 +278,7 @@ def setup_redhat_build_server(config, v_config)
 
     # Configure puppet
     config.vm.provision :shell do |shell|
-      shell.inline = 'if [ ! -h /etc/puppet/modules ]; then rmdir /etc/puppet/modules;ln -s /etc/puppet/modules-0 /etc/puppet/modules; fi;puppet plugin download --server build-server.domain.name;service httpd restart'
+      shell.inline = 'puppet plugin download --server build-server.domain.name;service httpd restart'
     end
     
     # enable ip forwarding and NAT so that the build server can act

@@ -62,6 +62,8 @@ mod 'puppetlabs/firewall', :git => "#{base_url}/puppetlabs/puppetlabs-firewall",
 # this what I am testing Puppet 3.2 deploys with
 # I am pointing it at me until my patch is accepted
 mod 'stephenjohrnson/puppet', :git => "#{base_url}/stephenrjohnson/puppetlabs-puppet", :ref => 'master'
+# stephen johnson's puppet module does not work with the older ciscosystems version of apache
+mod 'CiscoSystems/apache', :git => "#{base_url}/puppetlabs/puppetlabs-apache", :ref => 'master'
 
 ###### stackforge openstack modules #####
 
@@ -89,7 +91,6 @@ mod 'CiscoSystems/ntp', :git => "#{base_url}/CiscoSystems/puppet-ntp", :ref => b
 mod 'CiscoSystems/rsync', :git => "#{base_url}/CiscoSystems/puppet-rsync", :ref => branch_name
 mod 'CiscoSystems/mysql', :git => "#{base_url}/CiscoSystems/puppet-mysql", :ref => branch_name
 mod 'CiscoSystems/rabbitmq', :git => "#{base_url}/CiscoSystems/puppet-rabbitmq", :ref => branch_name
-mod 'CiscoSystems/apache', :git => "#{base_url}/CiscoSystems/puppet-apache", :ref => branch_name
 
 
 ##### modules with other upstreams #####

@@ -21,21 +21,28 @@ if ENV['repos_to_use']  == 'downstream'
   branch_name               = 'origin/grizzly'
   openstack_module_branch   = branch_name
   openstack_module_account  = 'CiscoSystems'
-  puppetlabs_module_account = 'CiscoSystems'
+  puppetlabs_module_prefix = 'CiscoSystems/puppet-'
   # manifests
   user_name = 'CiscoSystems'
-  release = 'grizzly'
+  release         = 'grizzly'
   manifest_branch = 'origin/multi-node'
+  mysql_ref       = ''
+  apache_branch   = 'origin/grizzly'
+  mysql_branch    = 'origin/grizzly'
+  rabbitmq_branch = 'origin/grizzly'
 else
   # use the upstream modules where they exist
-  branch_name               = 'origin/grizzly'
+  branch_name               = 'master'
   openstack_module_branch   = 'master'
   openstack_module_account  = 'stackforge'
-  puppetlabs_module_account = 'puppetlabs'
+  puppetlabs_module_prefix  = 'puppetlabs/puppetlabs-'
   # manifests
   user_name = 'bodepd'
   release = 'grizzly'
   manifest_branch = 'origin/master'
+  apache_branch   = 'origin/0.x'
+  mysql_branch    = 'origin/0.x'
+  rabbitmq_branch = 'origin/2.x'
 end
 
 base_url = "#{git_protocol}://github.com"
@@ -62,6 +69,8 @@ mod 'puppetlabs/firewall', :git => "#{base_url}/puppetlabs/puppetlabs-firewall",
 # this what I am testing Puppet 3.2 deploys with
 # I am pointing it at me until my patch is accepted
 mod 'stephenjohrnson/puppet', :git => "#{base_url}/stephenrjohnson/puppetlabs-puppet", :ref => 'master'
+# stephen johnson's puppet module does not work with the older ciscosystems version of apache
+mod 'CiscoSystems/apache', :git => "#{base_url}/#{puppetlabs_module_prefix}apache", :ref => apache_branch
 
 ###### stackforge openstack modules #####
 
@@ -82,14 +91,13 @@ mod 'stackforge/tempest',:git => "#{openstack_repo_prefix}-tempest",:ref => open
 
 openstack_repo_prefix = "#{base_url}/#{openstack_module_account}/puppet"
 
-mod 'CiscoSystems/apt', :git => "#{base_url}/CiscoSystems/puppet-apt", :ref => branch_name
-mod 'CiscoSystems/stdlib', :git => "#{base_url}/CiscoSystems/puppet-stdlib", :ref => branch_name
-mod 'CiscoSystems/xinetd', :git => "#{base_url}/CiscoSystems/puppet-xinetd", :ref => branch_name
-mod 'CiscoSystems/ntp', :git => "#{base_url}/CiscoSystems/puppet-ntp", :ref => branch_name
-mod 'CiscoSystems/rsync', :git => "#{base_url}/CiscoSystems/puppet-rsync", :ref => branch_name
-mod 'CiscoSystems/mysql', :git => "#{base_url}/CiscoSystems/puppet-mysql", :ref => branch_name
-mod 'CiscoSystems/rabbitmq', :git => "#{base_url}/CiscoSystems/puppet-rabbitmq", :ref => branch_name
-mod 'CiscoSystems/apache', :git => "#{base_url}/CiscoSystems/puppet-apache", :ref => branch_name
+mod 'CiscoSystems/apt', :git => "#{base_url}/CiscoSystems/puppet-apt", :ref => 'origin/grizzly'
+mod 'CiscoSystems/stdlib', :git => "#{base_url}/#{puppetlabs_module_prefix}stdlib", :ref => branch_name
+mod 'CiscoSystems/xinetd', :git => "#{base_url}/#{puppetlabs_module_prefix}xinetd", :ref => branch_name
+mod 'CiscoSystems/ntp', :git => "#{base_url}/#{puppetlabs_module_prefix}ntp", :ref => branch_name
+mod 'CiscoSystems/rsync', :git => "#{base_url}/#{puppetlabs_module_prefix}rsync", :ref => branch_name
+mod 'CiscoSystems/mysql', :git => "#{base_url}/#{puppetlabs_module_prefix}mysql", :ref => mysql_branch
+mod 'CiscoSystems/rabbitmq', :git => "#{base_url}/#{puppetlabs_module_prefix}rabbitmq", :ref => rabbitmq_branch
 
 
 ##### modules with other upstreams #####
@@ -98,32 +106,32 @@ mod 'CiscoSystems/apache', :git => "#{base_url}/CiscoSystems/puppet-apache", :re
 mod 'ripienaar/concat', :git => "#{base_url}/CiscoSystems/puppet-concat", :ref => 'origin/grizzly'
 
 # upstream is cprice-puppet/puppetlabs-inifile
-mod 'CiscoSystems/inifile', :git => "#{base_url}/CiscoSystems/puppet-inifile", :ref => branch_name
+mod 'CiscoSystems/inifile', :git => "#{base_url}/CiscoSystems/puppet-inifile", :ref => 'origin/grizzly'
 
 # upstream is saz
-mod 'CiscoSystems/memcached', :git => "#{base_url}/CiscoSystems/puppet-memcached", :ref => branch_name
+mod 'CiscoSystems/memcached', :git => "#{base_url}/CiscoSystems/puppet-memcached", :ref => 'origin/grizzly'
 # this uses master b/c the grizzly branch does not exist
 mod 'CiscoSystems/ssh',  :git => "#{base_url}/CiscoSystems/puppet-ssh", :ref => 'master'
 
 # upstream is duritong
-mod 'CiscoSystems/sysctl', :git => "#{base_url}/CiscoSystems/puppet-sysctl", :ref => branch_name
+mod 'CiscoSystems/sysctl', :git => "#{base_url}/CiscoSystems/puppet-sysctl", :ref => 'origin/grizzly'
 
 # unclear who the upstream is
-mod 'CiscoSystems/vswitch', :git => "#{base_url}/CiscoSystems/puppet-vswitch", :ref => branch_name
+mod 'CiscoSystems/vswitch', :git => "#{base_url}/CiscoSystems/puppet-vswitch", :ref => 'origin/grizzly'
 
 
 ##### Modules without upstreams #####
 
 # TODO - this is still pointing at my fork
-mod 'CiscoSystems/coe', :git => "#{base_url}/CiscoSystems/puppet-coe", :ref => branch_name
-mod 'CiscoSystems/cobbler', :git => "#{base_url}/CiscoSystems/puppet-cobbler", :ref => branch_name
-mod 'CiscoSystems/apt-cacher-ng', :git => "#{base_url}/CiscoSystems/puppet-apt-cacher-ng", :ref => branch_name
+mod 'CiscoSystems/coe', :git => "#{base_url}/CiscoSystems/puppet-coe", :ref => 'origin/grizzly'
+mod 'CiscoSystems/cobbler', :git => "#{base_url}/CiscoSystems/puppet-cobbler", :ref => 'origin/grizzly'
+mod 'CiscoSystems/apt-cacher-ng', :git => "#{base_url}/CiscoSystems/puppet-apt-cacher-ng", :ref => 'origin/grizzly'
 mod 'CiscoSystems/collectd', :git => "#{base_url}/pkilambi/puppet-module-collectd", :ref => 'master'
 # based on pradeep's fork
 # this is forked and needs to be updated
 mod 'CiscoSystems/graphite', :git => "#{base_url}/bodepd/puppet-graphite/", :ref => 'master'
-#mod 'CiscoSystems/monit', :git => "#{base_url}/CiscoSystems/puppet-monit", :ref => branch_name
-mod 'CiscoSystems/pip', :git => "#{base_url}/CiscoSystems/puppet-pip", :ref => branch_name
+#mod 'CiscoSystems/monit', :git => "#{base_url}/CiscoSystems/puppet-monit", :ref => 'origin/grizzly'
+mod 'CiscoSystems/pip', :git => "#{base_url}/CiscoSystems/puppet-pip", :ref => 'origin/grizzly'
 
-mod 'CiscoSystems/dnsmasq', :git => "#{base_url}/CiscoSystems/puppet-dnsmasq", :ref => branch_name
-mod 'CiscoSystems/naginator', :git => "#{base_url}/CiscoSystems/puppet-naginator", :ref => branch_name
+mod 'CiscoSystems/dnsmasq', :git => "#{base_url}/CiscoSystems/puppet-dnsmasq", :ref => 'origin/grizzly'
+mod 'CiscoSystems/naginator', :git => "#{base_url}/CiscoSystems/puppet-naginator", :ref => 'origin/grizzly'

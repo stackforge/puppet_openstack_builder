@@ -13,7 +13,7 @@ def parse_vagrant_config(
 )
   config = {
     'gui_mode'        => false,
-    'operatingsystem' => 'redhat',
+    'operatingsystem' => 'ubuntu',
     'verbose'         => false,
     'update_repos'    => true,
     'node_group'      => 'multi_node'
@@ -64,7 +64,7 @@ def get_box(config, box_type)
     config.vm.box_url = 'http://files.vagrantup.com/precise64.box'
   elsif box_type == 'centos'
     config.vm.box     = 'centos'
-    config.vm.box_url = 'http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-x86_64-v20130427.box' #https://dl.dropbox.com/u/7225008/Vagrant/CentOS-6.3-x86_64-minimal.box'
+    config.vm.box_url = 'http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-x86_64-v20130427.box'
   else
     abort("Box type: #{box_type} is no good.")
   end

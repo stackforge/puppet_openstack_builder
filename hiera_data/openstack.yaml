@@ -43,3 +43,4 @@ swift: true
 swift_user_password: swift_user_pass
 swift_hash: super_secret_swift_hash
 swift_public_address: 192.168.242.41
+swift_local_net_ip: %{ipaddress_eth3}

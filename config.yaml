@@ -5,3 +5,4 @@ domain: 'domain.name'
 verbose: true
 operatingsystem: 'ubuntu' # base OS for build node, use 'ubuntu' or 'redhat' 
 #node_group: multi_node
+# node_group: swift

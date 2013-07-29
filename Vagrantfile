@@ -62,8 +62,8 @@ def get_box(config, box_type)
   if box_type == 'precise64' || box_type == 'ubuntu'
     config.vm.box     = 'precise64'
     config.vm.box_url = 'http://files.vagrantup.com/precise64.box'
-  elsif box_type == 'centos'
-    config.vm.box     = 'centos' || box_type == 'redhat'
+  elsif box_type == 'centos' || box_type == 'redhat'
+    config.vm.box     = 'centos'
     config.vm.box_url = 'http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-x86_64-v20130427.box'
   else
     abort("Box type: #{box_type} is no good.")

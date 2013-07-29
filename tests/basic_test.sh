@@ -53,6 +53,15 @@ if [ -n "${module_repo:-}" ]; then
   fi
 fi
 
+if [ $operatingsystem = 'redhat' ]; then
+  echo 'operatingsystem: redhat' >> config.yaml
+elif [ $operatingsystem = 'ubuntu' ]; then
+  echo 'operatingsystem: ubuntu' >> config.yaml
+else
+  echo "Unsupported operatingsystem ${operatingsystem}"
+  exit 1
+fi
+
 # set up jenkins specific data overrides
 if [ -n "${openstack_package_repo:-}" ]; then
   if [ $openstack_package_repo = 'cisco_repo' ]; then

@@ -45,7 +45,7 @@ def process_nodes(config, v_config, apt_cache_proxy)
         config,
         options['hostname'],
         options['memory'],
-        options['image_name'],
+        options['image_name'] || v_config['operatingsystem'],
         options['ip_number'],
         apt_cache_proxy,
         v_config,
@@ -59,9 +59,12 @@ end
 # get the correct box based on the specidied type
 # currently, this just retrieves a single box for precise64
 def get_box(config, box_type)
-  if box_type == 'precise64'
+  if box_type == 'precise64' || box_type == 'ubuntu'
     config.vm.box     = 'precise64'
     config.vm.box_url = 'http://files.vagrantup.com/precise64.box'
+  elsif box_type == 'centos'
+    config.vm.box     = 'centos' || box_type == 'redhat'
+    config.vm.box_url = 'http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-x86_64-v20130427.box'
   else
     abort("Box type: #{box_type} is no good.")
   end
@@ -115,6 +118,11 @@ def apply_manifest(config, v_config, manifest_name='site.pp')
   if manifest_name == 'site.pp'
     config.vm.share_folder("hiera_data", '/etc/puppet/hiera_data', './hiera_data/')
   end
+
+  # Explicitly mount the shared folders, so we dont break with newer versions of vagrant
+  config.vm.share_folder("modules", '/etc/puppet/modules', './modules/')
+  config.vm.share_folder("manifests", '/etc/puppet/manifests', './manifests/')
+  
 
   config.vm.provision(:puppet, :pp_path => "/etc/puppet") do |puppet|
     puppet.manifests_path = 'manifests'
@@ -184,9 +192,9 @@ def configure_openstack_node(
   setup_hostname(config, node_name)
   config.vm.customize ["modifyvm", :id, "--memory", memory]
   setup_networks(config, net_id)
-
-  configure_apt_mirror(config, v_config['apt_mirror'], apt_cache_proxy)
-
+  if v_config['operatingsystem'] == 'ubuntu'
+    configure_apt_mirror(config, v_config['apt_mirror'], apt_cache_proxy)
+  end
   apply_manifest(config, v_config, 'setup.pp')
   run_puppet_agent(config, cert_name, v_config)
 
@@ -198,25 +206,8 @@ def configure_openstack_node(
 
 end
 
-Vagrant::Config.run do |config|
-  require 'fileutils'
-
-  v_config = parse_vagrant_config
-
-  apt_cache_proxy = ''
-  if v_config['apt_cache'] != 'false'
-   apt_cache_proxy = 'echo "Acquire::http { Proxy \"http://%s:3142\"; };" > /etc/apt/apt.conf.d/01apt-cacher-ng-proxy;' % v_config['apt_cache'] 
-  end
-
-  config.vm.define :cache do |config|
-    get_box(config, 'precise64')
-    setup_networks(config, '99')
-    setup_hostname(config, 'cache')
-    apply_manifest(config, v_config, 'setup.pp')
-    apply_manifest(config, v_config)
-  end
-
-  # Cobbler based "build" server
+# configure ubuntu based build node
+def setup_ubuntu_build_server(config, v_config, apt_cache_proxy)
   config.vm.define :build do |config|
     get_box(config, 'precise64')
     setup_networks(config, '100')
@@ -228,7 +219,6 @@ Vagrant::Config.run do |config|
     config.vm.provision :shell do |shell|
       shell.inline = "sed -i 's/us.archive.ubuntu.com/%s/g' /etc/apt/sources.list" % v_config['apt_mirror']
     end
-
     # Ensure DHCP isn't going to join us to a domain other than domain.name
     # since puppet has to sign its cert against the domain it makes when it runs.
     config.vm.provision :shell do |shell|
@@ -252,14 +242,76 @@ Vagrant::Config.run do |config|
 
     # Configure puppet
     config.vm.provision :shell do |shell|
-      shell.inline = 'if [ ! -h /etc/puppet/modules ]; then rmdir /etc/puppet/modules;ln -s /etc/puppet/modules-0 /etc/puppet/modules; fi;puppet plugin download --server build-server.domain.name;service apache2 restart'
+      shell.inline = 'puppet plugin download --server build-server.domain.name;service apache2 restart'
     end
-
     # enable ip forwarding and NAT so that the build server can act
     # as an external gateway for the quantum router.
     config.vm.provision :shell do |shell|
         shell.inline = "ip addr add 172.16.2.1/24 dev eth2; sysctl -w net.ipv4.ip_forward=1; iptables -A FORWARD -o eth0 -i eth1 -s 172.16.2.0/24 -m conntrack --ctstate NEW -j ACCEPT; iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT; iptables -t nat -F POSTROUTING; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE"
     end
+  end
+end
+
+
+# configure redhat based build node
+def setup_redhat_build_server(config, v_config)
+  config.vm.define :build do |config|
+    get_box(config, 'centos')
+    setup_networks(config, '100')
+    setup_hostname(config, 'build-server')
+
+    config.vm.customize ["modifyvm", :id, "--memory", 2525]
+
+    # Ensure DHCP isn't going to join us to a domain other than domain.name
+    # since puppet has to sign its cert against the domain it makes when it runs.
+    config.vm.provision :shell do |shell|
+      shell.inline = "sed -i '$ a\ supersede domain-search %s;' /etc/dhcp/dhclient-eth0.conf;" % v_config['domain']
+    end
+
+    config.vm.provision :shell do |shell|
+      shell.inline = "sed -i 's/.*search.*/search %s/g' /etc/resolv.conf;" % v_config['domain']
+    end
+
+    apply_manifest(config, v_config, 'setup.pp')
+
+    apply_manifest(config, v_config)
+
+    # Configure puppet
+    config.vm.provision :shell do |shell|
+      shell.inline = 'puppet plugin download --server build-server.domain.name;service httpd restart'
+    end
+    
+    # enable ip forwarding and NAT so that the build server can act
+    # as an external gateway for the quantum router.
+    config.vm.provision :shell do |shell|
+        shell.inline = "ip addr add 172.16.2.1/24 dev eth2; sysctl -w net.ipv4.ip_forward=1; iptables -A FORWARD -o eth0 -i eth1 -s 172.16.2.0/24 -m conntrack --ctstate NEW -j ACCEPT; iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT; iptables -t nat -F POSTROUTING; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE"
+    end
+  end
+end
+  
+Vagrant::Config.run do |config|
+  require 'fileutils'
+
+  v_config = parse_vagrant_config
+
+  apt_cache_proxy = ''
+  if v_config['apt_cache'] != 'false'
+   apt_cache_proxy = 'echo "Acquire::http { Proxy \"http://%s:3142\"; };" > /etc/apt/apt.conf.d/01apt-cacher-ng-proxy;' % v_config['apt_cache'] 
+  end
+
+  config.vm.define :cache do |config|
+    get_box(config, v_config['operatingsystem'])
+    setup_networks(config, '99')
+    setup_hostname(config, 'cache')
+    apply_manifest(config, v_config, 'setup.pp')
+    apply_manifest(config, v_config)
+  end
+
+  # setup "build" server
+  if v_config['operatingsystem'] == 'ubuntu'
+    setup_ubuntu_build_server(config, v_config, apt_cache_proxy)
+  elsif v_config['operatingsystem'] == 'redhat'
+    setup_redhat_build_server(config, v_config)
   end
 
   # Openstack control server

@@ -13,12 +13,27 @@
 # that Puppet will be installed on the bare-metal nodes
 # with the correct version
 include puppet::repo::puppetlabs
-package { 'puppet-common':
-  ensure => '3.2.2-1puppetlabs1',
+
+case $::osfamily {
+  'Redhat': {
+    $puppet_pkg     = 'puppet'
+    $puppet_version = '3.2.3-1.el6'
+    $pkg_list       = ['git', 'curl', 'httpd']
+  } 
+  'Debian': {
+    $puppet_pkg     = 'puppet-common'
+    $puppet_version = '3.2.3-1puppetlabs1'
+    $pkg_list       = ['git', 'curl', 'vim', 'cobbler']
+    package { $puppet_pkg:
+      ensure => $puppet_version,
+    }
+  }
 }
+
+
 package { 'puppet':
-  ensure  => '3.2.2-1puppetlabs1',
-  require => Package['puppet-common'],
+  ensure  => $puppet_version,
+  require => Package[$puppet_pkg],
 }
 
 # dns resolution should be setup correctly
@@ -53,6 +68,6 @@ file { '/root/run_puppet.sh':
   puppet apply --modulepath /etc/puppet/modules-0/ --certname ${clientcert} /etc/puppet/manifests/site.pp $*"
 }
 
-package { ['git', 'curl', 'vim', 'cobbler']:
+package { $pkg_list :
   ensure => present,
 }

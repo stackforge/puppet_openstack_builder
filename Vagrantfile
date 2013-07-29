@@ -45,7 +45,7 @@ def process_nodes(config, v_config, apt_cache_proxy)
         config,
         options['hostname'],
         options['memory'],
-        options['image_name'],
+        options['image_name'] || v_config['operatingsystem'],
         options['ip_number'],
         apt_cache_proxy,
         v_config,
@@ -59,11 +59,11 @@ end
 # get the correct box based on the specidied type
 # currently, this just retrieves a single box for precise64
 def get_box(config, box_type)
-  if box_type == 'precise64'
+  if box_type == 'precise64' || box_type == 'ubuntu'
     config.vm.box     = 'precise64'
     config.vm.box_url = 'http://files.vagrantup.com/precise64.box'
   elsif box_type == 'centos'
-    config.vm.box     = 'centos'
+    config.vm.box     = 'centos' || box_type == 'redhat'
     config.vm.box_url = 'http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-x86_64-v20130427.box'
   else
     abort("Box type: #{box_type} is no good.")
@@ -300,11 +300,7 @@ Vagrant::Config.run do |config|
   end
 
   config.vm.define :cache do |config|
-    if v_config['operatingsystem'] == 'ubuntu'
-      get_box(config, 'precise64')
-    elsif v_config['operatingsystem'] == 'redhat'
-      get_box(config, 'centos')
-    end
+    get_box(config, v_config['operatingsystem'])
     setup_networks(config, '99')
     setup_hostname(config, 'cache')
     apply_manifest(config, v_config, 'setup.pp')

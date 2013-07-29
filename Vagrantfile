@@ -269,7 +269,7 @@ def setup_redhat_build_server(config, v_config)
     end
 
     config.vm.provision :shell do |shell|
-      shell.inline = "sed -i 's/cisco.com/%s/g' /etc/resolv.conf;" % v_config['domain']
+      shell.inline = "sed -i 's/.*search.*/search %s/g' /etc/resolv.conf;" % v_config['domain']
     end
 
     apply_manifest(config, v_config, 'setup.pp')

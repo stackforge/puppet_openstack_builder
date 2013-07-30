@@ -41,14 +41,14 @@ else
 fi
 
 # check out a specific branch that we want to test
-if [ -n "${module_repo:-}" ]; then
-  if [ ! "${module_repo:-}" = 'openstack-installer' ]; then
-    pushd $module_repo
+if [ -n "${project_name:-}" ]; then
+  if [ ! "${project_name:-}" = 'openstack-installer' ]; then
+    pushd "modules/$project_name"
   fi
   if [ -n "${checkout_branch_command:-}" ]; then
     eval "${checkout_branch_command}"
   fi
-  if [ ! "${module_repo:-}" = 'openstack-installer' ]; then
+  if [ ! "${project_name:-}" = 'openstack-installer' ]; then
     popd
   fi
 fi

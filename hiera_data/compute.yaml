@@ -1,3 +1,4 @@
 # configuration only relevant to compute node
 libvirt_type: qemu
 internal_ip: %{ipaddress_eth3}
+vncserver_proxyclient_address: %{ipaddress_eth3}

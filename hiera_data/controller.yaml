@@ -1,7 +1,7 @@
 # configuration only required on the
 # openstack controller
 admin_email: root@localhost
-mysql_root_password: mysql_pass
+database_root_password: mysql_pass
 # networking related config
 auto_assign_floating_ip: false
 
@@ -9,7 +9,7 @@ keystone_db_password: keystone_db_password
 
 # glance config
 glance_db_password: glance_pass
-glance_user_password: glance_pass
+glance_service_password: glance_pass
 glance_backend: file
 
 # for our current deployment
@@ -21,6 +21,15 @@ quantum_db_password:   quantum_pass
 horizon_secret_key: horizon_secret_key
 
 # only the controller needs to authenticate?
-cinder_user_password: cinder_pass
+cinder_service_password: cinder_pass
 
 metadata_shared_secret: metadata_shared_secret,
+
+#auth_internal_address: 127.0.0.1
+#quantum_internal_address: 127.0.0.1
+db_host: 127.0.0.1
+rpc_host: 192.168.242.10
+vncproxy_host: 192.168.242.10
+
+# do not create the nova volume endpoints
+nova::keystone::auth::cinder: true

@@ -29,6 +29,10 @@ if [ -n "${puppet_modules_to_use:-}" ]; then
   export repos_to_use=$puppet_modules_to_use
 fi
 
+if [ -n "${openstack_version}" ]; then
+  export  openstack_version=$openstack_version
+fi
+
 # install modules
 export module_install_method=librarian
 if [ $module_install_method = 'librarian' ]; then
@@ -71,7 +75,7 @@ if [ -n "${openstack_package_repo:-}" ]; then
     echo 'openstack_release: grizzly-proposed' >> hiera_data/jenkins.yaml
   elif [ $openstack_package_repo = 'cloud_archive' ]; then
     echo 'package_repo: cloud_archive' >> hiera_data/jenkins.yaml
-    echo 'openstack_release: precise-updates/grizzly' >> hiera_data/jenkins.yaml
+    echo "openstack_release: precise-updates/${openstack_version}" >> hiera_data/jenkins.yaml
   else
     echo "Unsupported repo type: ${openstack_package_repo}"
   fi

@@ -7,5 +7,3 @@ verbose:    true
 # select one node_group to determine the nodes available for provisioning
 # node_group: multi_node
 # node_group: swift
-operatingsystem: ubuntu
-node_group: multi_node

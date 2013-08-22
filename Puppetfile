@@ -3,6 +3,7 @@
 # this file also accepts a few environment variables
 #
 git_protocol=ENV['git_protocol'] || 'git'
+openstack_version=ENV['openstack_version'] || 'grizzly'
 
 #
 # this modulefile has been configured to use two sets of repos.
@@ -17,10 +18,14 @@ git_protocol=ENV['git_protocol'] || 'git'
 #
 
 if ENV['repos_to_use']  == 'downstream'
+  if openstack_version != 'grizzly'
+    abort('Cisco packages only support grizzly')
+  end
   # this assumes downstream which is the Cisco branches
   branch_name               = 'origin/grizzly'
   openstack_module_branch   = branch_name
   openstack_module_account  = 'CiscoSystems'
+  neutron_name              = 'quantum'
   puppetlabs_module_prefix = 'CiscoSystems/puppet-'
   # manifests
   user_name = 'CiscoSystems'
@@ -31,9 +36,17 @@ if ENV['repos_to_use']  == 'downstream'
   mysql_branch    = 'origin/grizzly'
   rabbitmq_branch = 'origin/grizzly'
 else
+  if openstack_version == 'grizzly'
+    openstack_module_branch   = 'origin/stable/grizzly'
+    neutron_name              = 'quantum'
+  elsif openstack_version == 'havana'
+    openstack_module_branch   = 'master'
+    neutron_name              = 'neutron'
+  else
+    abort('only grizzly and havana are supported atm')
+  end
   # use the upstream modules where they exist
   branch_name               = 'master'
-  openstack_module_branch   = 'master'
   openstack_module_account  = 'stackforge'
   puppetlabs_module_prefix  = 'puppetlabs/puppetlabs-'
   # manifests
@@ -82,7 +95,9 @@ mod 'stackforge/glance',    :git => "#{openstack_repo_prefix}-glance",    :ref =
 mod 'stackforge/keystone',  :git => "#{openstack_repo_prefix}-keystone",  :ref => openstack_module_branch
 mod 'stackforge/horizon',   :git => "#{openstack_repo_prefix}-horizon",   :ref => openstack_module_branch
 mod 'stackforge/nova',      :git => "#{openstack_repo_prefix}-nova",      :ref => openstack_module_branch
-mod 'stackforge/neutron',   :git => "#{openstack_repo_prefix}-neutron",   :ref => openstack_module_branch
+mod "stackforge/#{neutron_name}",
+  :git => "#{openstack_repo_prefix}-neutron",
+  :ref => openstack_module_branch
 mod 'stackforge/swift',     :git => "#{openstack_repo_prefix}-swift",     :ref => openstack_module_branch
 mod 'stackforge/ceilometer',:git => "#{openstack_repo_prefix}-ceilometer",:ref => openstack_module_branch
 mod 'stackforge/tempest',:git => "#{openstack_repo_prefix}-tempest",:ref => openstack_module_branch

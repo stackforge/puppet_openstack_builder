@@ -11,9 +11,9 @@ cinder_public_address: 192.168.242.10
 cinder_internal_address: 192.168.242.10
 cinder_admin_address: 192.168.242.10
 
-keystone_public_address: 192.168.242.10
-keystone_internal_address: 192.168.242.10
-keystone_admin_address: 192.168.242.10
+auth_public_address: 192.168.242.10
+auth_internal_address: 192.168.242.10
+auth_admin_address: 192.168.242.10
 
 glance_public_address: 192.168.242.10
 glance_internal_address: 192.168.242.10
@@ -52,7 +52,7 @@ package_repo: cloud_archive
 # this may need to be updated b/c we are using nova-conductor now
 nova_db_password:   nova_pass
 nova_service_password: nova_pass
-keystone_service_password: key_pass
+auth_service_password: key_pass
 
 quantum_service_password: quantum_pass
 
@@ -94,3 +94,5 @@ data_nic: eth3
 external_nic: eth2
 public_nic: eth1
 package_ensure: present
+
+name_resolution: false

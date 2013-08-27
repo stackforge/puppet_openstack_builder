@@ -27,9 +27,9 @@ nova_public_address: 192.168.242.10
 nova_internal_address: 192.168.242.10
 nova_admin_address: 192.168.242.10
 
-quantum_public_address: 192.168.242.10
-quantum_internal_address: 192.168.242.10
-quantum_admin_address: 192.168.242.10
+network_public_address: 192.168.242.10
+network_internal_address: 192.168.242.10
+network_admin_address: 192.168.242.10
 
 auth_internal_address: 192.168.242.10
 
@@ -54,7 +54,7 @@ nova_db_password:   nova_pass
 nova_service_password: nova_pass
 auth_service_password: key_pass
 
-quantum_service_password: quantum_pass
+network_service_password: quantum_pass
 
 # all service need to authenticate via the mq
 rpc_password: openstack_rabbit_password

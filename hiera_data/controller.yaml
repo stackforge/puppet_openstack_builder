@@ -15,7 +15,7 @@ glance_backend: file
 # for our current deployment
 # only the controller needs to connect
 # to the quantum db
-quantum_db_password:   quantum_pass
+network_db_password:   quantum_pass
 
 # horizon
 horizon_secret_key: horizon_secret_key

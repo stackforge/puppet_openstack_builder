@@ -58,9 +58,9 @@ if [ -n "${project_name:-}" ]; then
 fi
 
 if [ $operatingsystem = 'redhat' ]; then
-  echo 'operatingsystem: redhat' >> config.yaml
+  echo 'operatingsystem: redhat' >> data/config.yaml
 elif [ $operatingsystem = 'ubuntu' ]; then
-  echo 'operatingsystem: ubuntu' >> config.yaml
+  echo 'operatingsystem: ubuntu' >> data/config.yaml
 else
   echo "Unsupported operatingsystem ${operatingsystem}"
   exit 1
@@ -89,7 +89,7 @@ if [ "${test_type:-}" = 'swift' ]; then
 
   source tests/swift.sh
 
-  echo 'node_group: swift' >> config.yaml
+  echo 'node_group: swift' >> data/config.yaml
   destroy_swift
   deploy_swift_multi
 
@@ -105,10 +105,10 @@ elif [ "${test_type:-}" = 'openstack_multi' ]; then
 
   if [[ "${test_mode}" == tempest* ]]; then
     # pull in functions to install controller with tempest
-    echo 'node_group: multi_node_tempest' >> config.yaml
+    echo 'node_group: multi_node_tempest' >> data/config.yaml
     source tests/multi_node_tempest.sh
   else
-    echo 'node_group: multi_node' >> config.yaml
+    echo 'node_group: multi_node' >> data/config.yaml
     # pull in functions that test multi-node
     source tests/multi_node.sh
   fi

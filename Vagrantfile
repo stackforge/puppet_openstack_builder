@@ -9,7 +9,7 @@ require 'yaml'
 # 3 - COE openstack external (public)
 
 def parse_vagrant_config(
-  config_file=File.expand_path(File.join(File.dirname(__FILE__), 'config.yaml'))
+  config_file=File.expand_path(File.join(File.dirname(__FILE__), 'data', 'config.yaml'))
 )
   config = {
     'gui_mode'        => false,
@@ -34,7 +34,7 @@ end
 def process_nodes(config, v_config, apt_cache_proxy)
 
   node_group      = v_config['node_group']
-  node_group_file = File.expand_path(File.join(File.dirname(__FILE__), 'nodes', "#{node_group}.yaml"))
+  node_group_file = File.expand_path(File.join(File.dirname(__FILE__), 'data', 'nodes', "#{node_group}.yaml"))
 
   abort('node_group much be specific in config') unless node_group
   abort('file must exist for node group') unless File.exists?(node_group_file)
@@ -116,7 +116,7 @@ def apply_manifest(config, v_config, manifest_name='site.pp')
 
   # ensure that when puppet applies the site manifest, it has hiera configured
   if manifest_name == 'site.pp'
-    config.vm.share_folder("hiera_data", '/etc/puppet/hiera_data', './hiera_data/')
+    config.vm.share_folder("data", '/etc/puppet/data', './data')
   end
 
   # Explicitly mount the shared folders, so we dont break with newer versions of vagrant

@@ -47,15 +47,20 @@ file { "${settings::confdir}/hiera.yaml":
 '
 ---
 :backends:
-  - yaml
+  - data_mapper
 :hierarchy:
   - "%{hostname}"
   - jenkins
+  - "%{scenario}"
   - "%{openstack_role}"
   - "%{role}"
   - common
 :yaml:
-   :datadir: /etc/puppet/hiera_data'
+   :datadir: /etc/puppet/data/hiera_data
+:data_mapper:
+   # this should be contained in a module
+   :datadir: /etc/puppet/data/data_mappings/data_mappings
+'
 }
 
 # lay down a file that can be used for subsequent runs to puppet. Often, the

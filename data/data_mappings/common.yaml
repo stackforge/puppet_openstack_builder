@@ -1,0 +1,240 @@
+debug:
+  kickstack::network::config::debug
+  kickstack::network::agent::dhcp::debug
+  kickstack::network::agent::metadata::debug
+  kickstack::debug
+  kickstack::glance::api::debug
+  kickstack::horizon::debug
+  kickstack::cinder::config::debug
+  kickstack::glance::registry::debug
+verbose:
+  kickstack::network::config::verbose
+  kickstack::keystone::api::verbose
+  kickstack::keystone::api::debug
+  kickstack::verbose
+  kickstack::glance::api::verbose
+  kickstack::horizon::verbose
+  kickstack::cinder::config::verbose
+  kickstack::glance::registry::verbose
+
+package_ensure:
+  kickstack::cinder::volume::package_ensure
+  kickstack::keystone::api::package_ensure
+  kickstack::package_ensure
+  kickstack::glance::config::package_ensure
+  kickstack::cinder::api::package_ensure
+  kickstack::nova::vncproxy::package_ensure
+  kickstack::cinder::scheduler::package_ensure
+  kickstack::nova::service::package_ensure
+
+enable_nova:
+  kickstack::database::databases::enable_nova
+  kickstack::keystone::endpoints::enable_nova
+enable_glance:
+  kickstack::database::databases::enable_glance
+  kickstack::keystone::endpoints::enable_glance
+enable_keystone:
+  kickstack::database::databases::enable_keystone
+  kickstack::keystone::endpoints::enable_keystone
+enable_network:
+  kickstack::database::databases::enable_network
+  kickstack::keystone::endpoints::enable_network
+enable_cinder:
+  kickstack::database::databases::enable_cinder
+  kickstack::keystone::endpoints::enable_cinder
+enable_swift:
+  kickstack::database::databases::enable_swift
+  kickstack::keystone::endpoints::enable_swift
+
+database_bind_address:
+  kickstack::database::postgresql::bind_address
+  kickstack::database::mysql::bind_address
+
+# data base config
+glance_db_name:
+  kickstack::glance::api::db_name
+  kickstack::glance::registry::db_name
+glance_db_user:
+  kickstack::glance::api::db_user
+  kickstack::glance::registry::db_user
+glance_db_password:
+  kickstack::glance::api::db_password
+  kickstack::glance::registry::db_password
+network_db_name:
+  kickstack::network::plugin::db_name
+  kickstack::network::db::db_name
+network_db_user:
+  kickstack::network::plugin::db_user
+  kickstack::network::db::user
+network_db_password:
+  kickstack::network::plugin::db_password
+  kickstack::network::db::password
+database_root_password:
+  kickstack::database::postgresql::root_password
+  kickstack::database::mysql::root_password
+db_allowed_hosts:
+  kickstack::network::db::allowed_hosts
+  kickstack::db::allowed_hosts
+
+# keystone auth information
+network_service_user:
+  kickstack::network::endpoint::service_user
+  kickstack::network::server::service_user
+  kickstack::network::agent::metadata::service_user
+glance_service_password:
+  kickstack::glance::api::service_password
+  kickstack::glance::registry::service_password
+glance_service_user:
+  kickstack::glance::api::service_user
+  kickstack::glance::registry::service_user
+network_service_password:
+  kickstack::network::endpoint::service_password
+  kickstack::network::server::service_password
+  kickstack::network::agent::metadata::service_password
+  kickstack::nova::networkclient::network_auth_password
+service_tenant:
+  kickstack::network::endpoint::service_tenant
+  kickstack::network::server::service_tenant
+  kickstack::keystone::api::service_tenant
+  kickstack::keystone::endpoint::service_tenant
+  kickstack::network::agent::metadata::service_tenant
+  kickstack::auth_service_tenant
+  kickstack::nova::api::service_tenant
+  kickstack::glance::api::service_tenant
+  kickstack::glance::registry::service_tenant
+  kickstack::endpoint::service_tenant
+region:
+  kickstack::network::endpoint::service_region
+  kickstack::keystone::endpoint::service_region
+  kickstack::endpoint::service_region
+# where is cinder,nova,etc..
+#end auth users
+
+# service connection information
+auth_internal_address:
+  kickstack::keystone::endpoint::service_internal_address
+  kickstack::network::agent::metadata::auth_host
+  kickstack::nova::api::auth_host
+  kickstack::nova::networkclient::auth_host
+  kickstack::glance::api::auth_host
+  kickstack::cinder::api::auth_host
+  kickstack::glance::registry::auth_host
+rpc_host:
+  kickstack::network::config::rpc_host
+  kickstack::nova::config::rpc_host
+  kickstack::cinder::config::rpc_host
+network_internal_address:
+  kickstack::network::endpoint::service_internal_address
+  kickstack::nova::networkclient::network_host
+db_host:
+  kickstack::keystone::api::db_host
+  kickstack::nova::config::db_host
+  kickstack::network::plugin::db_host
+  kickstack::network::db::host
+  kickstack::glance::api::db_host
+  kickstack::cinder::config::db_host
+  kickstack::glance::registry::db_host
+  kickstack::db::host
+
+# configurable backends
+cinder_backend:
+  kickstack::cinder::volume::backend
+  kickstack::cinder_backend
+
+glance_backend:
+  kickstack::glance_backend
+  kickstack::glance::api::glance_backend
+  kickstack::glance::all::backend
+
+# end backends
+
+management_nic:
+  kickstack::rpc::rabbitmq::management_nic
+  kickstack::database::postgresql::management_nic
+  kickstack::network::server::management_nic
+  kickstack::keystone::api::management_nic
+  kickstack::database::mysql::management_nic
+  kickstack::rpc::qpid::management_nic
+  kickstack::management_nic
+  kickstack::nova::api::management_nic
+  kickstack::glance::api::management_nic
+  kickstack::glance::registry::management_nic
+
+# type of rpc backend to use
+rpc_type:
+  kickstack::network::config::rpc_type
+  kickstack::rpc_type
+  kickstack::rpc::rpc_type
+  kickstack::cinder::config::rpc_type
+rpc_user:
+  kickstack::rpc::rabbitmq::user
+  kickstack::network::config::rpc_user
+  kickstack::nova::config::rpc_user
+  kickstack::rpc::qpid::user
+  kickstack::cinder::config::rpc_user
+rpc_password:
+  kickstack::rpc::rabbitmq::password
+  kickstack::network::config::rpc_password
+  kickstack::nova::config::rpc_password
+  kickstack::rpc::qpid::password
+  kickstack::cinder::config::rpc_password
+# end rpc config
+
+metadata_shared_secret:
+  kickstack::network::agent::metadata::shared_secret
+  kickstack::nova::api::metadata_shared_secret
+
+volume_on_compute:
+  kickstack::nova::controller::volume_on_compute
+  kickstack::compute::volume_on_compute
+
+# type of database to use
+db_type:
+  kickstack::keystone::api::db_type
+  kickstack::nova::config::db_type
+  kickstack::database::db_type
+  kickstack::network::plugin::db_type
+  kickstack::db_type
+  kickstack::network::db::type
+  kickstack::glance::api::db_type
+  kickstack::cinder::config::db_type
+  kickstack::glance::registry::db_type
+  kickstack::db::type
+
+# network configuration
+data_nic:
+  kickstack::network::agent::l2::network::data_nic
+  kickstack::network::agent::l2::compute::data_nic
+
+network_physnet:
+  kickstack::network::agent::l2::network::physnet
+  kickstack::network::agent::l2::compute::physnet
+
+network_plugin:
+  kickstack::network::config::plugin
+  kickstack::network::plugin::plugin
+  kickstack::network::agent::l2::network::plugin
+  kickstack::network::agent::dhcp::plugin
+  kickstack::network::agent::l2::compute::plugin
+  kickstack::network::agent::l3::plugin
+
+network_tunnel_bridge:
+  kickstack::network::agent::l2::network::tunnel_bridge
+  kickstack::network::agent::l2::compute::tunnel_bridge
+
+network_external_bridge:
+  kickstack::network::agent::l2::network::external_bridge
+  kickstack::network::agent::l3::external_bridge
+
+tenant_network_type:
+  kickstack::network::plugin::tenant_network_type
+  kickstack::network::agent::l2::network::tenant_network_type
+  kickstack::network::agent::l2::compute::tenant_network_type
+
+network_type:
+  kickstack::network::config::network_type
+  kickstack::network::agent::l2::network::network_type
+  kickstack::network::agent::dhcp::network_type
+  kickstack::network::agent::l3::network_type
+
+# end network config

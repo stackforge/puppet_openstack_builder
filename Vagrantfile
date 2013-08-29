@@ -110,7 +110,7 @@ def apply_manifest(config, v_config, manifest_name='site.pp')
 
   options = []
 
-  if v_config[:verbose]
+  if v_config['verbose']
     options = options + ['--verbose', '--trace', '--debug', '--show_diff']
   end
 
@@ -149,7 +149,7 @@ def run_puppet_agent(
 )
   options = ["--certname #{node_name}", '-t', '--pluginsync']
 
-  if v_config[:verbose]
+  if v_config['verbose']
     options = options + ['--trace', '--debug', '--show_diff']
   end
 

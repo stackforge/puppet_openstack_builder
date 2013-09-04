@@ -2,13 +2,19 @@
 # openstack controller
 admin_email: root@localhost
 database_root_password: mysql_pass
+database_bind_address: 0.0.0.0
 # networking related config
 auto_assign_floating_ip: false
 
+keystone_db_name: keystone
+keystone_db_user: keystone
 keystone_db_password: keystone_db_password
 
 # glance config
+glance_db_name: glance
+glance_db_user: glance
 glance_db_password: glance_pass
+glance_service_user: glance
 glance_service_password: glance_pass
 glance_backend: file
 
@@ -28,6 +34,7 @@ metadata_shared_secret: metadata_shared_secret,
 #auth_internal_address: 127.0.0.1
 #quantum_internal_address: 127.0.0.1
 db_host: 127.0.0.1
+db_allowed_hosts: %
 rpc_host: 192.168.242.10
 vncproxy_host: 192.168.242.10
 

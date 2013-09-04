@@ -1,0 +1,6 @@
+#
+# scenario for all_one
+#
+roles:
+  all_in_one:
+    classes:

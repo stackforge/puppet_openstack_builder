@@ -1,0 +1,13 @@
+quantum::agents::ovs::bridge_mappings: ["${external_bridge}:${external_nic}"]
+quantum::agents::ovs::bridge_uplinks:
+  - "br-ex:eth2"
+quantum::agents::ovs::bridge_mappings:
+  - "default:br-ex"
+quantum::agents::ovs::enable_tunneling: true
+quantum::agents::ovs::tunnel_bridge: br-tun
+quantum::agents::ovs::local_ip: "%{ipaddress_eth3}"
+neutron::agents::ovs::bridge_uplinks: []
+neutron::agents::ovs::bridge_mappings: []
+neutron::agents::ovs::enable_tunneling: true
+neutron::agents::ovs::tunnel_bridge: br-tun
+neutron::agents::ovs::local_ip: "%{ipaddress_eth3}"

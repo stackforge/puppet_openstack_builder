@@ -16,15 +16,38 @@ node /control-tempest-server/ {
 
 }
 
-node /control-server/ {
+# define some globals that will drive the configuration
+$role             = 'openstack'
 
-  $role           = 'openstack'
+$db_type          = 'mysql'
+$rpc_type         = 'rabbitmq'
+$cinder_backend   = 'iscsi'
+$glance_backend   = 'file' 
+$compute_type     = 'qemu'
+# networking options
+$network_service  = 'quantum'
+# supports linuxbridge and ovs
+$network_plugin   = 'ovs'
+# supports single-flat, provider-router, and per-tenant-router
+$network_type     = 'per-tenant-router'
+# supports gre or vlan
+$tenant_network_type =  'gre'
+# end networking top scope vars
+$enabled_services = ['glance', 'cinder', 'keystone', 'nova', 'network']
+
+node openstack-base {
+
+  
+}
+
+node /control-server/ inherits openstack-base {
+
   $openstack_role = 'controller'
   include coi::roles::controller
 
 }
 
-node /compute-server\d+/ {
+node /compute-server\d+/ inherits openstack-base {
 
   $role           = 'openstack'
   $openstack_role = 'compute'

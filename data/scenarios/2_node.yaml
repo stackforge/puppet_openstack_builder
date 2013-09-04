@@ -1,0 +1,8 @@
+#
+# the two node 
+#
+roles:
+  controller:
+    classes:
+  compute:
+    classes:

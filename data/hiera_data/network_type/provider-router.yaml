@@ -1,0 +1,4 @@
+quantum::allow_overlapping_ips: false
+neutron::allow_overlapping_ips: false
+quantum::agents::l3::use_namespaces: false
+neutron::agents::l3::use_namespaces: false

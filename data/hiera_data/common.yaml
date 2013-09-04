@@ -1,3 +1,12 @@
+# put some default data here that I do not want to change
+nova::db::mysql::charset: utf8
+glance::db::mysql::charset: utf8
+keystone::db::mysql::charset: utf8
+quantum::db::mysql::charset: utf8
+neutron::db::mysql::charset: utf8
+
+
+
 # time servers
 ntp_servers:
   - time-server.domain.name

@@ -1,0 +1,7 @@
+# I am not a fan of having to do this twice.
+# should I set up conditional data mappings?
+cinder::volume::rbd_pool: 'cinder'
+cinder::volume::rbd_user: 'openstack' 
+glance::backend::rbd::rbd_store_user: 'openstack'
+glance::backend::rbd::rbd_store_pool: 'glance'
+cinder::volume::rbd_secret_uuid: 'rbd_secret'

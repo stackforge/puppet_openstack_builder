@@ -1,0 +1,6 @@
+# TODO - finish vlan config
+quantum::plugins::ovs::network_vlan_ranges: physnet1:1000:2000
+quantum::plugins::ovs::bridge_mappings:
+  - 
+  - 
+neutron::plugins::ovs::network_vlan_ranges: physnet1:1000:2000

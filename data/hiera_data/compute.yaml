@@ -1,4 +1,5 @@
 # configuration only relevant to compute node
-libvirt_type: qemu
+nova::compute::libvirt::libvirt_type: qemu
+nova::compute::libvirt::vncserver_listen: 127.0.0.1
 internal_ip: %{ipaddress_eth3}
 vncserver_proxyclient_address: %{ipaddress_eth3}

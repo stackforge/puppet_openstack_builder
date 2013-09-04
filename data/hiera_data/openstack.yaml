@@ -10,6 +10,8 @@
 cinder_public_address: 192.168.242.10
 cinder_internal_address: 192.168.242.10
 cinder_admin_address: 192.168.242.10
+cinder::volume::iscsi::bind_address: 0.0.0.0
+cinder::volume::iscsi::volume_group: cinder-volume
 
 auth_public_address: 192.168.242.10
 auth_internal_address: 192.168.242.10
@@ -61,9 +63,17 @@ rpc_password: openstack_rabbit_password
 rpc_user: openstack_rabbit_user
 
 # ovs config
-tunnel_ip: %{ipaddress_eth3}
+tunnel_ip: "%{ipaddress_eth3}"
 
 cinder_db_password: cinder_pass
+cinder_db_name: cinder
+cinder_db_user: cinder
+
+nova_db_user: nova
+nova_db_name: nova
+
+network_db_user: quantum
+network_db_name: quantum
 
 # used by test_file
 test_file_image_type: cirros
@@ -96,3 +106,23 @@ public_nic: eth1
 package_ensure: present
 
 name_resolution: false
+
+cinder::scheduler::scheduler_driver: 'cinder.scheduler.simple.SimpleScheduler'
+# does it matter if I have data that only applies to
+# the case where I am using mysql?
+cinder::db::mysql::charset: utf8
+
+db_type: mysql
+
+service_tenant: services
+admin_tenant: admin
+
+quantum::plugins::ovs::tenant_network_type: "%{tenant_network_type}"
+neutron::plugins::ovs::tenant_network_type: "%{tenant_network_type}"
+
+quantum::agents::ovs::integration_bridge: br-int
+
+
+enabled: true
+
+vncproxy_host: 192.168.242.10

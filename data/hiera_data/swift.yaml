@@ -1,0 +1,4 @@
+glance::backend::swift::swift_store_user: swift_user
+glance::backend::swift::swift_store_key: secret_key
+glance::backend::swift::swift_store_auth_address: '127.0.0.1' 
+glance::backend::swift::swift_store_create_container_on_put: true

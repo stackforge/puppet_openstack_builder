@@ -50,6 +50,13 @@ file { "${settings::confdir}/hiera.yaml":
   - data_mapper
 :hierarchy:
   - "%{hostname}"
+  - "rpc_type/%{rpc_type}"
+  - "db_type/%{db_type}"
+  - "tenant_network_type/%{tenant_network_type}"
+  - "network_type/%{network_type}"
+  - "network_plugin/%{network_plugin}"
+  - "%{cinder_backend}"
+  - "%{glance_backend}"
   - jenkins
   - "%{scenario}"
   - "%{openstack_role}"
@@ -59,7 +66,7 @@ file { "${settings::confdir}/hiera.yaml":
    :datadir: /etc/puppet/data/hiera_data
 :data_mapper:
    # this should be contained in a module
-   :datadir: /etc/puppet/data/data_mappings/data_mappings
+   :datadir: /etc/puppet/data/data_mappings
 '
 }
 

@@ -79,7 +79,7 @@ mod 'puppetlabs/puppetdb', :git => "#{base_url}/puppetlabs/puppetlabs-puppetdb",
 mod 'puppetlabs/vcsrepo', :git => "#{base_url}/puppetlabs/puppetlabs-vcsrepo", :ref => 'master'
 mod 'ripienaar/ruby-puppetdb', :git => "#{base_url}/ripienaar/ruby-puppetdb"
 mod 'ripienaar/catalog-diff', :git => "#{base_url}/ripienaar/puppet-catalog-diff", :ref => 'master'
-mod 'hastexo/kickstack', :git => "#{base_url}/bodepd/kickstack", :ref => 'origin/neutron_support'
+mod 'hastexo/kickstack', :git => "#{base_url}/bodepd/kickstack", :ref => 'origin/data_refactor'
 # do I really need this firewall module?
 mod 'puppetlabs/firewall', :git => "#{base_url}/puppetlabs/puppetlabs-firewall", :ref => 'master'
 # stephenrjohnson

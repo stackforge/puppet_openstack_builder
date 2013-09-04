@@ -1,0 +1,8 @@
+cinder::rpc_type:
+  'cinder.openstack.common.rpc.impl_qpid'
+nova::rpc_backend:
+  'nova.openstack.common.rpc.impl_qpid'
+quantum::rpc_backend:
+  'neutron.openstack.common.rpc.impl_qpid'
+neutron::rpc_backend:
+  'neutron.openstack.common.rpc.impl_qpid'

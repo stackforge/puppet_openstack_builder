@@ -1,240 +1,400 @@
+# central log level config
+enabled:
+  - nova::cert::enabled
+  - nova::api::enabled
+  - nova::compute::enabled
+  - nova::conductor::enabled
+  - nova::consoleauth::enabled
+  - nova::network::enabled
+  - nova::objectstore::enabled
+  - nova::qpid::enabled
+  - nova::scheduler::enabled
+  - nova::vncproxy::enabled
+  - nova::volume::enabled
+
 debug:
-  kickstack::network::config::debug
-  kickstack::network::agent::dhcp::debug
-  kickstack::network::agent::metadata::debug
-  kickstack::debug
-  kickstack::glance::api::debug
-  kickstack::horizon::debug
-  kickstack::cinder::config::debug
-  kickstack::glance::registry::debug
+  #- kickstack::horizon::debug
+  - cinder::debug
+  - glance::api::debug
+  - glance::registry::debug
+  - horizon::django_debug
+  - keystone::debug
+  - quantum::debug
+  - neutron::debug
+  - quatum::agents::dhcp::debug
+  - quatum::agents::metadata::debug
 verbose:
-  kickstack::network::config::verbose
-  kickstack::keystone::api::verbose
-  kickstack::keystone::api::debug
-  kickstack::verbose
-  kickstack::glance::api::verbose
-  kickstack::horizon::verbose
-  kickstack::cinder::config::verbose
-  kickstack::glance::registry::verbose
+  #- kickstack::horizon::verbose
+  - cinder::verbose
+  - glance::api::verbose
+  - glance::registry::verbose
+  - keystone::verbose
+  - quantum::verbose
+  - neutron::verbose
+# end log level config
 
 package_ensure:
-  kickstack::cinder::volume::package_ensure
-  kickstack::keystone::api::package_ensure
-  kickstack::package_ensure
-  kickstack::glance::config::package_ensure
-  kickstack::cinder::api::package_ensure
-  kickstack::nova::vncproxy::package_ensure
-  kickstack::cinder::scheduler::package_ensure
-  kickstack::nova::service::package_ensure
-
+  - cinder::api::package_ensure
+  - cinder::scheduler::package_ensure
+  - cinder::volume::package_ensure
+  - glance::package_ensure
+  - keystone::package_ensure
+  - nova::api::ensure_package
+  - nova::cert::ensure_package
+  - nova::client::ensure
+  - nova::compute::ensure_package
+  - nova::conductor::ensure_package
+  - nova::consoleauth::ensure_package
+  - nova::ensure_package
+  - nova::network::ensure_package
+  - nova::objectstore::ensure_package
+  - nova::scheduler::ensure_package
+  - nova::vncproxy::ensure_package
 enable_nova:
-  kickstack::database::databases::enable_nova
-  kickstack::keystone::endpoints::enable_nova
+  - kickstack::database::databases::enable_nova
+  - kickstack::keystone::endpoints::enable_nova
 enable_glance:
-  kickstack::database::databases::enable_glance
-  kickstack::keystone::endpoints::enable_glance
+  - kickstack::database::databases::enable_glance
+  - kickstack::keystone::endpoints::enable_glance
 enable_keystone:
-  kickstack::database::databases::enable_keystone
-  kickstack::keystone::endpoints::enable_keystone
+  - kickstack::database::databases::enable_keystone
+  - kickstack::keystone::endpoints::enable_keystone
 enable_network:
-  kickstack::database::databases::enable_network
-  kickstack::keystone::endpoints::enable_network
+  - kickstack::database::databases::enable_network
+  - kickstack::keystone::endpoints::enable_network
 enable_cinder:
-  kickstack::database::databases::enable_cinder
-  kickstack::keystone::endpoints::enable_cinder
+  - kickstack::database::databases::enable_cinder
+  - kickstack::keystone::endpoints::enable_cinder
 enable_swift:
-  kickstack::database::databases::enable_swift
-  kickstack::keystone::endpoints::enable_swift
-
-database_bind_address:
-  kickstack::database::postgresql::bind_address
-  kickstack::database::mysql::bind_address
+  - kickstack::database::databases::enable_swift
+  - kickstack::keystone::endpoints::enable_swift
 
 # data base config
+"%{db_type}://%{cinder_db_user}:%{cinder_db_password}@%{db_host}/%{cinder_db_name}":
+  - cinder::sql_connection
+"%{db_type}://%{glance_db_user}:%{glance_db_password}@%{db_host}/%{glance_db_name}":
+  - glance::api::sql_connection
+  - glance::registry::sql_connection
+"%{db_type}://%{keystone_db_user}:%{keystone_db_password}@%{db_host}/%{keystone_db_name}":
+  - keystone::sql_connection
+"%{db_type}://%{nova_db_user}:%{nova_db_password}@%{db_host}/%{nova_db_name}":
+  - nova::sql_connection
+"%{db_type}://%{network_db_user}:%{network_db_password}@%{db_host}/%{network_db_name}":
+  - quantum::plugins::ovs::sql_connection
+  - quantum::plugins::linuxbridge::sql_connection
+  - neutron::plugins::ovs::sql_connection
+  - neutron::plugins::linuxbridge::sql_connection
+cinder_db_name:
+  - cinder::db::mysql::dbname
+  - cinder::db::postgresql::dbname
+cinder_db_user:
+  - cinder::db::mysql::user
+  - cinder::db::postgresql::user
+cinder_db_password:
+  - cinder::db::mysql::password
+  - cinder::db::postgresql::password
 glance_db_name:
-  kickstack::glance::api::db_name
-  kickstack::glance::registry::db_name
+  - glance::db::mysql::dbname
+  - glance::db::postgresql::dbname
 glance_db_user:
-  kickstack::glance::api::db_user
-  kickstack::glance::registry::db_user
+  - glance::db::mysql::user
+  - glance::db::postgresql::user
 glance_db_password:
-  kickstack::glance::api::db_password
-  kickstack::glance::registry::db_password
+  - glance::db::mysql::password
+  - glance::db::postgresql::password
+keystone_db_name:
+  - keystone::db::mysql::dbname
+  - keystone::db::postgresql::dbname
+keystone_db_user:
+  - keystone::db::mysql::user
+  - keystone::db::postgresql::user
+keystone_db_password:
+  - keystone::db::mysql::password
+  - keystone::db::postgresql::password
+nova_db_name:
+  - nova::db::mysql::dbname
+  - nova::db::postgresql::dbname
+nova_db_user:
+  - nova::db::mysql::user
+  - nova::db::postgresql::user
+nova_db_password:
+  - nova::db::mysql::password
+  - nova::db::postgresql::password
 network_db_name:
-  kickstack::network::plugin::db_name
-  kickstack::network::db::db_name
+  - quantum::db::mysql::dbname
+  - quantum::db::postgresql::dbname
+  - neutron::db::mysql::dbname
+  - neutron::db::postgresql::dbname
 network_db_user:
-  kickstack::network::plugin::db_user
-  kickstack::network::db::user
+  - quantum::db::mysql::user
+  - quantum::db::postgresql::user
+  - neutron::db::mysql::user
+  - neutron::db::postgresql::user
 network_db_password:
-  kickstack::network::plugin::db_password
-  kickstack::network::db::password
+  - quantum::db::mysql::password
+  - quantum::db::postgresql::password
+  - neutron::db::mysql::password
+  - neutron::db::postgresql::password
 database_root_password:
-  kickstack::database::postgresql::root_password
-  kickstack::database::mysql::root_password
-db_allowed_hosts:
-  kickstack::network::db::allowed_hosts
-  kickstack::db::allowed_hosts
+  - mysql::config::root_password
+  - postgresql::config::postgres_password
+database_bind_address:
+  - postgresql::config::listen_addresses
+  - mysql::config::bind_address
 
 # keystone auth information
-network_service_user:
-  kickstack::network::endpoint::service_user
-  kickstack::network::server::service_user
-  kickstack::network::agent::metadata::service_user
-glance_service_password:
-  kickstack::glance::api::service_password
-  kickstack::glance::registry::service_password
+cinder_service_user:
+  - cinder::api::keystone_user
+  - cinder::keystone::auth::auth_name
+cinder_service_password:
+  - cinder::api::keystone_password
+  - cinder::keystone::auth::password
+cinder_public_address:
+  - cinder::keystone::auth::public_address
+cinder_internal_address:
+  - cinder::keystone::auth::internal_address
+cinder_admin_address:
+  - cinder::keystone::auth::admin_address
 glance_service_user:
-  kickstack::glance::api::service_user
-  kickstack::glance::registry::service_user
+  - glance::keystone::auth::auth_name
+  - glance::api::keystone_user
+  - glance::registry::keystone_user
+glance_service_password:
+  - glance::keystone::auth::password
+  - glance::api::keystone_password
+  - glance::registry::keystone_password
+glance_public_address:
+  - glance::keystone::auth::public_address
+glance_internal_address:
+  - glance::keystone::auth::internal_address
+glance_admin_address:
+  - glance::keystone::auth::admin_address
+nova_service_user:
+  - nova::keystone::auth::auth_name
+  - nova::api::admin_user
+nova_service_password:
+  - nova::keystone::auth::password
+  - nova::api::admin_password
+nova_public_address:
+  - nova::keystone::auth::public_address
+nova_internal_address:
+  - nova::keystone::auth::internal_address
+nova_admin_address:
+  - nova::keystone::auth::admin_address
+admin_token:
+  - keystone::admin_token
+admin_password:
+  - keystone::roles::admin::password
+admin_email:
+  - keystone::roles::admin::email
+admin_tenant:
+  - keystone::roles::admin::admin_tenant
+auth_public_address:
+  - keystone::endpoint::public_address
+auth_internal_address:
+  - cinder::api::keystone_auth_host
+  - keystone::endpoint::internal_address
+  - glance::api::auth_host
+  - glance::registry::auth_host
+  - horizon::keystone_host
+  - nova::api::auth_host
+  - quantum::server::auth_host
+  - neutron::server::auth_host
+auth_admin_address:
+  - keystone::endpoint::admin_address
+network_service_user:
+  - quantum::keystone::auth::auth_name
+  - neutron::keystone::auth::auth_name
+  - nova::network::quantum::quantum_admin_username
+  - nova::network::neutron::neutron_admin_username
+  - quantum::server::auth_user
+  - neutron::server::auth_user
+  - quantum::agents::metadata::auth_user
+  - neutron::agents::metadata::auth_user
 network_service_password:
-  kickstack::network::endpoint::service_password
-  kickstack::network::server::service_password
-  kickstack::network::agent::metadata::service_password
-  kickstack::nova::networkclient::network_auth_password
+  - quantum::keystone::auth::password
+  - neutron::keystone::auth::password
+  - quantum::server::auth_password
+  - neutron::server::auth_password
+  - nova::network::quantum::quantum_admin_password
+  - nova::network::neutron::neutron_admin_password
+  - quantum::agents::metadata::auth_password
+  - neutron::agents::metadata::auth_password
+network_public_address:
+  - quantum::keystone::auth::public_address
+  - neutron::keystone::auth::public_address
+network_internal_address:
+  - quantum::keystone::auth::internal_address
+  - neutron::keystone::auth::internal_address
+network_admin_address:
+  - quantum::keystone::auth::admin_address
+  - neutron::keystone::auth::admin_address
 service_tenant:
-  kickstack::network::endpoint::service_tenant
-  kickstack::network::server::service_tenant
-  kickstack::keystone::api::service_tenant
-  kickstack::keystone::endpoint::service_tenant
-  kickstack::network::agent::metadata::service_tenant
-  kickstack::auth_service_tenant
-  kickstack::nova::api::service_tenant
-  kickstack::glance::api::service_tenant
-  kickstack::glance::registry::service_tenant
-  kickstack::endpoint::service_tenant
+  - glance:keystone::auth::tenant
+  - nova:keystone::auth::tenant
+  - quantum:keystone::auth::tenant
+  - neutron::keystone::auth::tenant
+  - cinder::keystone::auth::tenant
+  - keystone::roles::admin::service_tenant
+  - nova::admin_tenant_name
+
+  - cinder::api::keystone_tenant
+  - glance::api::keystone_tenant
+  - glance::registry::keystone_tenant
+  - nova::network::quantumclient::quantum_admin_tenant_name
+  - nova::network::neutronclient::neutron_admin_tenant_name
+  - quantum::server::auth_tenant
+  - neutron::server::auth_tenant
+  - quantum::agents::metadata::auth_tenant
+  - neutron::agents::metadata::auth_tenant
 region:
-  kickstack::network::endpoint::service_region
-  kickstack::keystone::endpoint::service_region
-  kickstack::endpoint::service_region
+  - cinder::keystone::auth::region
+  - glance:keystone::auth::region
+  - nova:keystone::auth::region
+  - quantum:keystone::auth::region
+  - neutron::keystone::auth::region
+  - keystone::endpoint::region
+  - nova::network::quantumclient::quantum_region_name
+  - nova::network::neutronclient::neutron_region_name
+  - quantum::agents::metadata::auth_region
+  - neutron::agents::metadata::auth_region
 # where is cinder,nova,etc..
 #end auth users
 
 # service connection information
-auth_internal_address:
-  kickstack::keystone::endpoint::service_internal_address
-  kickstack::network::agent::metadata::auth_host
-  kickstack::nova::api::auth_host
-  kickstack::nova::networkclient::auth_host
-  kickstack::glance::api::auth_host
-  kickstack::cinder::api::auth_host
-  kickstack::glance::registry::auth_host
-rpc_host:
-  kickstack::network::config::rpc_host
-  kickstack::nova::config::rpc_host
-  kickstack::cinder::config::rpc_host
-network_internal_address:
-  kickstack::network::endpoint::service_internal_address
-  kickstack::nova::networkclient::network_host
+db_allowed_hosts:
+  - ceilometer::db::mysql::allowed_hosts
+  - cinder::db:mysql::allowed_hosts
+  - glance::db:mysql::allowed_hosts
+  - keystone::db::mysql::allowed_hosts
+  - nova::db:mysql::allowed_hosts
+  - quantum::db::mysql::allowed_hosts
+  - neutron::db::mysql::allowed_hosts
 db_host:
-  kickstack::keystone::api::db_host
-  kickstack::nova::config::db_host
-  kickstack::network::plugin::db_host
-  kickstack::network::db::host
-  kickstack::glance::api::db_host
-  kickstack::cinder::config::db_host
-  kickstack::glance::registry::db_host
-  kickstack::db::host
-
-# configurable backends
-cinder_backend:
-  kickstack::cinder::volume::backend
-  kickstack::cinder_backend
-
-glance_backend:
-  kickstack::glance_backend
-  kickstack::glance::api::glance_backend
-  kickstack::glance::all::backend
-
+  - ceilometer::db::mysql::host
+  - cinder::db:mysql::host
+  - glance::db:mysql::host
+  - keystone::db::mysql::host
+  - nova:db:mysql::host
+  - quantum::db:mysql::host
+  - neutron::db::mysql::host
 # end backends
 
-management_nic:
-  kickstack::rpc::rabbitmq::management_nic
-  kickstack::database::postgresql::management_nic
-  kickstack::network::server::management_nic
-  kickstack::keystone::api::management_nic
-  kickstack::database::mysql::management_nic
-  kickstack::rpc::qpid::management_nic
-  kickstack::management_nic
-  kickstack::nova::api::management_nic
-  kickstack::glance::api::management_nic
-  kickstack::glance::registry::management_nic
+# can I just put this somewhere else?
+public_ip_address:
+  - nova::vncproxy::host
 
 # type of rpc backend to use
-rpc_type:
-  kickstack::network::config::rpc_type
-  kickstack::rpc_type
-  kickstack::rpc::rpc_type
-  kickstack::cinder::config::rpc_type
+rpc_host:
+  - cinder::qpid_hostname
+  - cinder::rabbit_host
+  - nova::rabbit_host
+  - nova::qpid_hostname
+  - quantum::rabbit_host
+  - quantum::qpid_hostname
+  - neutron::qpid_hostname
+  - neutron::rabbit_host
 rpc_user:
-  kickstack::rpc::rabbitmq::user
-  kickstack::network::config::rpc_user
-  kickstack::nova::config::rpc_user
-  kickstack::rpc::qpid::user
-  kickstack::cinder::config::rpc_user
+  - cinder::qpid_username
+  - cinder::rabbit_userid
+  - nova::qpid::user
+  - nova::rabbitmq::userid
+  - nova::rabbit_userid
+  - nova::qpid_username
+  - quantum::rabbit_user
+  - neutron::rabbit_user
+  - quantum::qpid_username
+  - neutron::qpid_username
 rpc_password:
-  kickstack::rpc::rabbitmq::password
-  kickstack::network::config::rpc_password
-  kickstack::nova::config::rpc_password
-  kickstack::rpc::qpid::password
-  kickstack::cinder::config::rpc_password
+  - cinder::rabbit_password
+  - cinder::qpid_password
+  - nova::qpid::password
+  - nova::rabbitmq::password
+  - nova::rabbit_password
+  - nova::qpid_password
+  - quantum::rabbit_password
+  - quantum::qpid_password
+  - neutron::rabbit_password
+  - neutron::qpid_password
+qpid_realm:
+  - nova::qpid::realm
 # end rpc config
 
 metadata_shared_secret:
-  kickstack::network::agent::metadata::shared_secret
-  kickstack::nova::api::metadata_shared_secret
+  - quantum::agents::metadata::shared_secret
+  - neutron::agents::metadata::shared_secret
+  - nova::api::quantum_metadata_proxy_shared_secret
 
+# TODO - I ned to figure out what to do about this
 volume_on_compute:
-  kickstack::nova::controller::volume_on_compute
-  kickstack::compute::volume_on_compute
+  - kickstack::nova::controller::volume_on_compute
+  - kickstack::compute::volume_on_compute
 
-# type of database to use
-db_type:
-  kickstack::keystone::api::db_type
-  kickstack::nova::config::db_type
-  kickstack::database::db_type
-  kickstack::network::plugin::db_type
-  kickstack::db_type
-  kickstack::network::db::type
-  kickstack::glance::api::db_type
-  kickstack::cinder::config::db_type
-  kickstack::glance::registry::db_type
-  kickstack::db::type
-
-# network configuration
 data_nic:
-  kickstack::network::agent::l2::network::data_nic
-  kickstack::network::agent::l2::compute::data_nic
+  - kickstack::network::agent::l2::network::data_nic
+  - kickstack::network::agent::l2::compute::data_nic
 
 network_physnet:
-  kickstack::network::agent::l2::network::physnet
-  kickstack::network::agent::l2::compute::physnet
+  - kickstack::network::agent::l2::network::physnet
+  - kickstack::network::agent::l2::compute::physnet
 
 network_plugin:
-  kickstack::network::config::plugin
-  kickstack::network::plugin::plugin
-  kickstack::network::agent::l2::network::plugin
-  kickstack::network::agent::dhcp::plugin
-  kickstack::network::agent::l2::compute::plugin
-  kickstack::network::agent::l3::plugin
+  - kickstack::network::config::plugin
+  - kickstack::network::plugin::plugin
+  - kickstack::network::agent::l2::network::plugin
+  - kickstack::network::agent::dhcp::plugin
+  - kickstack::network::agent::l2::compute::plugin
+  - kickstack::network::agent::l3::plugin
 
 network_tunnel_bridge:
-  kickstack::network::agent::l2::network::tunnel_bridge
-  kickstack::network::agent::l2::compute::tunnel_bridge
+  - kickstack::network::agent::l2::network::tunnel_bridge
+  - kickstack::network::agent::l2::compute::tunnel_bridge
 
 network_external_bridge:
-  kickstack::network::agent::l2::network::external_bridge
-  kickstack::network::agent::l3::external_bridge
+  - kickstack::network::agent::l2::network::external_bridge
+  - kickstack::network::agent::l3::external_bridge
 
 tenant_network_type:
-  kickstack::network::plugin::tenant_network_type
-  kickstack::network::agent::l2::network::tenant_network_type
-  kickstack::network::agent::l2::compute::tenant_network_type
+  - kickstack::network::plugin::tenant_network_type
+  - kickstack::network::agent::l2::network::tenant_network_type
+  - kickstack::network::agent::l2::compute::tenant_network_type
 
 network_type:
-  kickstack::network::config::network_type
-  kickstack::network::agent::l2::network::network_type
-  kickstack::network::agent::dhcp::network_type
-  kickstack::network::agent::l3::network_type
+  - kickstack::network::config::network_type
+  - kickstack::network::agent::l2::network::network_type
+  - kickstack::network::agent::dhcp::network_type
+  - kickstack::network::agent::l3::network_type
 
 # end network config
+
+glance_registry_host:
+  - glance::api::registry_host 
+
+horizon_secret_key:
+  - horizon::secret_key
+# I need to add an option so that I can collapse this into verbose and debug
+horizon_log_level:
+  - horizon::log_level
+
+vncproxy_host:
+  - nova::compute::vncproxy_host
+
+vncserver_proxyclient_address:
+  - nova::compute::vncserver_proxyclient_address
+
+glance_api_servers:
+  - nova::glance_api_servers
+
+# like the sql_connection params, I am not happy about this
+"http://%{network_internal_address}:9696":
+  - nova::network::quantum::quantum_url
+  - nova::network::neutron::neutron_url
+"http://%{auth_internal_address}:35357/v2.0":
+  - nova::network::quantum::quantum_admin_auth_url
+  - nova::network::neutron::neutron_admin_auth_url
+  - quantum::agents::metadata::auth_url
+  - neutron::agents::metadata::auth_url
+
+nova_metadata_ip:
+  - quantum::agents::metadata::metadata_ip
+  - neutron::agents::metadata::metadata_ip

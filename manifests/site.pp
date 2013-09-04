@@ -23,7 +23,7 @@ $db_type          = 'mysql'
 $rpc_type         = 'rabbitmq'
 $cinder_backend   = 'iscsi'
 $glance_backend   = 'file' 
-$compute_type     = 'qemu'
+$compute_type     = 'libvirt'
 # networking options
 $network_service  = 'quantum'
 # supports linuxbridge and ovs

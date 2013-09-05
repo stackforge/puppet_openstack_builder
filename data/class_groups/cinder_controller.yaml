@@ -1,0 +1,4 @@
+classes:
+  - cinder
+  - cinder::api
+  - cinder::scheduler

@@ -1,0 +1,4 @@
+classes:
+  - cinder
+  - cinder::volume
+  - "cinder::volume::%{cinder_backend}"

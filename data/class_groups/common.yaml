@@ -1,3 +1,0 @@
-volume:
-  - cinder::volume
-  - cinder::volume::%{cinder_backend}

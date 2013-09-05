@@ -325,10 +325,14 @@ metadata_shared_secret:
   - neutron::agents::metadata::shared_secret
   - nova::api::quantum_metadata_proxy_shared_secret
 
-# TODO - I ned to figure out what to do about this
+# TODO - I need to figure out what to do about this
 volume_on_compute:
   - kickstack::nova::controller::volume_on_compute
   - kickstack::compute::volume_on_compute
+
+volume_group:
+  - cinder::volume::iscsi::volume_group
+  - cinder::setup_test_volume::volume_group
 
 data_nic:
   - kickstack::network::agent::l2::network::data_nic

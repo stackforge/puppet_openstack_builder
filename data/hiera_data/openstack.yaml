@@ -126,3 +126,4 @@ quantum::agents::ovs::integration_bridge: br-int
 enabled: true
 
 vncproxy_host: 192.168.242.10
+cinder::volume::iscsi::iscsi_ip_address: 0.0.0.0

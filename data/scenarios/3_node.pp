@@ -1,7 +1,10 @@
 roles:
   controller:
-    classes:
+    class_groups:
+      - controller
   compute:
-    classes:
+    class_groups:
+      - compute
   network_controller:
-    classes:
+    class_groups:
+      - network_controller

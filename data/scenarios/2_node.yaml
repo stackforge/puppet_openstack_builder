@@ -3,6 +3,9 @@
 #
 roles:
   controller:
-    classes:
+    class_groups:
+      - controller
+      - network_controller
   compute:
-    classes:
+    class_groups:
+      - compute

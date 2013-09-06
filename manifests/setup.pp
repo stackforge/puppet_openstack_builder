@@ -77,6 +77,7 @@ ini_setting {'puppetmastermodulepath':
   section => 'master',
   setting => 'node_terminus',
   value   => 'scenario',
+  require => Package['puppet'],
 }
 
 # lay down a file that can be used for subsequent runs to puppet. Often, the

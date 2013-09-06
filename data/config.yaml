@@ -1,9 +1,13 @@
 ---
+# vagrant config
 apt_cache:  '192.168.242.99' # Apt cache server, set to 'false' to disable
 apt_mirror: 'us.archive.ubuntu.com'
 domain:     'domain.name'
 verbose:    false
-scenario: 2_node
+
+# puppet config
+role: openstack
+scenario: 2_role
 db_type: mysql
 rpc_type: rabbitmq
 cinder_backend: iscsi

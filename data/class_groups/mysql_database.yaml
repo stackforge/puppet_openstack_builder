@@ -1,5 +1,4 @@
 classes:
   - mysql::server
-  - mysql::config
   - mysql::server::account_security
   - kickstack::database::databases 

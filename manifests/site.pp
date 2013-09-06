@@ -21,21 +21,6 @@ node openstack-base {
   
 }
 
-node /control-server/ inherits openstack-base {
-
-  $openstack_role = 'controller'
-  include coi::roles::controller
-
-}
-
-node /compute-server\d+/ inherits openstack-base {
-
-  $role           = 'openstack'
-  $openstack_role = 'compute'
-  include coi::roles::compute
-
-}
-
 node /swift-proxy\d+/ {
 
   $role           = 'openstack'
@@ -61,5 +46,11 @@ node /swift-storage\d+/ {
 node /cache/ {
 
   include coi::roles::cache
+
+}
+
+node default {
+
+  notice($db_type)
 
 }

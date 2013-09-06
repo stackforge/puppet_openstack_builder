@@ -1,2 +1,3 @@
-node_one: controller
-node_two: compute
+control-server: controller
+compute-server: compute
+compute-server02: compute

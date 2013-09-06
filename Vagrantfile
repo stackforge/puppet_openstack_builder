@@ -187,7 +187,7 @@ def configure_openstack_node(
   v_config,
   post_config = false
 )
-  cert_name = "#{node_name}-#{Time.now.strftime('%Y%m%d%m%s')}.domain.name"
+  cert_name = node_name
   get_box(config, box_name)
   setup_hostname(config, node_name)
   config.vm.customize ["modifyvm", :id, "--memory", memory]

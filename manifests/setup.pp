@@ -70,6 +70,15 @@ file { "${settings::confdir}/hiera.yaml":
 '
 }
 
+# add the correct node terminus
+ini_setting {'puppetmastermodulepath':
+  ensure  => present,
+  path    => '/etc/puppet/puppet.conf',
+  section => 'master',
+  setting => 'node_terminus',
+  value   => 'scenario',
+}
+
 # lay down a file that can be used for subsequent runs to puppet. Often, the
 # only thing that you want to do after the initial provisioning of a box is
 # to run puppet again. This command lays down a script that can be simply used for

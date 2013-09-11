@@ -8,6 +8,7 @@ verbose:    false
 # puppet config
 role: openstack
 scenario: 2_role
+password_management: individual
 db_type: mysql
 rpc_type: rabbitmq
 cinder_backend: iscsi
@@ -28,3 +29,5 @@ enabled_services:
   - keystone
   - nova
   - network
+operatingsystem: ubuntu
+node_group: multi_node

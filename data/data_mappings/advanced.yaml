@@ -1,0 +1,29 @@
+# stores advanced configurations
+package_ensure:
+  - cinder::api::package_ensure
+  - cinder::scheduler::package_ensure
+  - cinder::volume::package_ensure
+  - glance::package_ensure
+  - keystone::package_ensure
+  - nova::api::ensure_package
+  - nova::cert::ensure_package
+  - nova::client::ensure
+  - nova::compute::ensure_package
+  - nova::conductor::ensure_package
+  - nova::consoleauth::ensure_package
+  - nova::ensure_package
+  - nova::network::ensure_package
+  - nova::objectstore::ensure_package
+  - nova::scheduler::ensure_package
+  - nova::vncproxy::ensure_package
+region:
+  - cinder::keystone::auth::region
+  - glance:keystone::auth::region
+  - nova:keystone::auth::region
+  - quantum:keystone::auth::region
+  - neutron::keystone::auth::region
+  - keystone::endpoint::region
+  - nova::network::quantumclient::quantum_region_name
+  - nova::network::neutronclient::neutron_region_name
+  - quantum::agents::metadata::auth_region
+  - neutron::agents::metadata::auth_region

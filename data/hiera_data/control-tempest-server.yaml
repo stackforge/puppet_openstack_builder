@@ -1,8 +1,0 @@
-#
-# configure testing image to use cirros which does not support
-# VM resizing
-#
-tempest_image_name: cirros
-tempest_image_source: 'http://download.cirros-cloud.net/0.3.1/cirros-0.3.1-x86_64-disk.img'
-resize_available: false
-change_password_available: false

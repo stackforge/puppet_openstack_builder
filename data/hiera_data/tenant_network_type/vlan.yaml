@@ -4,3 +4,5 @@ quantum::plugins::ovs::bridge_mappings:
   - 
   - 
 neutron::plugins::ovs::network_vlan_ranges: physnet1:1000:2000
+quantum::plugins::ovs::tenant_network_type: vlan
+neutron::plugins::ovs::tenant_network_type: vlan

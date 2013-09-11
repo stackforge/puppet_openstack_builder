@@ -49,18 +49,19 @@ file { "${settings::confdir}/hiera.yaml":
 :backends:
   - data_mapper
 :hierarchy:
-  - "%{hostname}"
+  - "hostname/%{hostname}"
+  - user
+  - jenkins
+  - "cinder_backend/%{cinder_backend}"
+  - "glance_backend/%{glance_backend}"
   - "rpc_type/%{rpc_type}"
   - "db_type/%{db_type}"
   - "tenant_network_type/%{tenant_network_type}"
   - "network_type/%{network_type}"
   - "network_plugin/%{network_plugin}"
-  - "%{cinder_backend}"
-  - "%{glance_backend}"
-  - jenkins
-  - "%{scenario}"
-  - "%{openstack_role}"
-  - "%{role}"
+  - "password_management/%{password_management}"
+  - "scenario/%{scenario}"
+  - grizzly_hack
   - common
 :yaml:
    :datadir: /etc/puppet/data/hiera_data

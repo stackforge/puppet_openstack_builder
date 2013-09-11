@@ -1,22 +1,38 @@
-# put some default data here that I do not want to change
-nova::db::mysql::charset: utf8
-glance::db::mysql::charset: utf8
-keystone::db::mysql::charset: utf8
-quantum::db::mysql::charset: utf8
-neutron::db::mysql::charset: utf8
-
-
-
-# time servers
+# COI parameters
 ntp_servers:
   - time-server.domain.name
-# domain name
+build_node_name: build-server
 domain_name: domain.name
-# interfaces for directing different types of traffic
 public_interface: eth1
 private_interface: eth1
 external_interface: eth2
-# build node connection information
-build_node_name: build-server
-# advanced options
-#proxy: http://proxy-server:port-number
+
+# openstack parameters
+admin_email: root@localhost
+rpc_user: openstack_rabbit_user
+verbose: false
+cinder::scheduler::scheduler_driver: 'cinder.scheduler.simple.SimpleScheduler'
+cinder::volume::iscsi::iscsi_ip_address: 0.0.0.0
+service_tenant: services
+admin_tenant: admin
+package_ensure: present
+nova::compute::libvirt::libvirt_type: qemu
+
+# information for package repos
+openstack_release: precise-updates/grizzly
+package_repo: cloud_archive
+
+# used for testing
+test_file_image_type: cirros
+
+# swift info
+glance::backend::swift::swift_store_user: swift_user
+glance::backend::swift::swift_store_key: secret_key
+glance::backend::swift::swift_store_auth_address: '127.0.0.1' 
+glance::backend::swift::swift_store_create_container_on_put: true
+swift: true
+swift_service_password: swift_user_pass
+swift_hash: super_secret_swift_hash
+swift_public_address: 192.168.242.41
+swift_local_net_ip: %{ipaddress_eth3}
+

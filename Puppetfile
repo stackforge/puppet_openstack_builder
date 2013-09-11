@@ -99,7 +99,9 @@ mod 'stackforge/cinder',    :git => "#{openstack_repo_prefix}-cinder",    :ref =
 mod 'stackforge/glance',    :git => "#{openstack_repo_prefix}-glance",    :ref => openstack_module_branch
 mod 'stackforge/keystone',  :git => "#{openstack_repo_prefix}-keystone",  :ref => openstack_module_branch
 mod 'stackforge/horizon',   :git => "#{openstack_repo_prefix}-horizon",   :ref => openstack_module_branch
-mod 'stackforge/nova',      :git => "git://github.com/bodepd/puppet-nova",      :ref => 'origin/cinder_include'
+mod 'stackforge/nova',
+  :git => "#{openstack_repo_prefix}-nova",
+  :ref => openstack_module_branch
 mod "stackforge/#{neutron_name}",
   :git => "#{openstack_repo_prefix}-neutron",
   :ref => openstack_module_branch

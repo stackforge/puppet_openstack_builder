@@ -9,3 +9,5 @@ class_groups:
   - "%{db_type}_database"
 classes:
   - nova::%{rpc_type}
+  - "%{network_service}::plugins::%{network_plugin}"
+  - "%{network_service}::server"

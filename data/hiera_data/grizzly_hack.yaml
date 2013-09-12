@@ -22,6 +22,8 @@ cinder::scheduler::package_ensure: present
 cinder::api::package_ensure: present
 cinder::volume::package_ensure: present
 
+openstack::auth_file::admin_tenant: openstack
+
 # the keystone tenant and user for glance are not consistent,
 # they need to be fixed
 glance::api::keystone_tenant: services

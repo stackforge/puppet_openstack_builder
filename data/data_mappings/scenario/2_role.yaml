@@ -20,11 +20,11 @@ controller_internal_address:
   - neutron::qpid_hostname
   - neutron::rabbit_host
   - ceilometer::db::mysql::host
-  - cinder::db:mysql::host
-  - glance::db:mysql::host
+  - cinder::db::mysql::host
+  - glance::db::mysql::host
   - keystone::db::mysql::host
-  - nova:db:mysql::host
-  - quantum::db:mysql::host
+  - nova::db::mysql::host
+  - quantum::db::mysql::host
   - neutron::db::mysql::host
   # internal endpoint addresses are the same as this
   - cinder::keystone::auth::internal_address

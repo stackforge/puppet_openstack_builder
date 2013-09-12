@@ -75,7 +75,7 @@ file { "${settings::confdir}/hiera.yaml":
 ini_setting {'puppetmastermodulepath':
   ensure  => present,
   path    => '/etc/puppet/puppet.conf',
-  section => 'master',
+  section => 'main',
   setting => 'node_terminus',
   value   => 'scenario',
   require => Package['puppet'],

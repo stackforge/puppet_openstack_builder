@@ -1,0 +1,6 @@
+"br-ex:%{external_interface}":
+  - quantum::agents::ovs::bridge_uplinks
+  - neutron::agents::ovs::bridge_uplinks
+internal_ip:
+  - quantum::agents::ovs::local_ip
+  - neutron::agents::ovs::local_ip

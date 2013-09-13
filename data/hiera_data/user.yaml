@@ -7,6 +7,8 @@ controller_admin_address: 192.168.242.10
 
 # this is not done yet
 internal_ip: %{ipaddress_eth3}
+external_interface: eth2
+
 nova::compute::vncserver_proxyclient_address: %{ipaddress_eth3}
 
 secret_key: secret

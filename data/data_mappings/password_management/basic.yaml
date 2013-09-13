@@ -50,4 +50,4 @@ password:
   - nova::network::neutron::neutron_admin_password
   - quantum::agents::metadata::auth_password
   - neutron::agents::metadata::auth_password
-  - admin_password
+  - openstack::auth_file::admin_password

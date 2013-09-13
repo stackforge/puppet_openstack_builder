@@ -73,7 +73,7 @@ mod 'bodepd/hiera_data_mapper',  :git => 'https://github.com/bodepd/hiera_data_m
 mod 'bodepd/scenario_node_terminus', :git => 'https://github.com/bodepd/scenario_node_terminus'
 
 #mod 'CiscoSystems/coi', :git => "#{base_url}/CiscoSystems/puppet-COI", :ref => 'master'
-mod 'CiscoSystems/coi', :git => "#{base_url}/bodepd/puppet-COI", :ref => 'master'
+mod 'CiscoSystems/coi', :git => "#{base_url}/bodepd/puppet-COI", :ref => 'data_refactor'
 # no existing downstream module
 mod 'puppetlabs/postgresql', :git => "#{base_url}/puppetlabs/puppetlabs-postgresql", :ref => 'master'
 mod 'puppetlabs/puppetdb', :git => "#{base_url}/puppetlabs/puppetlabs-puppetdb", :ref => 'master'

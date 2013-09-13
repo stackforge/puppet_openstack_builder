@@ -40,8 +40,7 @@ controller_internal_address:
   - neutron::server::auth_host
   - quantum::keystone::auth::internal_address
   - neutron::keystone::auth::internal_address
-  # this needs to be updated
-  - auth_internal_address
+  - openstack::auth_file::controller_node
   - ceilometer::db::mysql::allowed_hosts
   - cinder::db:mysql::allowed_hosts
   - glance::db:mysql::allowed_hosts

@@ -6,7 +6,9 @@ roles:
     classes:
       - naginator::control_target
       - coi::profiles::openstack::base
-      - coi::profiles::openstack::test_file
+      - openstack::client
+      - openstack::auth_file
+      - openstack::test_file
     class_groups:
       - controller
       - network_controller

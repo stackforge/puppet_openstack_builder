@@ -23,7 +23,8 @@ openstack_release: precise-updates/grizzly
 package_repo: cloud_archive
 
 # used for testing
-test_file_image_type: cirros
+openstack::test_file::image_type: cirros
+openstack::client::ceilometer: false
 
 # swift info
 glance::backend::swift::swift_store_user: swift_user

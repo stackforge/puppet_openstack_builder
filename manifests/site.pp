@@ -5,6 +5,7 @@ node build-server {
   $role = 'openstack'
 
   include coi::roles::build_server
+  include coi::profiles::openstack::base
   include openstack::client
   include openstack::auth_file
   include openstack::test_file

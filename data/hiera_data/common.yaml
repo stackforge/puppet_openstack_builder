@@ -6,6 +6,7 @@ domain_name: domain.name
 public_interface: eth1
 private_interface: eth1
 external_interface: eth2
+puppet::master::version: '3.2.3-1puppetlabs1'
 
 # openstack parameters
 admin_email: root@localhost

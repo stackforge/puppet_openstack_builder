@@ -26,6 +26,9 @@ case $::osfamily {
     $pkg_list       = ['git', 'curl', 'vim', 'cobbler']
     package { $puppet_pkg:
       ensure => $puppet_version,
+    } ->
+    package { 'puppetmaster-common':
+      ensure => $puppet_version,
     }
   }
 }

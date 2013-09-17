@@ -315,20 +315,20 @@ Vagrant::Config.run do |config|
   end
 
   # Openstack control server
-  config.vm.define :control_pxe do |config|
-    config.vm.box = 'blank'
-    config.vm.boot_mode = 'gui'
-    config.ssh.port = 2727
-    setup_networks(config, '10', :eth1_mac => '001122334455')
-  end
+#  config.vm.define :control_pxe do |config|
+#    config.vm.box = 'blank'
+#    config.vm.boot_mode = 'gui'
+#    config.ssh.port = 2727
+#    setup_networks(config, '10', :eth1_mac => '001122334455')
+#  end
 
   # Openstack compute server
-  config.vm.define :compute_pxe do |config|
-    config.vm.box = 'blank'
-    config.vm.boot_mode = 'gui'
-    config.ssh.port = 2728
-    setup_networks(config, '10', :eth1_mac => '001122334466')
-  end
+#  config.vm.define :compute_pxe do |config|
+#    config.vm.box = 'blank'
+#    config.vm.boot_mode = 'gui'
+#    config.ssh.port = 2728
+#    setup_networks(config, '10', :eth1_mac => '001122334466')
+#  end
 
   process_nodes(config, v_config, apt_cache_proxy)
 

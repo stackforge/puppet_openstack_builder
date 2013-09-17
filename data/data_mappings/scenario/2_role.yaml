@@ -52,6 +52,8 @@ controller_internal_address:
   - mysql::config::bind_address
   - quantum::agents::metadata::metadata_ip
   - neutron::agents::metadata::metadata_ip
+  # As these get decomposed, this will need to be replaced
+  - openstack::swift::proxy::keystone_host
 controller_public_address:
   - nova::vncproxy::host
   - nova::compute::vncproxy_host
@@ -68,6 +70,17 @@ controller_admin_address:
   - keystone::endpoint::admin_address
   - quantum::keystone::auth::admin_address
   - neutron::keystone::auth::admin_address
+swift_admin_address:
+  - swift::keystone::auth::admin_address
+swift_internal_address:
+  - swift::keystone::auth::internal_address
+swift_public_address:
+  - swift::keystone::auth::public_address
+  - openstack::swift::proxy::swift_proxy_net_ip
+swift_local_net_ip:
+  - openstack::swift::proxy::swift_local_net_ip
+  - openstack::swift::storage-node::swift_local_net_ip
+
 compute_internal_address:
   - nova::compute::libvirt::vncserver_listen
   # this is not right. This is wrong.

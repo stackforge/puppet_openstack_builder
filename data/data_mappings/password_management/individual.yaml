@@ -45,6 +45,12 @@ network_service_password:
   - nova::network::neutron::neutron_admin_password
   - quantum::agents::metadata::auth_password
   - neutron::agents::metadata::auth_password
+swift_service_password:
+  - swift::keystone::auth::password
+  - openstack::swift::proxy::swift_user_password
+swift_hash:
+  - openstack::swift::proxy::swift_hash_suffix
+  - openstack::swift::storage-node::swift_hash_suffix
 rpc_password:
   - cinder::rabbit_password
   - cinder::qpid_password

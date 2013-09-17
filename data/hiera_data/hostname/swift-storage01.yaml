@@ -1,1 +1,1 @@
-swift_zone: 1
+openstack::swift::storage-node::swift_zone: 1

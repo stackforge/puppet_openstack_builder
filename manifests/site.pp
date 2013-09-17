@@ -25,22 +25,6 @@ node openstack-base {
   
 }
 
-node /swift-proxy\d+/ {
-
-  $role           = 'openstack'
-  $openstack_role = 'swift_proxy'
-  include coi::roles::swift_proxy
-
-}
-
-node /swift-storage\d+/ {
-
-  $role           = 'openstack'
-  $openstack_role = 'swift_storage'
-  include coi::roles::swift_storage
-
-}
-
 # cache node that we use for testing so that we do not have to always reinstall
 # packaged for every test
 # TODO - we are not sure what to do with this role. it is useful be able to boot up from scratch.

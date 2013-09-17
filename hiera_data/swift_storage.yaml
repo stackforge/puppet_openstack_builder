@@ -3,4 +3,4 @@ storage_devices:
   - 1
   - 2
   - 3
-swift_local_net_ip: %{ipaddress_eth3}
+swift_local_net_ip: "%{ipaddress_eth3}"

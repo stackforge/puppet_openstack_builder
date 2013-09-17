@@ -133,7 +133,7 @@ mod 'CiscoSystems/inifile', :git => "#{base_url}/CiscoSystems/puppet-inifile", :
 # upstream is saz
 mod 'CiscoSystems/memcached', :git => "#{base_url}/CiscoSystems/puppet-memcached", :ref => 'origin/grizzly'
 # this uses master b/c the grizzly branch does not exist
-mod 'CiscoSystems/ssh',  :git => "#{base_url}/CiscoSystems/puppet-ssh", :ref => 'master'
+mod 'CiscoSystems/ssh',  :git => "#{base_url}/bodepd/puppet-ssh", :ref => 'master'
 
 # upstream is duritong
 mod 'CiscoSystems/sysctl', :git => "#{base_url}/CiscoSystems/puppet-sysctl", :ref => 'origin/grizzly'

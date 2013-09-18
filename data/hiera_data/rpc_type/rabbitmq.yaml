@@ -5,4 +5,4 @@ nova::rpc_backend:
 quantum::rpc_backend:
   'quantum.openstack.common.rpc.impl_kombu'
 neutron::rpc_backend:
-  'quantum.openstack.common.rpc.impl_kombu'
+  'neutron.openstack.common.rpc.impl_kombu'

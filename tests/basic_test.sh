@@ -75,7 +75,8 @@ if [ -n "${openstack_package_repo:-}" ]; then
     echo 'openstack_release: grizzly-proposed' >> data/hiera_data/jenkins.yaml
   elif [ $openstack_package_repo = 'cloud_archive' ]; then
     echo 'package_repo: cloud_archive' >> data/hiera_data/jenkins.yaml
-    echo "openstack_release: precise-updates/${openstack_version}" >> data/hiera_data/jenkins.yaml
+    echo "openstack_release: ${openstack_version}" >> data/hiera_data/jenkins.yaml
+    echo "openstack_ubuntu_repo: ${uca_repo:-updates}" >> data/hiera_data/jenkins.yaml
   else
     echo "Unsupported repo type: ${openstack_package_repo}"
   fi

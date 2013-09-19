@@ -13,7 +13,7 @@ swift_admin_address: 192.168.242.41
 internal_ip: "%{ipaddress_eth3}"
 external_interface: eth2
 
-nova::compute::vncserver_proxyclient_address: %{ipaddress_eth3}
+nova::compute::vncserver_proxyclient_address: "%{ipaddress_eth3}"
 
 secret_key: secret
 password: password123

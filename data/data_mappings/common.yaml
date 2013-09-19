@@ -31,3 +31,6 @@ rpc_user:
   - neutron::rabbit_user
   - quantum::qpid_username
   - neutron::qpid_username
+enabled_services:
+  - coi::profiles::openstack::endpoints::enabled_services
+  - coi::profiles::openstack::databases::mysql::enabled_services

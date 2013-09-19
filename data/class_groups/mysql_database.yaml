@@ -1,4 +1,4 @@
 classes:
   - mysql::server
   - mysql::server::account_security
-  - kickstack::database::databases 
+  - coi::profiles::openstack::databases::mysql

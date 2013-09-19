@@ -8,6 +8,15 @@ private_interface: eth1
 external_interface: eth2
 puppet::master::version: '3.2.3-1puppetlabs1'
 
+enabled_services:
+  - glance
+  - cinder
+  - keystone
+  - nova
+  # should I be able to interpolate this?
+  - quantum
+  - swift
+
 # openstack parameters
 admin_email: root@localhost
 rpc_user: openstack_rabbit_user

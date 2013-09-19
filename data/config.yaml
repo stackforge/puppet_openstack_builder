@@ -28,7 +28,8 @@ enabled_services:
   - cinder
   - keystone
   - nova
-  - network
+  # should I be able to interpolate this?
+  - quantum
   - swift
 
 operatingsystem: ubuntu

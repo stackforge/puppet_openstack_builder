@@ -10,7 +10,7 @@ swift_public_address: 192.168.242.41
 swift_admin_address: 192.168.242.41
 
 # this is not done yet
-internal_ip: %{ipaddress_eth3}
+internal_ip: "%{ipaddress_eth3}"
 external_interface: eth2
 
 nova::compute::vncserver_proxyclient_address: %{ipaddress_eth3}

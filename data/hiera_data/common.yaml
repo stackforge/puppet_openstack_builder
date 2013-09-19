@@ -33,7 +33,7 @@ glance::backend::swift::swift_store_key: secret_key
 glance::backend::swift::swift_store_auth_address: '127.0.0.1' 
 glance::backend::swift::swift_store_create_container_on_put: true
 
-swift_local_net_ip: %{ipaddress_eth3}
+swift_local_net_ip: "%{ipaddress_eth3}"
 openstack::swift::storage-node::storage_type: loopback
 openstack::swift::storage-node::storage_devices:
   - 1

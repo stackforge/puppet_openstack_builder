@@ -29,6 +29,10 @@ if [ -n "${puppet_modules_to_use:-}" ]; then
   export repos_to_use=$puppet_modules_to_use
 fi
 
+if [ -n "${openstack_version}" ]; then
+  export  openstack_version=$openstack_version
+fi
+
 # install modules
 export module_install_method=librarian
 if [ $module_install_method = 'librarian' ]; then
@@ -54,9 +58,9 @@ if [ -n "${project_name:-}" ]; then
 fi
 
 if [ $operatingsystem = 'redhat' ]; then
-  echo 'operatingsystem: redhat' >> config.yaml
+  echo 'operatingsystem: redhat' >> data/config.yaml
 elif [ $operatingsystem = 'ubuntu' ]; then
-  echo 'operatingsystem: ubuntu' >> config.yaml
+  echo 'operatingsystem: ubuntu' >> data/config.yaml
 else
   echo "Unsupported operatingsystem ${operatingsystem}"
   exit 1
@@ -65,23 +69,28 @@ fi
 # set up jenkins specific data overrides
 if [ -n "${openstack_package_repo:-}" ]; then
   if [ $openstack_package_repo = 'cisco_repo' ]; then
-    echo 'package_repo: cisco_repo' >> hiera_data/jenkins.yaml
-    echo 'openstack_repo_location: http://openstack-repo.cisco.com/openstack/cisco' >> hiera_data/jenkins.yaml
+    echo 'package_repo: cisco_repo' >> data/hiera_data/jenkins.yaml
+    echo 'openstack_repo_location: http://openstack-repo.cisco.com/openstack/cisco' >> data/hiera_data/jenkins.yaml
     #echo 'openstack_repo_location: ftp://ftpeng.cisco.com/openstack/cisco' >> hiera_data/jenkins.yaml
-    echo 'openstack_release: grizzly-proposed' >> hiera_data/jenkins.yaml
+    echo 'openstack_release: grizzly-proposed' >> data/hiera_data/jenkins.yaml
   elif [ $openstack_package_repo = 'cloud_archive' ]; then
-    echo 'package_repo: cloud_archive' >> hiera_data/jenkins.yaml
-    echo 'openstack_release: precise-updates/grizzly' >> hiera_data/jenkins.yaml
+    echo 'package_repo: cloud_archive' >> data/hiera_data/jenkins.yaml
+    echo "openstack_release: ${openstack_version}" >> data/hiera_data/jenkins.yaml
+    echo "openstack_ubuntu_repo: ${uca_repo:-updates}" >> data/hiera_data/jenkins.yaml
   else
     echo "Unsupported repo type: ${openstack_package_repo}"
   fi
+fi
+
+if [ $openstack_version = 'havana' ];then
+  sed -i 's/quantum/neutron/' data/config.yaml
 fi
 
 if [ "${test_type:-}" = 'swift' ]; then
 
   source tests/swift.sh
 
-  echo 'node_group: swift' >> config.yaml
+  echo 'node_group: swift' >> data/config.yaml
   destroy_swift
   deploy_swift_multi
 
@@ -97,10 +106,10 @@ elif [ "${test_type:-}" = 'openstack_multi' ]; then
 
   if [[ "${test_mode}" == tempest* ]]; then
     # pull in functions to install controller with tempest
-    echo 'node_group: multi_node_tempest' >> config.yaml
+    echo 'node_group: multi_node_tempest' >> data/config.yaml
     source tests/multi_node_tempest.sh
   else
-    echo 'node_group: multi_node' >> config.yaml
+    echo 'node_group: multi_node' >> data/config.yaml
     # pull in functions that test multi-node
     source tests/multi_node.sh
   fi

@@ -1,0 +1,10 @@
+classes:
+  - nova
+  - nova::api
+  - nova::scheduler
+  - nova::objectstore
+  - nova::cert
+  - nova::consoleauth
+  - nova::conductor
+  - "nova::network::%{network_service}"
+  - nova::vncproxy

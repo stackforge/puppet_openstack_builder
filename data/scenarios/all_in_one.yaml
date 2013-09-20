@@ -1,0 +1,10 @@
+#
+# scenario for all_one
+#
+roles:
+  all_in_one:
+    classes:
+    class_groups:
+      - controller
+      - compute
+      - network_controller

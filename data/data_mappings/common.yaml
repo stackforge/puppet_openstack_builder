@@ -1,0 +1,36 @@
+debug:
+  - cinder::debug
+  - glance::api::debug
+  - glance::registry::debug
+  - horizon::django_debug
+  - keystone::debug
+  - quantum::debug
+  - neutron::debug
+  - quatum::agents::dhcp::debug
+  - quatum::agents::metadata::debug
+verbose:
+  - cinder::verbose
+  - glance::api::verbose
+  - glance::registry::verbose
+  - keystone::verbose
+  - quantum::verbose
+  - neutron::verbose
+admin_email:
+  - keystone::roles::admin::email
+# this needs to be supplied as a defualt
+# b/c the default to guest is kind of annoying
+# (and not entirely reasonable)
+rpc_user:
+  - cinder::qpid_username
+  - cinder::rabbit_userid
+  - nova::qpid::user
+  - nova::rabbitmq::userid
+  - nova::rabbit_userid
+  - nova::qpid_username
+  - quantum::rabbit_user
+  - neutron::rabbit_user
+  - quantum::qpid_username
+  - neutron::qpid_username
+enabled_services:
+  - coi::profiles::openstack::endpoints::enabled_services
+  - coi::profiles::openstack::databases::mysql::enabled_services

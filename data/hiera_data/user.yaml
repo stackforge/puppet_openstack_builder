@@ -1,0 +1,40 @@
+#
+# this emulates provided user data
+#
+controller_internal_address: 192.168.242.10
+controller_public_address: 192.168.242.10
+controller_admin_address: 192.168.242.10
+
+swift_internal_address: 192.168.242.41
+swift_public_address: 192.168.242.41
+swift_admin_address: 192.168.242.41
+
+# this is not done yet
+internal_ip: "%{ipaddress_eth3}"
+external_interface: eth2
+
+nova::compute::vncserver_proxyclient_address: "%{ipaddress_eth3}"
+
+secret_key: secret
+password: password123
+
+# user data for individual passwords
+cinder_db_password: cinder_pass
+glance_db_password: glance_pass
+keystone_db_password: key_pass
+nova_db_password: nova_pass
+network_db_password:   quantum_pass
+database_root_password: mysql_pass
+cinder_service_password: cinder_pass
+glance_service_password: glance_pass
+nova_service_password: nova_pass
+admin_password: Cisco123
+admin_token: keystone_admin_token
+network_service_password: quantum_pass
+rpc_password: openstack_rabbit_password
+metadata_shared_secret: metadata_shared_secret,
+horizon_secret_key: horizon_secret_key
+swift_service_password: swift_pass
+swift_hash: super_secret_swift_hash
+
+

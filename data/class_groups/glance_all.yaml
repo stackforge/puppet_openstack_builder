@@ -1,0 +1,5 @@
+classes:
+  - glance
+  - glance::api
+  - glance::registry
+  - "glance::backend::%{glance_backend}"

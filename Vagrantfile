@@ -9,7 +9,7 @@ require 'yaml'
 # 3 - COE openstack external (public)
 
 def parse_vagrant_config(
-  config_file=File.expand_path(File.join(File.dirname(__FILE__), 'config.yaml'))
+  config_file=File.expand_path(File.join(File.dirname(__FILE__), 'data', 'config.yaml'))
 )
   config = {
     'gui_mode'        => false,
@@ -34,7 +34,7 @@ end
 def process_nodes(config, v_config, apt_cache_proxy)
 
   node_group      = v_config['node_group']
-  node_group_file = File.expand_path(File.join(File.dirname(__FILE__), 'nodes', "#{node_group}.yaml"))
+  node_group_file = File.expand_path(File.join(File.dirname(__FILE__), 'data', 'nodes', "#{node_group}.yaml"))
 
   abort('node_group much be specific in config') unless node_group
   abort('file must exist for node group') unless File.exists?(node_group_file)
@@ -110,13 +110,13 @@ def apply_manifest(config, v_config, manifest_name='site.pp')
 
   options = []
 
-  if v_config[:verbose]
+  if v_config['verbose']
     options = options + ['--verbose', '--trace', '--debug', '--show_diff']
   end
 
   # ensure that when puppet applies the site manifest, it has hiera configured
   if manifest_name == 'site.pp'
-    config.vm.share_folder("hiera_data", '/etc/puppet/hiera_data', './hiera_data/')
+    config.vm.share_folder("data", '/etc/puppet/data', './data')
   end
 
   # Explicitly mount the shared folders, so we dont break with newer versions of vagrant
@@ -149,7 +149,7 @@ def run_puppet_agent(
 )
   options = ["--certname #{node_name}", '-t', '--pluginsync']
 
-  if v_config[:verbose]
+  if v_config['verbose']
     options = options + ['--trace', '--debug', '--show_diff']
   end
 
@@ -187,7 +187,7 @@ def configure_openstack_node(
   v_config,
   post_config = false
 )
-  cert_name = "#{node_name}-#{Time.now.strftime('%Y%m%d%m%s')}.domain.name"
+  cert_name = node_name
   get_box(config, box_name)
   setup_hostname(config, node_name)
   config.vm.customize ["modifyvm", :id, "--memory", memory]
@@ -315,20 +315,20 @@ Vagrant::Config.run do |config|
   end
 
   # Openstack control server
-  config.vm.define :control_pxe do |config|
-    config.vm.box = 'blank'
-    config.vm.boot_mode = 'gui'
-    config.ssh.port = 2727
-    setup_networks(config, '10', :eth1_mac => '001122334455')
-  end
+#  config.vm.define :control_pxe do |config|
+#    config.vm.box = 'blank'
+#    config.vm.boot_mode = 'gui'
+#    config.ssh.port = 2727
+#    setup_networks(config, '10', :eth1_mac => '001122334455')
+#  end
 
   # Openstack compute server
-  config.vm.define :compute_pxe do |config|
-    config.vm.box = 'blank'
-    config.vm.boot_mode = 'gui'
-    config.ssh.port = 2728
-    setup_networks(config, '10', :eth1_mac => '001122334466')
-  end
+#  config.vm.define :compute_pxe do |config|
+#    config.vm.box = 'blank'
+#    config.vm.boot_mode = 'gui'
+#    config.ssh.port = 2728
+#    setup_networks(config, '10', :eth1_mac => '001122334466')
+#  end
 
   process_nodes(config, v_config, apt_cache_proxy)
 

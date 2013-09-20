@@ -1,0 +1,7 @@
+quantum::core_plugin: quantum.plugins.openvswitch.ovs_quantum_plugin.OVSQuantumPluginV2
+neutron::core_plugin: neutron.plugins.openvswitch.ovs_neutron_plugin.OVSNeutronPluginV2
+quantum::agents::l3::interface_driver: quantum.agent.linux.interface.OVSInterfaceDriver
+neutron::agents::l3::interface_driver: neutron.agent.linux.interface.OVSInterfaceDriver
+quantum::agents::dhcp::interface_driver: quantum.agent.linux.interface.OVSInterfaceDriver
+neutron::agents::dhcp::interface_driver: neutron.agent.linux.interface.OVSInterfaceDriver
+

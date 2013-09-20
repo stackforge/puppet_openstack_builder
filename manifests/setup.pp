@@ -26,6 +26,9 @@ case $::osfamily {
     $pkg_list       = ['git', 'curl', 'vim', 'cobbler']
     package { $puppet_pkg:
       ensure => $puppet_version,
+    } ->
+    package { 'puppetmaster-common':
+      ensure => $puppet_version,
     }
   }
 }
@@ -47,15 +50,38 @@ file { "${settings::confdir}/hiera.yaml":
 '
 ---
 :backends:
-  - yaml
+  - data_mapper
 :hierarchy:
-  - "%{hostname}"
+  - "hostname/%{hostname}"
+  - user
   - jenkins
-  - "%{openstack_role}"
-  - "%{role}"
+  - "cinder_backend/%{cinder_backend}"
+  - "glance_backend/%{glance_backend}"
+  - "rpc_type/%{rpc_type}"
+  - "db_type/%{db_type}"
+  - "tenant_network_type/%{tenant_network_type}"
+  - "network_type/%{network_type}"
+  - "network_plugin/%{network_plugin}"
+  - "password_management/%{password_management}"
+  - "scenario/%{scenario}"
+  - grizzly_hack
   - common
 :yaml:
-   :datadir: /etc/puppet/hiera_data'
+   :datadir: /etc/puppet/data/hiera_data
+:data_mapper:
+   # this should be contained in a module
+   :datadir: /etc/puppet/data/data_mappings
+'
+}
+
+# add the correct node terminus
+ini_setting {'puppetmastermodulepath':
+  ensure  => present,
+  path    => '/etc/puppet/puppet.conf',
+  section => 'main',
+  setting => 'node_terminus',
+  value   => 'scenario',
+  require => Package['puppet'],
 }
 
 # lay down a file that can be used for subsequent runs to puppet. Often, the

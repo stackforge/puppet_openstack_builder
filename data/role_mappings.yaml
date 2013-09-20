@@ -1,0 +1,8 @@
+control-server: controller
+compute-server: compute
+compute-server02: compute
+
+swift-proxy01: swift_proxy
+swift-storage01: swift_storage
+swift-storage02: swift_storage
+swift-storage02: swift_storage

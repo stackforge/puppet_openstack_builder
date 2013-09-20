@@ -1,0 +1,8 @@
+#
+# these classes are required to
+# deploy the simple test script
+#
+classes:
+  - openstack::client
+  - openstack::auth_file
+  - openstack::test_file

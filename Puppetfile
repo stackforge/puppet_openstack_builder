@@ -69,6 +69,8 @@ mod 'manifests', :git => "#{base_url}/#{user_name}/#{release}-manifests", :ref =
 # and have not yet been ported to CiscoSystems.
 
 # This top level module contains the roles that are used to deploy openstack
+mod 'bodepd/hiera_data_mapper',  :git => 'https://github.com/bodepd/hiera_data_mapper'
+mod 'bodepd/scenario_node_terminus', :git => 'https://github.com/bodepd/scenario_node_terminus'
 
 mod 'CiscoSystems/coi', :git => "#{base_url}/CiscoSystems/puppet-COI", :ref => 'master'
 # no existing downstream module
@@ -76,6 +78,7 @@ mod 'puppetlabs/postgresql', :git => "#{base_url}/puppetlabs/puppetlabs-postgres
 mod 'puppetlabs/puppetdb', :git => "#{base_url}/puppetlabs/puppetlabs-puppetdb", :ref => 'master'
 mod 'puppetlabs/vcsrepo', :git => "#{base_url}/puppetlabs/puppetlabs-vcsrepo", :ref => 'master'
 mod 'ripienaar/ruby-puppetdb', :git => "#{base_url}/ripienaar/ruby-puppetdb"
+mod 'ripienaar/catalog-diff', :git => "#{base_url}/ripienaar/puppet-catalog-diff", :ref => 'master'
 # do I really need this firewall module?
 mod 'puppetlabs/firewall', :git => "#{base_url}/puppetlabs/puppetlabs-firewall", :ref => 'master'
 # stephenrjohnson
@@ -94,7 +97,9 @@ mod 'stackforge/cinder',    :git => "#{openstack_repo_prefix}-cinder",    :ref =
 mod 'stackforge/glance',    :git => "#{openstack_repo_prefix}-glance",    :ref => openstack_module_branch
 mod 'stackforge/keystone',  :git => "#{openstack_repo_prefix}-keystone",  :ref => openstack_module_branch
 mod 'stackforge/horizon',   :git => "#{openstack_repo_prefix}-horizon",   :ref => openstack_module_branch
-mod 'stackforge/nova',      :git => "#{openstack_repo_prefix}-nova",      :ref => openstack_module_branch
+mod 'stackforge/nova',
+  :git => "#{openstack_repo_prefix}-nova",
+  :ref => openstack_module_branch
 mod "stackforge/#{neutron_name}",
   :git => "#{openstack_repo_prefix}-neutron",
   :ref => openstack_module_branch
@@ -126,7 +131,7 @@ mod 'CiscoSystems/inifile', :git => "#{base_url}/CiscoSystems/puppet-inifile", :
 # upstream is saz
 mod 'CiscoSystems/memcached', :git => "#{base_url}/CiscoSystems/puppet-memcached", :ref => 'origin/grizzly'
 # this uses master b/c the grizzly branch does not exist
-mod 'CiscoSystems/ssh',  :git => "#{base_url}/CiscoSystems/puppet-ssh", :ref => 'master'
+mod 'CiscoSystems/ssh',  :git => "#{base_url}/bodepd/puppet-ssh", :ref => 'master'
 
 # upstream is duritong
 mod 'CiscoSystems/sysctl', :git => "#{base_url}/CiscoSystems/puppet-sysctl", :ref => 'origin/grizzly'

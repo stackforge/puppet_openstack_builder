@@ -1,0 +1,50 @@
+# COI parameters
+ntp_servers:
+  - time-server.domain.name
+build_node_name: build-server
+domain_name: domain.name
+public_interface: eth1
+private_interface: eth1
+external_interface: eth2
+puppet::master::version: '3.2.3-1puppetlabs1'
+
+enabled_services:
+  - glance
+  - cinder
+  - keystone
+  - nova
+  # should I be able to interpolate this?
+  - quantum
+  - swift
+
+# openstack parameters
+admin_email: root@localhost
+rpc_user: openstack_rabbit_user
+verbose: false
+cinder::scheduler::scheduler_driver: 'cinder.scheduler.simple.SimpleScheduler'
+cinder::volume::iscsi::iscsi_ip_address: 0.0.0.0
+service_tenant: services
+admin_tenant: admin
+package_ensure: present
+nova::compute::libvirt::libvirt_type: qemu
+
+# information for package repos
+openstack_release: precise-updates/grizzly
+package_repo: cloud_archive
+
+# used for testing
+openstack::test_file::image_type: cirros
+openstack::client::ceilometer: false
+
+# swift info
+glance::backend::swift::swift_store_user: swift_user
+glance::backend::swift::swift_store_key: secret_key
+glance::backend::swift::swift_store_auth_address: '127.0.0.1' 
+glance::backend::swift::swift_store_create_container_on_put: true
+
+swift_local_net_ip: "%{ipaddress_eth3}"
+openstack::swift::storage-node::storage_type: loopback
+openstack::swift::storage-node::storage_devices:
+  - 1
+  - 2
+  - 3

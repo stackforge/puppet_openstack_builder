@@ -4,4 +4,4 @@ vendor
 .tmp
 .vagrant
 *.log*
-hiera_data/jenkins.yaml
+data/hiera_data/jenkins.yaml

@@ -1,0 +1,6 @@
+quantum::allow_overlapping_ips: true
+neutron::allow_overlapping_ips: true
+quantum::agents::l3::use_namespaces: true
+neutron::agents::l3::use_namespaces: true
+quantum::agents::dhcp::use_namespaces: true
+neutron::agents::dhcp::use_namespaces: true

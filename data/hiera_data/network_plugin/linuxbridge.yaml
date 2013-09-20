@@ -1,0 +1,6 @@
+quantum::core_plugin: quantum.plugins.linuxbridge.lb_quantum_plugin.LinuxBridgePluginV2
+neutron::core_plugin: neutron.plugins.linuxbridge.lb_neutron_plugin.LinuxBridgePluginV2
+quantum::agents::l3::interface_driver: quantum.agent.linux.interface.BridgeInterfaceDriver
+neutron::agents::l3::interface_driver: neutron.agent.linux.interface.BridgeInterfaceDriver
+quantum::agents::dhcp::interface_driver: quantum.agent.linux.interface.BridgeInterfaceDriver
+neutron::agents::dhcp::interface_driver: neutron.agent.linux.interface.BridgeInterfaceDriver

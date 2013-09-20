@@ -1,0 +1,36 @@
+# It is too late for changes to grizzly.
+# The following config is specific to grizzly
+# and should not be required for havana
+#
+
+# TODO I need to submit a patch to update these
+nova::cert::enabled: true
+nova::api::enabled: true
+nova::compute::enabled: true
+nova::conductor::enabled: true
+nova::consoleauth::enabled: true
+nova::network::enabled: true
+nova::objectstore::enabled: true
+nova::qpid::enabled: true
+nova::scheduler::enabled: true
+nova::vncproxy::enabled: true
+nova::volume::enabled: true
+
+# the cinder default package states are not consistent,
+# they need to be updated
+cinder::scheduler::package_ensure: present
+cinder::api::package_ensure: present
+cinder::volume::package_ensure: present
+
+openstack::auth_file::admin_tenant: openstack
+
+# the keystone tenant and user for glance are not consistent,
+# they need to be fixed
+glance::api::keystone_tenant: services
+glance::api::keystone_user: glance
+glance::registry::keystone_tenant: services
+glance::registry::keystone_user: glance
+
+keystone::db::mysql::user: keystone
+
+nova::keystone::auth::cinder: true

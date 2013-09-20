@@ -29,7 +29,7 @@ package_ensure: present
 nova::compute::libvirt::libvirt_type: qemu
 
 # information for package repos
-openstack_release: precise-updates/grizzly
+openstack_release: grizzly
 package_repo: cloud_archive
 
 # used for testing

@@ -4,6 +4,8 @@ apt_cache:  '192.168.242.99' # Apt cache server, set to 'false' to disable
 apt_mirror: 'us.archive.ubuntu.com'
 domain:     'domain.name'
 verbose:    false
+operatingsystem: ubuntu
+scenario: 2_role
 
 # puppet config
 application:
@@ -31,7 +33,3 @@ enabled_services:
   # should I be able to interpolate this?
   - quantum
   - swift
-
-operatingsystem: ubuntu
-node_group: swift
-scenario: 2_role

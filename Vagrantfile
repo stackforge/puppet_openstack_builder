@@ -16,7 +16,7 @@ def parse_vagrant_config(
     'operatingsystem' => 'ubuntu',
     'verbose'         => false,
     'update_repos'    => true,
-    'node_group'      => 'multi_node'
+    'scenario'        => '2_role'
   }
   if File.exists?(config_file)
     overrides = YAML.load_file(config_file)
@@ -33,7 +33,7 @@ end
 #
 def process_nodes(config, v_config, apt_cache_proxy)
 
-  node_group      = v_config['node_group']
+  node_group      = v_config['scenario']
   node_group_file = File.expand_path(File.join(File.dirname(__FILE__), 'data', 'nodes', "#{node_group}.yaml"))
 
   abort('node_group much be specific in config') unless node_group

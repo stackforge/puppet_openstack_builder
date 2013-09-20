@@ -90,7 +90,7 @@ if [ "${test_type:-}" = 'swift' ]; then
 
   source tests/swift.sh
 
-  echo 'node_group: swift' >> data/config.yaml
+  sed -i 's/scenario:.*/scenario: swift/g' data/config.yaml
   destroy_swift
   deploy_swift_multi
 
@@ -106,12 +106,12 @@ elif [ "${test_type:-}" = 'openstack_multi' ]; then
 
   if [[ "${test_mode}" == tempest* ]]; then
     # pull in functions to install controller with tempest
-    echo 'node_group: multi_node_tempest' >> data/config.yaml
+    sed -i 's/scenario:.*/scenario: multi_node_tempest/g' data/config.yaml
     source tests/multi_node_tempest.sh
   else
-    echo 'node_group: multi_node' >> data/config.yaml
+    sed -i 's/scenario:.*/scenario: 2_role/g' data/config.yaml
     # pull in functions that test multi-node
-    source tests/multi_node.sh
+    source tests/2_role.sh
   fi
 
   # perform a multi-node openstack installation test by default

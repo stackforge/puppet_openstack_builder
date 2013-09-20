@@ -4,6 +4,7 @@
 roles:
   all_in_one:
     classes:
+      - coi::profiles::openstack::base
     class_groups:
       - controller
       - compute

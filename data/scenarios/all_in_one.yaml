@@ -9,3 +9,8 @@ roles:
       - controller
       - compute
       - network_controller
+  compute:
+    classes:
+      - coi::profiles::openstack::base
+    class_groups:
+      - compute

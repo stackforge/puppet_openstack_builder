@@ -34,3 +34,108 @@ rpc_user:
 enabled_services:
   - coi::profiles::openstack::endpoints::enabled_services
   - coi::profiles::openstack::databases::mysql::enabled_services
+#
+# The all_in_one specification of how to map services to each other
+# is assumed to be a default. When you want to move away from all_in_one,
+# you should override these things with a custom scenario data mapping
+#
+controller_internal_address:
+  - glance::api::registry_host 
+  - cinder::qpid_hostname
+  - cinder::rabbit_host
+  - nova::rabbit_host
+  - nova::qpid_hostname
+  - quantum::rabbit_host
+  - quantum::qpid_hostname
+  - neutron::qpid_hostname
+  - neutron::rabbit_host
+  - ceilometer::db::mysql::host
+  - cinder::db::mysql::host
+  - glance::db::mysql::host
+  - keystone::db::mysql::host
+  - nova::db::mysql::host
+  - quantum::db::mysql::host
+  - neutron::db::mysql::host
+  # internal endpoint addresses are the same as this
+  - cinder::keystone::auth::internal_address
+  - glance::keystone::auth::internal_address
+  - nova::keystone::auth::internal_address
+  - cinder::api::keystone_auth_host
+  - keystone::endpoint::internal_address
+  - glance::api::auth_host
+  - glance::registry::auth_host
+  - horizon::keystone_host
+  - nova::api::auth_host
+  - quantum::server::auth_host
+  - neutron::server::auth_host
+  - quantum::keystone::auth::internal_address
+  - neutron::keystone::auth::internal_address
+  - openstack::auth_file::controller_node
+  - ceilometer::db::mysql::allowed_hosts
+  - cinder::db:mysql::allowed_hosts
+  - glance::db:mysql::allowed_hosts
+  - keystone::db::mysql::allowed_hosts
+  - nova::db:mysql::allowed_hosts
+  - quantum::db::mysql::allowed_hosts
+  - neutron::db::mysql::allowed_hosts
+  - postgresql::config::listen_addresses
+  - mysql::config::bind_address
+  - quantum::agents::metadata::metadata_ip
+  - neutron::agents::metadata::metadata_ip
+  # As these get decomposed, this will need to be replaced
+  - openstack::swift::proxy::keystone_host
+  - swift::keystone::auth::internal_address
+controller_public_address:
+  - nova::vncproxy::host
+  - nova::compute::vncproxy_host
+  - cinder::keystone::auth::public_address
+  - glance::keystone::auth::public_address
+  - nova::keystone::auth::public_address
+  - keystone::endpoint::public_address
+  - quantum::keystone::auth::public_address
+  - neutron::keystone::auth::public_address
+  - swift::keystone::auth::public_address
+  - openstack::swift::proxy::swift_proxy_net_ip
+controller_admin_address:
+  - cinder::keystone::auth::admin_address
+  - glance::keystone::auth::admin_address
+  - nova::keystone::auth::admin_address
+  - keystone::endpoint::admin_address
+  - quantum::keystone::auth::admin_address
+  - neutron::keystone::auth::admin_address
+  - swift::keystone::auth::admin_address
+swift_local_net_ip:
+  - openstack::swift::proxy::swift_local_net_ip
+  - openstack::swift::storage-node::swift_local_net_ip
+
+compute_internal_address:
+  - nova::compute::libvirt::vncserver_listen
+  # this is not right. This is wrong.
+  - quantum::agents::ovs::ovs_local_ip
+# right now , the sql conneciton creates a tight coupling between the scenario
+# and the key used to retrieve its password. This is an indicator that this needs to
+# be changed.
+"%{db_type}://cinder:%{cinder_db_password}@%{controller_internal_address}/cinder":
+  - cinder::sql_connection
+"%{db_type}://glance:%{glance_db_password}@%{controller_internal_address}/glance":
+  - glance::api::sql_connection
+  - glance::registry::sql_connection
+"%{db_type}://keystone:%{keystone_db_password}@%{controller_internal_address}/keystone":
+  - keystone::sql_connection
+"%{db_type}://nova:%{nova_db_password}@%{controller_internal_address}/nova":
+  - nova::sql_connection
+"%{db_type}://%{network_service}:%{network_db_password}@%{controller_internal_address}/%{network_service}":
+  - quantum::plugins::ovs::sql_connection
+  - quantum::plugins::linuxbridge::sql_connection
+  - neutron::plugins::ovs::sql_connection
+  - neutron::plugins::linuxbridge::sql_connection
+"http://%{controller_internal_address}:9696":
+  - nova::network::quantum::quantum_url
+  - nova::network::neutron::neutron_url
+"http://%{controller_internal_address}:35357/v2.0":
+  - nova::network::quantum::quantum_admin_auth_url
+  - nova::network::neutron::neutron_admin_auth_url
+  - quantum::agents::metadata::auth_url
+  - neutron::agents::metadata::auth_url
+"%{controller_internal_address}:9292":
+  - nova::glance_api_servers

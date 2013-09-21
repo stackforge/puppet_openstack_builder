@@ -4,3 +4,7 @@ nodes:
     memory:      3000
     ip_number:   10
     post_config: 'route add -net 172.16.2.0 netmask 255.255.255.0 gw 192.168.242.100'
+  compute_basevm:
+    hostname:   compute-server02
+    memory:     2512
+    ip_number:  21

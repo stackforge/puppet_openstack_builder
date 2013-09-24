@@ -16,19 +16,18 @@ include puppet::repo::puppetlabs
 
 case $::osfamily {
   'Redhat': {
-    $puppet_pkg     = 'puppet'
     $puppet_version = '3.2.3-1.el6'
     $pkg_list       = ['git', 'curl', 'httpd']
   } 
   'Debian': {
-    $puppet_pkg     = 'puppet-common'
     $puppet_version = '3.2.3-1puppetlabs1'
     $pkg_list       = ['git', 'curl', 'vim', 'cobbler']
-    package { $puppet_pkg:
+    package { 'puppet-common':
       ensure => $puppet_version,
     } ->
     package { 'puppetmaster-common':
       ensure => $puppet_version,
+      before => Package['puppet'],
     }
   }
 }
@@ -36,7 +35,6 @@ case $::osfamily {
 
 package { 'puppet':
   ensure  => $puppet_version,
-  require => Package[$puppet_pkg],
 }
 
 # dns resolution should be setup correctly

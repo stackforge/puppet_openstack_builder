@@ -1,17 +1,3 @@
-node build-server {
-
-  Exec { logoutput => on_failure }
-
-  $role = 'openstack'
-
-  include coi::roles::build_server
-  include coi::profiles::openstack::base
-  include openstack::client
-  include openstack::auth_file
-  include openstack::test_file
-
-}
-
 node /control-tempest-server/ {
 
   $role           = 'openstack'

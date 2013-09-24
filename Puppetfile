@@ -74,7 +74,7 @@ mod 'bodepd/scenario_node_terminus', :git => 'https://github.com/bodepd/scenario
 
 mod 'CiscoSystems/coi', :git => "#{base_url}/CiscoSystems/puppet-COI", :ref => 'master'
 # no existing downstream module
-mod 'puppetlabs/postgresql', :git => "#{base_url}/puppetlabs/puppetlabs-postgresql", :ref => 'master'
+mod 'puppetlabs/postgresql', :git => "#{base_url}/puppetlabs/puppetlabs-postgresql", :ref => '2.5.0'
 mod 'puppetlabs/puppetdb', :git => "#{base_url}/puppetlabs/puppetlabs-puppetdb", :ref => 'master'
 mod 'puppetlabs/vcsrepo', :git => "#{base_url}/puppetlabs/puppetlabs-vcsrepo", :ref => 'master'
 mod 'ripienaar/ruby-puppetdb', :git => "#{base_url}/ripienaar/ruby-puppetdb"

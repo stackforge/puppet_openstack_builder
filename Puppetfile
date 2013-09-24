@@ -155,3 +155,14 @@ mod 'CiscoSystems/pip', :git => "#{base_url}/CiscoSystems/puppet-pip", :ref => '
 
 mod 'CiscoSystems/dnsmasq', :git => "#{base_url}/CiscoSystems/puppet-dnsmasq", :ref => 'origin/grizzly'
 mod 'CiscoSystems/naginator', :git => "#{base_url}/CiscoSystems/puppet-naginator", :ref => 'origin/grizzly'
+
+#### HA Modules ###
+mod 'CiscoSystems/augeas', :git => "#{base_url}/CiscoSystems/puppet-augeas", :ref => 'origin/grizzly'
+mod 'CiscoSystems/filemapper', :git => "#{base_url}/CiscoSystems/puppet-filemapper", :ref => 'origin/grizzly'
+mod 'CiscoSystems/galera', :git => "#{base_url}/CiscoSystems/puppet-galera", :ref => 'origin/grizzly'
+mod 'CiscoSystems/haproxy', :git => "#{base_url}/CiscoSystems/puppet-haproxy", :ref => 'origin/grizzly'
+mod 'CiscoSystems/keepalived', :git => "#{base_url}/CiscoSystems/puppet-keepalived", :ref => 'origin/grizzly'
+mod 'CiscoSystems/network', :git => "#{base_url}/CiscoSystems/puppet-network", :ref => 'origin/grizzly'
+mod 'CiscoSystems/openstack-ha', :git => "#{base_url}/CiscoSystems/puppet-openstack-ha", :ref => 'origin/grizzly'
+mod 'CiscoSystems/ceph', :git => "#{base_url}/CiscoSystems/puppet-ceph", :ref => 'origin/grizzly'
+mod 'CiscoSystems/boolean', :git => "#{base_url}/CiscoSystems/puppet-boolean", :ref => 'origin/grizzly'

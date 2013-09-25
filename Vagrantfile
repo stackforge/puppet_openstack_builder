@@ -47,6 +47,7 @@ def process_nodes(config, v_config, apt_cache_proxy)
         options['memory'],
         options['image_name'] || v_config['operatingsystem'],
         options['ip_number'],
+        options['puppet_type'] || 'agent',
         apt_cache_proxy,
         v_config,
         options['post_config']
@@ -106,12 +107,22 @@ end
 #
 # run puppet apply on the site manifest
 #
-def apply_manifest(config, v_config, manifest_name='site.pp')
+def apply_manifest(config, v_config, manifest_name='site.pp', certname=nil)
 
   options = []
 
   if v_config['verbose']
     options = options + ['--verbose', '--trace', '--debug', '--show_diff']
+  end
+
+  if certname
+    options.push("--certname #{certname}")
+  else
+    # I need to add a special certname here to
+    # ensure it's hostname does not match the ENC
+    # which could cause the node to be configured
+    # from the setup manifest on the second run
+    options.push('--certname setup')
   end
 
   # ensure that when puppet applies the site manifest, it has hiera configured
@@ -129,6 +140,10 @@ def apply_manifest(config, v_config, manifest_name='site.pp')
     puppet.manifest_file  = manifest_name
     puppet.module_path    = 'modules'
     puppet.options        = options
+  end
+
+  config.vm.provision :shell do |shell|
+    shell.inline = "sed -i 's/.*search.*/search %s/g' /etc/resolv.conf;" % v_config['domain']
   end
 
   # uninstall the puppet gem b/c setup.pp installs the puppet package
@@ -183,6 +198,7 @@ def configure_openstack_node(
   memory,
   box_name,
   net_id,
+  puppet_type,
   apt_cache_proxy,
   v_config,
   post_config = false
@@ -195,100 +211,27 @@ def configure_openstack_node(
   if v_config['operatingsystem'] == 'ubuntu'
     configure_apt_mirror(config, v_config['apt_mirror'], apt_cache_proxy)
   end
+
   apply_manifest(config, v_config, 'setup.pp')
-  run_puppet_agent(config, cert_name, v_config)
+
+  if puppet_type == 'apply'
+    apply_manifest(config, v_config, 'site.pp', cert_name)
+  elsif puppet_type == 'agent'
+    run_puppet_agent(config, cert_name, v_config)
+  else
+    abort("Unexpected puppet_type #{puppet_type}")
+  end
 
   if post_config
-    config.vm.provision :shell do |shell|
-      shell.inline  = post_config
-    end
-  end
-
-end
-
-# configure ubuntu based build node
-def setup_ubuntu_build_server(config, v_config, apt_cache_proxy)
-  config.vm.define :build do |config|
-    get_box(config, 'precise64')
-    setup_networks(config, '100')
-    setup_hostname(config, 'build-server')
-
-    config.vm.customize ["modifyvm", :id, "--memory", 2525]
-
-    # Configure apt mirror
-    config.vm.provision :shell do |shell|
-      shell.inline = "sed -i 's/us.archive.ubuntu.com/%s/g' /etc/apt/sources.list" % v_config['apt_mirror']
-    end
-    # Ensure DHCP isn't going to join us to a domain other than domain.name
-    # since puppet has to sign its cert against the domain it makes when it runs.
-    config.vm.provision :shell do |shell|
-      shell.inline = "sed -i 's/\#supersede/supersede/g' /etc/dhcp/dhclient.conf; sed -i 's/fugue.com home.vix.com/%s/g' /etc/dhcp/dhclient.conf; sed -i 's/domain-name,//g' /etc/dhcp/dhclient.conf" % v_config['domain']
-    end
-
-    config.vm.provision :shell do |shell|
-      shell.inline = "%s apt-get update; dhclient -r eth0 && dhclient eth0;" % apt_cache_proxy
-    end
-
-    apply_manifest(config, v_config, 'setup.pp')
-
-    # pre-import the ubuntu image if we are using a custom mirror
-    if v_config['apt-mirror'] != 'us.archive.ubuntu.com'
+    Array(post_config).each do |shell_command|
       config.vm.provision :shell do |shell|
-        shell.inline = "cobbler-ubuntu-import -c precise-x86_64; if [ $? == '0' ]; then apt-get install -y cobbler; cobbler-ubuntu-import -m http://%s/ubuntu precise-x86_64; fi" % v_config['apt_mirror']
+        shell.inline  = shell_command
       end
     end
-
-    apply_manifest(config, v_config)
-
-    # Configure puppet
-    config.vm.provision :shell do |shell|
-      shell.inline = 'puppet plugin download --server build-server.domain.name;service apache2 restart'
-    end
-    # enable ip forwarding and NAT so that the build server can act
-    # as an external gateway for the quantum router.
-    config.vm.provision :shell do |shell|
-        shell.inline = "ip addr add 172.16.2.1/24 dev eth2; sysctl -w net.ipv4.ip_forward=1; iptables -A FORWARD -o eth0 -i eth1 -s 172.16.2.0/24 -m conntrack --ctstate NEW -j ACCEPT; iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT; iptables -t nat -F POSTROUTING; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE"
-    end
   end
+
 end
 
-
-# configure redhat based build node
-def setup_redhat_build_server(config, v_config)
-  config.vm.define :build do |config|
-    get_box(config, 'centos')
-    setup_networks(config, '100')
-    setup_hostname(config, 'build-server')
-
-    config.vm.customize ["modifyvm", :id, "--memory", 2525]
-
-    # Ensure DHCP isn't going to join us to a domain other than domain.name
-    # since puppet has to sign its cert against the domain it makes when it runs.
-    config.vm.provision :shell do |shell|
-      shell.inline = "sed -i '$ a\ supersede domain-search %s;' /etc/dhcp/dhclient-eth0.conf;" % v_config['domain']
-    end
-
-    config.vm.provision :shell do |shell|
-      shell.inline = "sed -i 's/.*search.*/search %s/g' /etc/resolv.conf;" % v_config['domain']
-    end
-
-    apply_manifest(config, v_config, 'setup.pp')
-
-    apply_manifest(config, v_config)
-
-    # Configure puppet
-    config.vm.provision :shell do |shell|
-      shell.inline = 'puppet plugin download --server build-server.domain.name;service httpd restart'
-    end
-    
-    # enable ip forwarding and NAT so that the build server can act
-    # as an external gateway for the quantum router.
-    config.vm.provision :shell do |shell|
-        shell.inline = "ip addr add 172.16.2.1/24 dev eth2; sysctl -w net.ipv4.ip_forward=1; iptables -A FORWARD -o eth0 -i eth1 -s 172.16.2.0/24 -m conntrack --ctstate NEW -j ACCEPT; iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT; iptables -t nat -F POSTROUTING; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE"
-    end
-  end
-end
-  
 Vagrant::Config.run do |config|
   require 'fileutils'
 
@@ -306,29 +249,6 @@ Vagrant::Config.run do |config|
     apply_manifest(config, v_config, 'setup.pp')
     apply_manifest(config, v_config)
   end
-
-  # setup "build" server
-  if v_config['operatingsystem'] == 'ubuntu'
-    setup_ubuntu_build_server(config, v_config, apt_cache_proxy)
-  elsif v_config['operatingsystem'] == 'redhat'
-    setup_redhat_build_server(config, v_config)
-  end
-
-  # Openstack control server
-#  config.vm.define :control_pxe do |config|
-#    config.vm.box = 'blank'
-#    config.vm.boot_mode = 'gui'
-#    config.ssh.port = 2727
-#    setup_networks(config, '10', :eth1_mac => '001122334455')
-#  end
-
-  # Openstack compute server
-#  config.vm.define :compute_pxe do |config|
-#    config.vm.box = 'blank'
-#    config.vm.boot_mode = 'gui'
-#    config.ssh.port = 2728
-#    setup_networks(config, '10', :eth1_mac => '001122334466')
-#  end
 
   process_nodes(config, v_config, apt_cache_proxy)
 

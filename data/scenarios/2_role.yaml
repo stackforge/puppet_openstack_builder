@@ -2,6 +2,12 @@
 # the two node 
 #
 roles:
+  build:
+    classes:
+      - coi::profiles::openstack::base
+    class_groups:
+      - test_file
+      - build
   controller:
     classes:
       - naginator::control_target

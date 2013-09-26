@@ -9,6 +9,7 @@ nodes:
       - 'service apache2 restart'
       - "ip addr add 172.16.2.1/24 dev eth2; sysctl -w net.ipv4.ip_forward=1; iptables -A FORWARD -o eth0 -i eth1 -s 172.16.2.0/24 -m conntrack --ctstate NEW -j ACCEPT; iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT; iptables -t nat -F POSTROUTING; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE"
     fragments:
+      - 'bash-top'
       - 'fqdn-fix'
       - 'pw-mirror-network'
       - 'packages-modules'
@@ -22,6 +23,7 @@ nodes:
     ip_number:    10
     post_config:  'route add -net 172.16.2.0 netmask 255.255.255.0 gw 192.168.242.100'
     fragments:
+      - 'bash-top'
       - 'fqdn-fix'
       - 'pw-mirror-network'
       - 'packages-modules'
@@ -34,6 +36,7 @@ nodes:
     ip_number:    21
     vagrant_name: compute_basevm
     fragments:
+      - 'bash-top'
       - 'fqdn-fix'
       - 'pw-mirror-network'
       - 'packages-modules'

@@ -42,6 +42,11 @@ host {
   'build-server': ip => '192.168.242.100', host_aliases => 'build-server.domain.name';
 }
 
+class { ntp:
+  servers    => 'ntp.esl.cisco.com',
+  autoupdate => true,
+}
+
 # set up our hiera-store!
 file { "${settings::confdir}/hiera.yaml":
   content =>

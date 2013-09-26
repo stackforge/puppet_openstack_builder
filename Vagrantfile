@@ -40,10 +40,10 @@ def process_nodes(config, v_config, apt_cache_proxy)
   abort('file must exist for node group') unless File.exists?(node_group_file)
 
   (YAML.load_file(node_group_file)['nodes'] || {}).each do |name, options|
-    config.vm.define name.intern do |config|
+    config.vm.define options['vagrant_name'] do |config|
       configure_openstack_node(
         config,
-        options['hostname'],
+        name.intern
         options['memory'],
         options['image_name'] || v_config['operatingsystem'],
         options['ip_number'],

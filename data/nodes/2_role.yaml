@@ -8,12 +8,35 @@ nodes:
       - 'puppet plugin download --server build-server.domain.name'
       - 'service apache2 restart'
       - "ip addr add 172.16.2.1/24 dev eth2; sysctl -w net.ipv4.ip_forward=1; iptables -A FORWARD -o eth0 -i eth1 -s 172.16.2.0/24 -m conntrack --ctstate NEW -j ACCEPT; iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT; iptables -t nat -F POSTROUTING; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE"
+    fragments:
+      - 'build-fqdn-fix'
+      - 'pw-mirror-network'
+      - 'packages-modules'
+      - 'hiera-config'
+      - 'puppet-setup'
+      - 'puppet-site'
+      - 'build-sig-stack'
   control-server:
     vagrant_name: control_basevm
     memory:       3000
     ip_number:    10
     post_config:  'route add -net 172.16.2.0 netmask 255.255.255.0 gw 192.168.242.100'
+    fragments:
+      - 'pw-mirror-network'
+      - 'packages-modules'
+      - 'puppet-setup'
+      - 'stack-wait-build'
+      - 'puppet-agent'
+      - 'control-sig-compute'
   compute-server02:
     memory:       2512
     ip_number:    21
     vagrant_name: compute_basevm
+    fragments:
+      - 'pw-mirror-network'
+      - 'packages-modules'
+      - 'puppet-setup'
+      - 'stack-wait-build'
+      - 'puppet-agent'
+      - 'compute-wait-control'
+      - 'puppet-agent'

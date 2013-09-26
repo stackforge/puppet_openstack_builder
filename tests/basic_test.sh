@@ -19,7 +19,7 @@ if [ -d vendor/librarian-puppet-simple ]; then
   git pull
   cd ../..
 else
-  git clone git://github.com/bodepd/librarian-puppet-simple vendor/librarian-puppet-simple
+  git clone "${git_protocol:-git}"://github.com/bodepd/librarian-puppet-simple vendor/librarian-puppet-simple
 fi
 export PATH=`pwd`/vendor/librarian-puppet-simple/bin/:$PATH
 

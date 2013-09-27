@@ -1,0 +1,4 @@
+until [ $(curl http://%{controller_public_address}/status | grep up) ]; do
+  echo "waited for control" >> /root/waiting
+  sleep 1
+done

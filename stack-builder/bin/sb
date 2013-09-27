@@ -1,0 +1,54 @@
+#!/usr/bin/env python
+from build import make, get 
+from clean import kill
+from fragment import show 
+
+from novaclient.v1_1 import client as nclient
+from quantumclient.quantum import client as qclient
+
+import argparse
+import os
+
+def main():
+    user = os.environ.get('OS_USERNAME')
+    tenant = os.environ.get('OS_TENANT_NAME')
+    auth_url = os.environ.get('OS_AUTH_URL')
+    password = os.environ.get('OS_PASSWORD')
+    n = nclient.Client(user, password, tenant, auth_url, service_type="compute", insecure=True)
+    q = qclient.Client('2.0', auth_url=auth_url, username=user, tenant_name=tenant, password=password)
+
+    parser = argparse.ArgumentParser(description='Stack Builder: a tool for deploying Openstack on Openstack using puppet')
+    subparsers = parser.add_subparsers()
+
+    parser_make = subparsers.add_parser('make', help='make help')
+    parser_make.add_argument('-i', '--image', default='precise-x86_64', help='name of image to use')
+    parser_make.add_argument('-c', '--ci_subnet_index', default=123, type=int, help='subnet to use (10.x.0.0/16)')
+    parser_make.add_argument('-s', '--scenario', default='2_role', help='Scenario to run')
+    parser_make.add_argument('-p', '--data_path', default='./data', help='Path to the data directory containing yaml config')
+    parser_make.add_argument('-f', '--fragment_path', default='./stack-builder/fragments', help='Path to config fragments')
+    #parser_make.add_argument('-n', '--noop', action='store_false', help='Make no API calls, just print what would have been done')
+    parser_make.add_argument('-d', '--debug', action='store_true', help='print debug output')
+    parser_make.set_defaults(func=make)
+
+    parser_get = subparsers.add_parser('get', help='get help')
+    parser_get.add_argument('-t', '--test_id', default=None, help='id of the test to get')
+    parser_get.set_defaults(func=get)
+
+    parser_kill = subparsers.add_parser('kill', help='kill help')
+    parser_kill.add_argument('-t', '--test_id', default=None, help='id of the test to kill')
+    parser_kill.set_defaults(func=kill)
+
+
+    parser_frag = subparsers.add_parser('frag', help='fragment help')
+    parser_frag.add_argument('node', help='node to build a fragment for')
+    parser_frag.add_argument('-f', '--fragment_dir', default='./stack-builder/fragments', help='name of image to use')
+    parser_frag.add_argument('-y', '--yaml_dir', default='./data', help='name of image to use')
+    parser_frag.add_argument('-s', '--scenario', default='2_role', help='Scenario to use')
+    parser_frag.set_defaults(func=show)
+
+    args = parser.parse_args()
+
+    args.func(n, q, args)
+
+if __name__ == '__main__':
+    main()  

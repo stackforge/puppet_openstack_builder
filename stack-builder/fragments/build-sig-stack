@@ -1,0 +1,2 @@
+# Notify other nodes that the puppet-master is ready
+echo "up" > /var/www/status

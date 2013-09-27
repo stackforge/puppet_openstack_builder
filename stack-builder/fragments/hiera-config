@@ -1,0 +1,3 @@
+# Override hiera values that have been passed in
+# through metadata
+python /root/openstack-installer/stack-builder/hiera_config.py

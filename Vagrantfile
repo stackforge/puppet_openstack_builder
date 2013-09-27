@@ -1,6 +1,8 @@
-require 'yaml'
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
+
+require 'yaml'
+require 'fileutils'
 
 # Four networks:
 # 0 - VM host NAT
@@ -31,7 +33,9 @@ end
 # can be set with the node_group param from config.yaml
 # and maps to its corresponding file in the nodes directory.
 #
-def process_nodes(config, v_config, apt_cache_proxy)
+def process_nodes(config)
+
+  v_config = parse_vagrant_config
 
   node_group      = v_config['scenario']
   node_group_file = File.expand_path(File.join(File.dirname(__FILE__), 'data', 'nodes', "#{node_group}.yaml"))
@@ -41,6 +45,13 @@ def process_nodes(config, v_config, apt_cache_proxy)
 
   (YAML.load_file(node_group_file)['nodes'] || {}).each do |name, options|
     config.vm.define options['vagrant_name'] do |config|
+    config.vm.define name.intern do |config|
+      apt_cache_proxy = ''
+      unless options['apt_cache'] == false || options['apt_cache'] == 'false'
+        if v_config['apt_cache'] != 'false'
+          apt_cache_proxy = 'echo "Acquire::http { Proxy \"http://%s:3142\"; };" > /etc/apt/apt.conf.d/01apt-cacher-ng-proxy;' % options['apt_cache'] || v_config['apt_cache']
+        end
+      end
       configure_openstack_node(
         config,
         name.intern,
@@ -54,7 +65,6 @@ def process_nodes(config, v_config, apt_cache_proxy)
       )
     end
   end
-
 end
 
 # get the correct box based on the specidied type
@@ -208,7 +218,7 @@ def configure_openstack_node(
   setup_hostname(config, node_name)
   config.vm.customize ["modifyvm", :id, "--memory", memory]
   setup_networks(config, net_id)
-  if v_config['operatingsystem'] == 'ubuntu'
+  if v_config['operatingsystem'] == 'ubuntu' and apt_cache_proxy
     configure_apt_mirror(config, v_config['apt_mirror'], apt_cache_proxy)
   end
 
@@ -233,23 +243,7 @@ def configure_openstack_node(
 end
 
 Vagrant::Config.run do |config|
-  require 'fileutils'
 
-  v_config = parse_vagrant_config
-
-  apt_cache_proxy = ''
-  if v_config['apt_cache'] != 'false'
-   apt_cache_proxy = 'echo "Acquire::http { Proxy \"http://%s:3142\"; };" > /etc/apt/apt.conf.d/01apt-cacher-ng-proxy;' % v_config['apt_cache'] 
-  end
-
-  config.vm.define :cache do |config|
-    get_box(config, v_config['operatingsystem'])
-    setup_networks(config, '99')
-    setup_hostname(config, 'cache')
-    apply_manifest(config, v_config, 'setup.pp')
-    apply_manifest(config, v_config)
-  end
-
-  process_nodes(config, v_config, apt_cache_proxy)
+  process_nodes(config)
 
 end

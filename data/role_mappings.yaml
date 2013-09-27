@@ -3,6 +3,7 @@ compute-server: compute
 compute-server02: compute
 all-in-one: all_in_one
 build-server: build
+cache: cache
 
 swift-proxy01: swift_proxy
 swift-storage01: swift_storage

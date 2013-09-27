@@ -2,6 +2,9 @@
 # the two node 
 #
 roles:
+  cache:
+    classes:
+      - coi::profiles::cache_server
   build:
     classes:
       - coi::profiles::openstack::base

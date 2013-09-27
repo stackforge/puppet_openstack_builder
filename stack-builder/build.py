@@ -14,6 +14,7 @@ import uuid
 import quantumclient
 import fragment
 
+from metadata import build_metadata
 from debug import dprint
 
 debug = False
@@ -230,24 +231,29 @@ def make(n, q, args):
     # Not sure if we need this
     control_node_internal = net1_ports[0]['fixed_ips'][0]['ip_address']
 
-    if debug:
-
-
+    config_meta =  build_metadata(data_path) 
     # Put this into metadata and parse it on-node
     # from config drive. There are limits on the count
     # according to the doc but TODO confirm this
-    config_meta =   { 'build_node_ip'               : build_node_ip,
+    config_meta.update({ 'build_node_ip'               : build_node_ip,
                       'controller_public_address'   : control_node_ip,
                       'controller_internal_address' : control_node_ip,
                       'controller_admin_address'    : control_node_ip,
                       'cobbler_node_ip'             : build_node_ip,
-                      'tunnel_ip'                   : "%{ipaddress_eth1}",
-                      'internal_ip'                 : "%{ipaddress_eth1}",
-                      'ci_test_id'                  : test_id,
+                      'ci_test_id'                  : test_id
+
+                      # These should now be in scenario yaml
+                      #'tunnel_ip'                   : "%{ipaddress_eth1}",
+                      #'internal_ip'                 : "%{ipaddress_eth1}",
                       #'ntp_servers'                 : ['ntp.esl.cisco.com'],
-                      'initial_ntp'                 : 'ntp.esl.cisco.com',
-                      'installer_repo'              : 'michaeltchapman'
-                    }
+                      #'initial_ntp'                 : 'ntp.esl.cisco.com',
+
+                      # This should come from an env variable
+                      #'installer_repo'              : 'michaeltchapman'
+                    })
+
+
+    dprint("Metadata:\n" + str(config_meta))
 
     build_deploy = fragment.compose('build-server', data_path, fragment_path, scenario, config_meta)
     control_deploy = fragment.compose('control-server', data_path, fragment_path, scenario, config_meta)

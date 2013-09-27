@@ -45,4 +45,4 @@ def show(n, q, args):
     fragment_dir = args.fragment_dir
     scenario = args.scenario
 
-    print compose(hostname, yaml_dir, fragment_dir, scenario, {'build_node_ip' : '192.168.1.100', 'control_node_ip' : '192.158.1.19'})
+    print compose(hostname, yaml_dir, fragment_dir, scenario, {'cobbler_node_ip' : '192.168.1.100', 'controller_public_address' : '192.158.1.19'})

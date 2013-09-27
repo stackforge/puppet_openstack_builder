@@ -1,6 +1,6 @@
 nodes:
   cache:
-    hostname:    cache
+    vagrant_name:    cache
     memory:      2500
     ip_number:   100
     puppet_type: apply

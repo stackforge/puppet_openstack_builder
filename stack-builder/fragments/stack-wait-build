@@ -1,4 +1,4 @@
-until [ $(curl http://%{build_node_ip}/status | grep up) ]; do
+until [ $(curl http://%{cobbler_node_ip}/status | grep up) ]; do
   echo "waited for build" >> /root/waiting
   sleep 1
 done

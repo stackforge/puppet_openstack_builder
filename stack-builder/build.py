@@ -229,21 +229,11 @@ def make(n, q, args):
     # Put this into metadata and parse it on-node
     # from config drive. There are limits on the count
     # according to the doc but TODO confirm this
-    config_meta.update({ 'build_node_ip'               : build_node_ip,
-                      'controller_public_address'   : control_node_ip,
+    config_meta.update({'controller_public_address'   : control_node_ip,
                       'controller_internal_address' : control_node_ip,
                       'controller_admin_address'    : control_node_ip,
                       'cobbler_node_ip'             : build_node_ip,
                       'ci_test_id'                  : test_id
-
-                      # These should now be in scenario yaml
-                      #'tunnel_ip'                   : "%{ipaddress_eth1}",
-                      #'internal_ip'                 : "%{ipaddress_eth1}",
-                      #'ntp_servers'                 : ['ntp.esl.cisco.com'],
-                      #'initial_ntp'                 : 'ntp.esl.cisco.com',
-
-                      # This should come from an env variable
-                      #'installer_repo'              : 'michaeltchapman'
                     })
 
     dprint('Metadata With hardcodes ' + str(config_meta))

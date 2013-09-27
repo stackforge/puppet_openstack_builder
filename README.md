@@ -98,7 +98,25 @@ The python scripts under stack-builder can be used to instantiate scenarios on a
     export PATH=`pwd`/stackbuilder/bin:$PATH
     export PYTHONPATH=`pwd`/stackbuilder:$PYTHONPATH
 
-This will provide access to the sb command, which after sourcing openstack credentials, can be used like so:
+To create a basic 2 role cluster with a build, compute and control node outside of the jenkins environment, some configuration must be set either in data/heira_data/user.yaml or by setting environment variables prefixed with "jenkins_"
+
+    export jenkins_internal_ip='%{ipaddress_eth1}'
+    export jenkins_tunnel_ip='%{ipaddress_eth1}'
+    export jenkins_initial_ntp=ntp.esl.cisco.com
+    export jenkins_installer_repo=michaeltchapman
+
+The order of precedence is environment variables > user.yaml > jenkins.yaml > others. This heirarchy can be more clearly seen in manifests/setup.pp which defines the hiera ordering.
+
+Currently there are five config items that are set at runtime, and will override anything set by the user, these are:
+
+    controller_public_address 
+    controller_internal_address 
+    controller_admin_address 
+    cobbler_node_ip
+
+These will all be set to the address allocated by quantum to the relevant node.
+
+After sourcing openstack credentials...
 
     . openrc
 

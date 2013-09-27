@@ -1,0 +1,21 @@
+usermod --password p1fhTXKKhbc0M root
+
+# Rstarmer's precise mirror
+sed -i 's/nova.clouds.archive.ubuntu.com/172.29.74.100/g' /etc/apt/sources.list
+
+for i in 1 2 3
+do
+  ifconfig -a | grep eth$i
+  if [ $? -eq 0 ];
+    then
+      ifconfig eth$i up
+      dhclient eth$i -v
+  fi
+done
+
+#mount config drive
+mkdir -p /mnt/config
+mount /dev/disk/by-label/config-2 /mnt/config
+
+# Facter fqdn will come from DNS unless we do this
+echo "127.0.1.1 $(hostname).domain.name $(hostname)" >> /etc/hosts

@@ -1,0 +1,18 @@
+apt-get update
+apt-get install -y puppet git rubygems curl python-yaml
+
+git clone https://github.com/%{installer_repo}/openstack-installer.git /root/openstack-installer
+cd /root/openstack-installer
+mkdir -p vendor
+export GEM_HOME=`pwd`/vendor
+gem install thor --no-ri --no-rdoc
+git clone https://github.com/bodepd/librarian-puppet-simple.git vendor/librarian-puppet-simple
+export PATH=`pwd`/vendor/librarian-puppet-simple/bin/:$PATH
+export git_protocol='https'
+librarian-puppet install --verbose --path /etc/puppet/modules
+
+sed -i 's/192.168.242.100/%{build_node_ip}/g' /root/openstack-installer/manifests/setup.pp
+sed -i 's/ntp.esl.cisco.com/%{initial_ntp}/g' /root/openstack-installer/manifests/setup.pp
+
+cp -r /root/openstack-installer/data /etc/puppet
+cp -r /root/openstack-installer/manifests /etc/puppet

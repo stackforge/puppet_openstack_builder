@@ -1,0 +1,2 @@
+# Install the latest puppet and purge the old puppet
+puppet apply manifests/setup.pp

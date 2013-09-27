@@ -43,7 +43,7 @@ host {
 }
 
 class { ntp:
-  servers    => 'ntp.esl.cisco.com',
+  servers    => [ 'ntp.esl.cisco.com' ],
   autoupdate => true,
 }
 

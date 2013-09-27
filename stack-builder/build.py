@@ -7,7 +7,7 @@
     and pushing the appropriate metadata and init scripts to them
 
 """
-
+import debug
 import subprocess
 import os
 import uuid
@@ -16,9 +16,6 @@ import fragment
 
 from metadata import build_metadata
 from debug import dprint
-
-debug = False
-noop = False
 
 def build_server_deploy():
     with open ('./stack-builder/fragments/build-config.sh', 'r') as b:
@@ -111,7 +108,6 @@ def make_subnet(q, ci_network_name, test_net, index=1, dhcp=True, gateway=False)
     return test_subnet
 
 def boot_puppetised_instance(n, name, image, nic_list, key='m', os_flavor=u'm1.medium',deploy="",files=None, meta={}):
-   dprint("Booting " + name)
    images = n.images.list()
    for i,image in enumerate([image.name for image in images]):
      if image == image:
@@ -123,13 +119,13 @@ def boot_puppetised_instance(n, name, image, nic_list, key='m', os_flavor=u'm1.m
        boot_flavor = flavors[i]
 
    print("Booting " + name)
-   dprint("Boot image:" + str(boot_image))
-   dprint("Boot flavor:" + str(boot_flavor))
-   dprint("Boot nics" + str(nic_list))
-   dprint("Boot key" + str(key))
-   dprint("Boot deploy" + str(deploy))
-   dprint("Boot files" + str(files))
-   dprint("Boot meta" + str(meta))
+   dprint("Boot image: " + str(boot_image))
+   dprint("Boot flavor: " + str(boot_flavor))
+   dprint("Boot nics: " + str(nic_list))
+   dprint("Boot key: " + str(key))
+   dprint("Boot deploy: " + str(deploy))
+   dprint("Boot files: " + str(files))
+   dprint("Boot meta: " + str(meta))
 
    return n.servers.create(name, image=boot_image, flavor=boot_flavor, userdata=deploy, files=files, key_name=key, nics=nic_list, config_drive=True, meta=meta)
 
@@ -192,12 +188,9 @@ def make(n, q, args):
     data_path       = args.data_path
     fragment_path   = args.fragment_path
 
-    # These are globals
     if args.debug:
-        debug = True
-    if args.noop:
-        noop = True
-
+        print 'Debugging is on!'
+        debug.debug = True
 
     test_id = uuid.uuid4().hex
     print "Running test: " + test_id 
@@ -231,7 +224,8 @@ def make(n, q, args):
     # Not sure if we need this
     control_node_internal = net1_ports[0]['fixed_ips'][0]['ip_address']
 
-    config_meta =  build_metadata(data_path) 
+    config_meta =  build_metadata(data_path)
+    dprint('Metadata Without hardcodes ' + str(config_meta))
     # Put this into metadata and parse it on-node
     # from config drive. There are limits on the count
     # according to the doc but TODO confirm this
@@ -252,12 +246,15 @@ def make(n, q, args):
                       #'installer_repo'              : 'michaeltchapman'
                     })
 
-
-    dprint("Metadata:\n" + str(config_meta))
+    dprint('Metadata With hardcodes ' + str(config_meta))
 
     build_deploy = fragment.compose('build-server', data_path, fragment_path, scenario, config_meta)
     control_deploy = fragment.compose('control-server', data_path, fragment_path, scenario, config_meta)
     compute_deploy = fragment.compose('compute-server02', data_path, fragment_path, scenario, config_meta)
+
+    dprint('build_deploy: ' + str(build_deploy))
+    dprint('control_deploy: ' + str(control_deploy))
+    dprint('compute_deploy: ' + str(compute_deploy))
 
     build_node = boot_puppetised_instance(n, 
                     'build-server',
@@ -289,6 +286,7 @@ def make(n, q, args):
 
 def get(n, q, args):
     if args.test_id:
+        print "Servers for test: " + test_id
         run_instances = []
         instances = n.servers.list()
         for instance in instances:
@@ -297,9 +295,12 @@ def get(n, q, args):
                     run_instances.append(instance)
 
     else:
-        run_instances = []
+        run_instances = {}
         instances = n.servers.list()
         for instance in instances:
             if 'ci_test_id' in instance.metadata:
-                run_instances.append(instance)
+                if instance.metadata['ci_test_id'] not in run_instances:
+                    run_instances[instance.metadata['ci_test_id']] = [instance.id]
+                else:
+                    run_instances[instance.metadata['ci_test_id']].append(instance.id)
     print run_instances

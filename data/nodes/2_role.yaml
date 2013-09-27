@@ -2,7 +2,7 @@ nodes:
   cache:
     vagrant_name:    cache
     memory:      2500
-    ip_number:   100
+    ip_number:   99
     puppet_type: apply
     apt_cache:   false
   build-server:

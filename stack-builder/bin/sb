@@ -35,7 +35,7 @@ def main():
     parser_get.set_defaults(func=get)
 
     parser_kill = subparsers.add_parser('kill', help='kill help')
-    parser_kill.add_argument('--test_id', default=None, help='id of the test to get')
+    parser_kill.add_argument('-t', '--test_id', default=None, help='id of the test to kill')
     parser_kill.set_defaults(func=kill)
 
 

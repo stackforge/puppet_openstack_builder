@@ -5,4 +5,4 @@ sed -i 's/domain-name,//g' /etc/dhcp/dhclient.conf
 dhclient -r eth0 && dhclient eth0;
 
 service ntp stop
-ntpdate %{ntp_server}
+ntpdate %{initial_ntp}

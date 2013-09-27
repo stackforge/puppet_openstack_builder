@@ -44,8 +44,7 @@ def process_nodes(config)
   abort('file must exist for node group') unless File.exists?(node_group_file)
 
   (YAML.load_file(node_group_file)['nodes'] || {}).each do |name, options|
-    config.vm.define options['vagrant_name'] do |config|
-    config.vm.define name.intern do |config|
+    config.vm.define(options['vagrant_name'] || name) do |config|
       apt_cache_proxy = ''
       unless options['apt_cache'] == false || options['apt_cache'] == 'false'
         if v_config['apt_cache'] != 'false'
@@ -54,7 +53,7 @@ def process_nodes(config)
       end
       configure_openstack_node(
         config,
-        name.intern,
+        name,
         options['memory'],
         options['image_name'] || v_config['operatingsystem'],
         options['ip_number'],

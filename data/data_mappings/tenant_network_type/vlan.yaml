@@ -1,0 +1,3 @@
+"br-ex:%{external_interface}":
+  - quantum::agents::ovs::bridge_uplinks
+  - neutron::agents::ovs::bridge_uplinks

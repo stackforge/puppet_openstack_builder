@@ -4,10 +4,9 @@ class_groups:
   - cinder_controller
   - nova_controller
   - horizon
-  # this does not go here!!!
-  - network_controller
   - "%{db_type}_database"
 classes:
   - "nova::%{rpc_type}"
+  - "%{network_service}"
   - "%{network_service}::plugins::%{network_plugin}"
   - "%{network_service}::server"

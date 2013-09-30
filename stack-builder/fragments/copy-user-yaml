@@ -1,0 +1,2 @@
+cp /root/user.yaml /etc/puppet/data/hiera_data
+cp /root/config.yaml /etc/puppet/data

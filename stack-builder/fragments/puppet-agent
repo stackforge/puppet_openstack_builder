@@ -1,1 +1,1 @@
-puppet agent -t --server build-server.domain.name
+puppet agent -t --server build-server.domain.name || [ $? -eq 2 ]

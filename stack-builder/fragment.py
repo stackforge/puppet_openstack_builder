@@ -2,6 +2,8 @@ import os
 import string
 import yaml
 
+from metadata import build_metadata
+
 class PercentTemplate(string.Template):
     delimiter='%'
 
@@ -45,4 +47,4 @@ def show(n, q, args):
     fragment_dir = args.fragment_dir
     scenario = args.scenario
 
-    print compose(hostname, yaml_dir, fragment_dir, scenario, {'cobbler_node_ip' : '192.168.1.100', 'controller_public_address' : '192.158.1.19'})
+    print compose(hostname, yaml_dir, fragment_dir, scenario, build_metadata('./data', '2_role', 'config'))

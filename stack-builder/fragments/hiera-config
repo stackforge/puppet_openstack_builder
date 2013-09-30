@@ -1,3 +1,6 @@
 # Override hiera values that have been passed in
 # through metadata
 python /root/openstack-installer/stack-builder/hiera_config.py
+
+cp /root/config.yaml /etc/puppet/data
+cp /root/user.yaml   /etc/puppet/data/hiera_data

@@ -103,10 +103,10 @@ The python scripts under stack-builder can be used to instantiate scenarios on a
 
 To create a basic 2 role cluster with a build, compute and control node outside of the jenkins environment, some configuration must be set either in data/heira_data/user.yaml or by setting environment variables prefixed with "jenkins_"
 
-    export jenkins_internal_ip='%{ipaddress_eth1}'
-    export jenkins_tunnel_ip='%{ipaddress_eth1}'
-    export jenkins_initial_ntp=ntp.esl.cisco.com
-    export jenkins_installer_repo=michaeltchapman
+    export osi_user_internal_ip='%{ipaddress_eth1}'
+    export osi_user_tunnel_ip='%{ipaddress_eth1}'
+    export osi_conf_initial_ntp=ntp.esl.cisco.com
+    export osi_conf_installer_repo=michaeltchapman
 
 The order of precedence is environment variables > user.yaml > jenkins.yaml > others. This heirarchy can be more clearly seen in manifests/setup.pp which defines the hiera ordering.
 

@@ -1,10 +1,25 @@
-#!/bin/python
+#!/usr/bin/env python
+"""
+    stack-builder.clean
+    ~~~~~~~~~~~~~~~~~~~
+
+    This module is used by the kill subcommand
+    of the sb binary to destroy any virtual
+    resources created by an sb make command, with
+    the exception of the ci network, subnet and router
+    used as the deployment network and providing NAT.
+
+"""
 from novaclient.v1_1 import client as nclient
 from quantumclient.quantum import client as qclient
 from time import sleep
 import os
 
 def kill(n, q, args):
+    """
+    Destroy either all virtual test resources,
+    or the resources from a particular run.
+    """
     test_id = None
     if args.test_id:
         test_id = args.test_id

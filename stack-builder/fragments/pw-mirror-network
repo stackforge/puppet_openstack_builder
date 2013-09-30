@@ -18,4 +18,4 @@ mkdir -p /mnt/config
 mount /dev/disk/by-label/config-2 /mnt/config
 
 # Facter fqdn will come from DNS unless we do this
-echo "127.0.1.1 $(hostname).domain.name $(hostname)" >> /etc/hosts
+echo "127.0.1.1 $(hostname).%{domain} $(hostname)" >> /etc/hosts

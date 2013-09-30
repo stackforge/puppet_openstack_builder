@@ -37,6 +37,7 @@ nodes:
       - 'stack-wait-build'
       - 'puppet-agent'
       - 'control-sig-compute'
+      - 'test-nova'
   compute-server02:
     memory:       2512
     ip_number:    21

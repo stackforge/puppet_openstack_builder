@@ -9,12 +9,11 @@
     the metadata
 """
 
-import json
 import yaml
 import os
 
 hiera_dir = '/etc/puppet/data'
-metadata_path = '/mnt/config/openstack/latest/meta_data.json'
+metadata_path = '/root/config.yaml'
 
 #debug
 #metadata_path = './sample.json'
@@ -23,7 +22,7 @@ metadata_path = '/mnt/config/openstack/latest/meta_data.json'
 def config_builder():
     # load metadata from config-drive
     with open(metadata_path, 'r') as metadata:
-       meta = json.loads(metadata.read())['meta']
+       meta = yaml.load(metadata.read())
        print meta
 
     # Set values specified in config_drive
@@ -38,10 +37,19 @@ def config_builder():
                     y = yaml.load(hiera_file.read())
                     for key, value in meta.items():
                         if (y != None and key in y):
-                            print "Setting : " + key + " with " + value 
-                            y[key] = str(value)
+                            print "Setting : " + key + " with " + str(value)
+                            y[key] = value
 
                 with open(path + '/' + yaml_file, 'w') as hiera_file:
                     hiera_file.write(yaml.dump(y, default_flow_style=False))
             
-config_builder()
+#config_builder()
+
+def facter_config():
+    with open(metadata_path, 'r') as metadata:
+        meta = yaml.load(metadata.read())
+        print meta
+        for key,value in meta.items():
+            os.environ[key] = str(value)
+
+facter_config()

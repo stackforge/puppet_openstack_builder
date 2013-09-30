@@ -4,13 +4,13 @@
 roles:
   all_in_one:
     classes:
-      - coi::profiles::openstack::base
+      - coe::base
     class_groups:
       - controller
       - compute
       - network_controller
   compute:
     classes:
-      - coi::profiles::openstack::base
+      - coe::base
     class_groups:
       - compute

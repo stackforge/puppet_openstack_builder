@@ -82,9 +82,9 @@ controller_internal_address:
   - mysql::config::bind_address
   - quantum::agents::metadata::metadata_ip
   - neutron::agents::metadata::metadata_ip
-  # As these get decomposed, this will need to be replaced
   - openstack::swift::proxy::keystone_host
   - swift::keystone::auth::internal_address
+  - coe::base::controller_node_internal
 controller_public_address:
   - nova::vncproxy::host
   - nova::compute::vncproxy_host
@@ -139,3 +139,5 @@ compute_internal_address:
   - neutron::agents::metadata::auth_url
 "%{controller_internal_address}:9292":
   - nova::glance_api_servers
+build_node_name:
+  coe::base::build_node_name

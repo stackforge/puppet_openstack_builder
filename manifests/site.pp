@@ -8,6 +8,6 @@ node /control-tempest-server/ {
 
 node default {
 
-  notice($db_type)
+  notice("Host: ${::clientcert} matched default group")
 
 }

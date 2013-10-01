@@ -29,8 +29,8 @@ package_ensure: present
 nova::compute::libvirt::libvirt_type: qemu
 
 # information for package repos
-openstack_release: grizzly
-package_repo: cloud_archive
+coe::base::openstack_release: grizzly
+coe::base::package_repo: cloud_archive
 
 # used for testing
 openstack::test_file::image_type: cirros

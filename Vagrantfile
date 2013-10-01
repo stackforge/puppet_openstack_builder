@@ -152,7 +152,12 @@ def apply_manifest(config, v_config, manifest_name='site.pp', certname=nil)
   end
 
   config.vm.provision :shell do |shell|
-    shell.inline = "sed -i 's/.*search.*/search %s/g' /etc/resolv.conf;" % v_config['domain']
+    shell.inline =
+      "if grep search /etc/resolv.conf ; then " +
+      " sed -i 's/.*search.*/search %s/g' /etc/resolv.conf ; " % v_config['domain'] +
+      "else " + 
+      " echo 'search %s' >> /etc/resolv.conf ; " % v_config['domain'] + 
+      "fi ; "
   end
 
   # uninstall the puppet gem b/c setup.pp installs the puppet package

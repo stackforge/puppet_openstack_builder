@@ -69,14 +69,14 @@ fi
 # set up jenkins specific data overrides
 if [ -n "${openstack_package_repo:-}" ]; then
   if [ $openstack_package_repo = 'cisco_repo' ]; then
-    echo 'package_repo: cisco_repo' >> data/hiera_data/jenkins.yaml
-    echo 'openstack_repo_location: http://openstack-repo.cisco.com/openstack/cisco' >> data/hiera_data/jenkins.yaml
+    echo 'coe::base::package_repo: cisco_repo' >> data/hiera_data/jenkins.yaml
+    echo 'coe::base::openstack_repo_location: http://openstack-repo.cisco.com/openstack/cisco' >> data/hiera_data/jenkins.yaml
     #echo 'openstack_repo_location: ftp://ftpeng.cisco.com/openstack/cisco' >> hiera_data/jenkins.yaml
     echo 'openstack_release: grizzly-proposed' >> data/hiera_data/jenkins.yaml
   elif [ $openstack_package_repo = 'cloud_archive' ]; then
-    echo 'package_repo: cloud_archive' >> data/hiera_data/jenkins.yaml
-    echo "openstack_release: ${openstack_version}" >> data/hiera_data/jenkins.yaml
-    echo "openstack_ubuntu_repo: ${uca_repo:-updates}" >> data/hiera_data/jenkins.yaml
+    echo 'coe::base::package_repo: cloud_archive' >> data/hiera_data/jenkins.yaml
+    echo "coe::base::openstack_release: ${openstack_version}" >> data/hiera_data/jenkins.yaml
+    echo "coe::base::ubuntu_repo: ${uca_repo:-updates}" >> data/hiera_data/jenkins.yaml
   else
     echo "Unsupported repo type: ${openstack_package_repo}"
   fi

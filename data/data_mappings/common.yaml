@@ -85,6 +85,7 @@ controller_internal_address:
   - openstack::swift::proxy::keystone_host
   - swift::keystone::auth::internal_address
   - coe::base::controller_node_internal
+  - coe::base::controller_hostname
 controller_public_address:
   - nova::vncproxy::host
   - nova::compute::vncproxy_host

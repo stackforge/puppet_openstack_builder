@@ -1,22 +1,26 @@
-#
-# this emulates provided user data
-#
+domain_name: domain.name
+ntp_servers:
+  - time-server.domain.name
+
+
+# node addresses
+build_node_name: build-server
 controller_internal_address: 192.168.242.10
 controller_public_address: 192.168.242.10
 controller_admin_address: 192.168.242.10
-
 swift_internal_address: 192.168.242.41
 swift_public_address: 192.168.242.41
 swift_admin_address: 192.168.242.41
 
 # this is not done yet
 internal_ip: "%{ipaddress_eth3}"
+# interfaces
+# TODO are all of these even used?
 external_interface: eth2
+public_interface: eth1
+private_interface: eth1
 
 nova::compute::vncserver_proxyclient_address: "%{ipaddress_eth3}"
-
-secret_key: secret
-password: password123
 
 # user data for individual passwords
 cinder_db_password: cinder_pass
@@ -34,7 +38,14 @@ network_service_password: quantum_pass
 rpc_password: openstack_rabbit_password
 metadata_shared_secret: metadata_shared_secret,
 horizon_secret_key: horizon_secret_key
+
+# for single password config
+secret_key: secret
+password: password123
+
+# swift config
+swift_local_net_ip: "%{ipaddress_eth3}"
 swift_service_password: swift_pass
 swift_hash: super_secret_swift_hash
-
-
+glance::backend::swift::swift_store_key: secret_key
+glance::backend::swift::swift_store_auth_address: '127.0.0.1'

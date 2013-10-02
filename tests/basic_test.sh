@@ -57,14 +57,15 @@ if [ -n "${project_name:-}" ]; then
   fi
 fi
 
-if [ $operatingsystem = 'redhat' ]; then
-  echo 'operatingsystem: redhat' >> data/config.yaml
-elif [ $operatingsystem = 'ubuntu' ]; then
-  echo 'operatingsystem: ubuntu' >> data/config.yaml
-else
-  echo "Unsupported operatingsystem ${operatingsystem}"
-  exit 1
-fi
+case $operatingsystem in
+    redhat|ubuntu)
+        sed -i -e "s/operatingsystem:.*/operatingsystem: ${operatingsystem}/" data/config.yaml
+        ;;
+    *)
+        echo "Unsupported operatingsystem ${operatingsystem}"
+        exit 1
+        ;;
+esac
 
 # set up jenkins specific data overrides
 if [ -n "${openstack_package_repo:-}" ]; then

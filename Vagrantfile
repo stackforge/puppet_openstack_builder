@@ -142,22 +142,26 @@ def apply_manifest(config, v_config, manifest_name='site.pp', certname=nil)
   # Explicitly mount the shared folders, so we dont break with newer versions of vagrant
   config.vm.share_folder("modules", '/etc/puppet/modules', './modules/')
   config.vm.share_folder("manifests", '/etc/puppet/manifests', './manifests/')
-  
+
+  config.vm.provision :shell do |shell|
+    script =
+      "if grep 127.0.1.1 /etc/hosts ; then \n" +
+      " sed -i -e \"s/127.0.1.1.*/127.0.1.1 $(hostname).#{v_config['domain']} $(hostname)/\" /etc/hosts\n" +
+      "else\n" +
+      "  echo '127.0.1.1 $(hostname).#{v_config['domain']} $(hostname)' >> /etc/hosts\n" +
+      "fi ;"
+    shell.inline = script
+  end
 
   config.vm.provision(:puppet, :pp_path => "/etc/puppet") do |puppet|
     puppet.manifests_path = 'manifests'
     puppet.manifest_file  = manifest_name
     puppet.module_path    = 'modules'
     puppet.options        = options
-  end
-
-  config.vm.provision :shell do |shell|
-    shell.inline =
-      "if grep search /etc/resolv.conf ; then " +
-      " sed -i 's/.*search.*/search %s/g' /etc/resolv.conf ; " % v_config['domain'] +
-      "else " + 
-      " echo 'search %s' >> /etc/resolv.conf ; " % v_config['domain'] + 
-      "fi ; "
+    puppet.facter = {
+      "build_server_ip"          => "192.168.242.100",
+      "build_server_domain_name" => v_config['domain'],
+    }
   end
 
   # uninstall the puppet gem b/c setup.pp installs the puppet package
@@ -174,7 +178,7 @@ def run_puppet_agent(
   config,
   node_name,
   v_config = {},
-  master = 'build-server.domain.name'
+  master = "build-server.#{v_config['domain']}"
 )
   options = ["--certname #{node_name}", '-t', '--pluginsync']
 
@@ -183,7 +187,7 @@ def run_puppet_agent(
   end
 
   config.vm.provision(:puppet_server) do |puppet|
-    puppet.puppet_server = 'build-server.domain.name'
+    puppet.puppet_server = master
     puppet.options       = options
   end
 end

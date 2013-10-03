@@ -32,14 +32,16 @@ case $::osfamily {
   }
 }
 
-
 package { 'puppet':
   ensure  => $puppet_version,
 }
 
 # dns resolution should be setup correctly
-host {
-  'build-server': ip => '192.168.242.100', host_aliases => 'build-server.domain.name';
+if $build_server_ip {
+  host { 'build-server':
+    ip => $::build_server_ip,
+    host_aliases => "build-server.${::build_server_domain_name}"
+  }
 }
 
 # set up our hiera-store!

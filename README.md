@@ -158,3 +158,44 @@ To destroy a specific test run's resources:
     deleted networkci-9cbbfa7d10b54ff0b87e5983a492e05c2
 
 More information about this tool can be found under the stack-builder directory.
+
+## 
+
+basic install against already provisioned nodes:
+
+### install your build server
+
+first, log into your build server, and set it up:
+
+ > export build_server_ip=X.X.X.X;bash -c "$( curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/install-scripts/setup.sh)"
+
+then, install it as a puppet master
+
+ > bash /root/openstack-installer/install-scripts/master.sh 
+
+download all plugins for your puppetmaster
+
+ > puppet plugin download --server `hostname -f`; service apache2 restart
+
+### set up your data
+
+on your build server, all of the data you may need to override can be found in:
+
+   /etc/puppet/data/user.common
+
+at the very least, you may need to update the controller ip addresses and set the
+interfaces to use.
+
+Look at the puppet certnames that map to roles in:
+
+    /etc/puppet/data/role_mappings.yaml
+
+### install each of your components
+
+  first setup each node:
+
+  > export build_server_ip=X.X.X.X;bash -c "$( curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/install-scripts/setup.sh)"
+
+  log into each server, and run (in a controller/compute scenario, you need to install the controller first):
+
+  > puppet agent -td --server build-server.<DOMAIN_NAME> --certname <ROLE_CERT_NAME>

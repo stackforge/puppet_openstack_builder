@@ -1,0 +1,46 @@
+#
+# This following data is HA specific, but should be exposed to the end user
+# I guess this means that it should be added to the data_mappings
+galera::server::cluster_name: controller_cluster
+
+rabbitmq::server::config_cluster: true
+rabbitmq::server::wipe_db_on_cookie_change: true
+
+
+keystone::token_driver: keystone.token.backends.sql.Token
+keystone::token_format: UUID
+
+enabled: true
+
+#
+# always use the cisco repos when HA is enabled
+#
+coe::base::openstack_repo_location:  http://openstack-repo.cisco.com/openstack
+coe::base::supplemental_repo: http://openstack-repo.cisco.com/openstack/cisco_supplemental
+coe::base::package_repo: cisco_repo
+
+# this will need to overridden per node based on if it is active of passive
+galera::server::galera_master_ip: false
+# this should be overridden per node and can be
+# master or back-up
+openstack-ha::load-balancer::controller_state: MASTER
+openstack-ha::load-balancer::swift_proxy_state: MASTER
+
+
+gelera::server::galera_cluster_name: controller_cluster
+galera::server::wsrep_sst_username: wsrep_user
+galera::server::wsrep_sst_method: rsync
+galera::monitor::monitor_username: monitor_user
+
+sql_idle_timeout: 30
+
+# tenant hard-codings
+keystone::roles::admin::admin_tenant: admin
+openstack::auth_file::admin_tenant: admin
+
+allowed_hosts: "%"
+localhost: 127.0.0.1
+
+nova::api::enabled_apis: 'ec2,osapi_compute'
+
+nova::compute::libvirt::libvirt_type: kvm

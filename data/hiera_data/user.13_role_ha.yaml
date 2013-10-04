@@ -1,0 +1,98 @@
+#
+# this emulates provided user data
+#
+
+ntp_servers:
+  - compute04.dmz-pod2.lab
+
+build_node_name: compute04.dmz-pod2.lab
+domain_name: dmz-pod2.lab
+
+coe::base::controller_hostname: control
+
+controller_internal_address: 192.168.220.40
+controller_public_address: 192.168.220.40
+controller_admin_address: 192.168.220.40
+
+swift_internal_address: 192.168.220.60
+swift_public_address: 192.168.220.60
+swift_admin_address: 192.168.220.60
+
+# maps to ovs local_ip from the gre data mappings
+internal_ip: "%{ipaddress_eth3}"
+external_interface: eth1
+public_interface: eth1
+private_interface: eth0
+
+# Swift networking parameters
+swift_storage_interface: eth0.222
+swift_storage_netmask: 255.255.255.0
+swift_proxy_net_ip: "%{ipaddress_eth0}"
+swift_local_net_ip: "%{ipaddress_eth0_222}"
+
+nova::compute::vncserver_proxyclient_address: "%{ipaddress_eth0}"
+
+# user data for individual passwords
+cinder_db_password: cinder_pass
+glance_db_password: glance_pass
+keystone_db_password: keystone_db_pass
+nova_db_password: nova_pass
+network_db_password:   quantum_pass
+database_root_password: mysql_db_pass
+cinder_service_password: cinder_pass
+glance_service_password: glance_pass
+nova_service_password: nova_pass
+admin_password: Cisco123
+admin_token: keystone_admin_token
+network_service_password: quantum_pass
+rpc_password: openstack_rabbit_password
+#metadata_shared_secret: metadata_shared_secret,
+metadata_shared_secret: false
+horizon_secret_key: super_secret
+swift_service_password: swift_pass
+swift_hash: swift_secret
+galera::server::wsrep_sst_password: wsrep_password
+galera::monitor::monitor_password: monitor_pass
+glance::backend::swift::swift_store_key: swift_pass
+
+#
+# HA connections
+#
+controller_names:
+  - control01
+  - control02
+  - control03
+openstack-ha::load-balancer::controller_ipaddresses:
+  - 192.168.220.41
+  - 192.168.220.42
+  - 192.168.220.43
+openstack-ha::load-balancer::swift_proxy_names:
+  - swiftproxy01
+  - swiftproxy02
+openstack-ha::load-balancer::swift_proxy_ipaddresses:
+  - 192.168.220.61
+  - 192.168.220.62
+nova::memcached_servers:
+  - 192.168.220.41:11211
+  - 192.168.220.42:11211
+  - 192.168.220.43:11211
+openstack::swift::proxy::swift_memcache_servers:
+  - 192.168.222.61:11211
+  - 192.168.222.62:11211
+rabbit_hosts:
+  - control01:5672
+  - control02:5672
+  - control03:5672
+bind_address: "%{ipaddress_eth0}"
+
+cinder::volume::iscsi::iscsi_ip_address: "%{ipaddress_eth0}"
+
+quantum::plugins::ovs::network_vlan_ranges: physnet1:223:225
+
+openstack::swift::storage-node::storage_type: disk
+openstack::swift::storage-node::storage_devices:
+  - 'sdb'
+  - 'sdc'
+  - 'sdd'
+  - 'sde'
+  - 'sdf'

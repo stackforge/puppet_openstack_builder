@@ -5,7 +5,11 @@ all-in-one: all_in_one
 build-server: build
 cache: cache
 
+load_balancer_1: load_balancer
+load_balancer_2: load_balancer
+
 swift-proxy01: swift_proxy
+swift-proxy02: swift_proxy
 swift-storage01: swift_storage
 swift-storage02: swift_storage
-swift-storage02: swift_storage
+swift-storage03: swift_storage

@@ -1,0 +1,84 @@
+enabled:
+  - galera::server::enabled
+sql_idle_timeout:
+  - keystone::idle_timeout
+  - glance::registry::sql_idle_timeout
+  - glance::api::sql_idle_timeout
+  - nova::sql_idle_timeout
+  - cinder::sql_idle_timeout
+  - quantum::plugins::ovs::sql_idle_timeout
+rabbit_hosts:
+  - quantum::rabbit_hosts
+  - nova::rabbit_hosts
+  - cinder::rabbit_hosts
+localhost:
+  - ceilometer::db::mysql::host
+  - cinder::db::mysql::host
+  - glance::db::mysql::host
+  - keystone::db::mysql::host
+  - nova::db::mysql::host
+  - quantum::db::mysql::host
+  - neutron::db::mysql::host
+allowed_hosts:
+  - ceilometer::db::mysql::allowed_hosts
+  - cinder::db::mysql::allowed_hosts
+  - glance::db::mysql::allowed_hosts
+  - keystone::db::mysql::allowed_hosts
+  - nova::db::mysql::allowed_hosts
+  - quantum::db::mysql::allowed_hosts
+  - neutron::db::mysql::allowed_hosts
+bind_address:
+  - horizon::cache_server_ip
+  - cinder::api::bind_host
+  - glance::registry::bind_host
+  - glance::api::bind_host
+  - nova::api::api_bind_address
+  - mysql::config::bind_address
+  - keystone::bind_host
+  - memcached::listen_ip
+  - galera::server::wsrep_bind_address
+  - galera::monitor::monitor_hostname
+  - quantum::bind_host
+  - neutron::bind_host
+  - openstack::swift::proxy::swift_proxy_net_ip
+"mysql://cinder:%{cinder_db_password}@%{controller_internal_address}/cinder?charset=utf8":
+  - cinder::sql_connection
+"mysql://glance:%{glance_db_password}@%{controller_internal_address}/glance":
+  - glance::api::sql_connection
+  - glance::registry::sql_connection
+"mysql://keystone:%{keystone_db_password}@%{controller_internal_address}/keystone":
+  - keystone::sql_connection
+"mysql://nova:%{nova_db_password}@%{controller_internal_address}/nova":
+  - nova::sql_connection
+"mysql://%{network_service}:%{network_db_password}@%{controller_internal_address}/%{network_service}?charset=utf8":
+  - quantum::plugins::ovs::sql_connection
+  - quantum::plugins::linuxbridge::sql_connection
+  - neutron::plugins::ovs::sql_connection
+  - neutron::plugins::linuxbridge::sql_connection
+"http://%{controller_public_address}:5000/v2.0/":
+  - glance::backend::swift::swift_store_auth_address
+  - glance::api::auth_url
+controller_internal_address:
+  - openstack-ha::load-balancer::controller_virtual_ip
+swift_admin_address:
+  - swift::keystone::auth::admin_address
+swift_internal_address:
+  - swift::keystone::auth::internal_address
+  - openstack-ha::load-balancer::swift_proxy_virtual_ip
+swift_public_address:
+  - swift::keystone::auth::public_address
+#  - openstack::swift::proxy::swift_proxy_net_ip 
+swift_storage_interface:
+  - coe::network::interface::interface_name
+swift_local_net_ip:
+  - openstack::swift::proxy::swift_local_net_ip
+  - openstack::swift::storage-node::swift_local_net_ip
+  - coe::network::interface::ipaddress
+  - openstack::swift::proxy::memcached_listen_ip
+swift_storage_netmask:
+  - coe::network::interface::netmask
+private_interface:
+  - openstack-ha::load-balancer::keepalived_interface
+controller_names:
+  - rabbitmq::server::cluster_disk_nodes
+  - openstack-ha::load-balancer::controller_names

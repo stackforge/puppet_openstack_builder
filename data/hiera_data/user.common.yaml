@@ -2,7 +2,6 @@ domain_name: domain.name
 ntp_servers:
   - time-server.domain.name
 
-
 # node addresses
 build_node_name: build-server
 controller_internal_address: 192.168.242.10

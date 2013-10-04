@@ -13,7 +13,10 @@ This setup requires that a few additional dependencies are installed:
 ## Developer instructions
 
 Developers should be started by installing the following simple utility:
-(I will eventually just have it bundled as a gem)
+
+    gem install librarian-puppet-simple
+
+or, if you want to build from scratch, or keep these gems separate:
 
     mkdir vendor
     export GEM_HOME=`pwd`/vendor
@@ -189,6 +192,14 @@ interfaces to use.
 Look at the puppet certnames that map to roles in:
 
     /etc/puppet/data/role_mappings.yaml
+
+You may also find a need to change the default scenario in:
+
+    /etc/puppet/data/config.yaml
+
+Choices are in:
+
+    /etc/puppet/data/scenarios
 
 ### install each of your components
 

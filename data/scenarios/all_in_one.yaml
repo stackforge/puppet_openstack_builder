@@ -6,6 +6,7 @@ roles:
     classes:
       - coe::base
     class_groups:
+      - build
       - controller
       - compute
       - network_controller

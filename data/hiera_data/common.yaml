@@ -20,6 +20,7 @@ service_tenant: services
 admin_tenant: admin
 package_ensure: present
 nova::compute::libvirt::libvirt_type: qemu
+nova::compute::libvirt::vncserver_listen: 0.0.0.0
 
 # information for package repos
 coe::base::openstack_release: grizzly

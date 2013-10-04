@@ -41,3 +41,5 @@ openstack::swift::storage-node::storage_devices:
   - 1
   - 2
   - 3
+
+apache::mpm_module: prefork

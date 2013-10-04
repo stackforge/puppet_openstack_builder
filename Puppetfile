@@ -116,6 +116,8 @@ mod 'CiscoSystems/stdlib', :git => "#{base_url}/#{puppetlabs_module_prefix}stdli
 mod 'CiscoSystems/xinetd', :git => "#{base_url}/#{puppetlabs_module_prefix}xinetd", :ref => branch_name
 mod 'CiscoSystems/ntp', :git => "#{base_url}/#{puppetlabs_module_prefix}ntp", :ref => branch_name
 mod 'CiscoSystems/rsync', :git => "#{base_url}/#{puppetlabs_module_prefix}rsync", :ref => branch_name
+mod 'CiscoSystems/mysql', :git => "#{base_url}/#{puppetlabs_module_prefix}mysql", :ref => mysql_branch
+mod 'CiscoSystems/rabbitmq', :git => "#{base_url}/#{puppetlabs_module_prefix}rabbitmq", :ref => rabbitmq_branch
 
 
 ##### modules with other upstreams #####
@@ -153,10 +155,6 @@ mod 'CiscoSystems/pip', :git => "#{base_url}/CiscoSystems/puppet-pip", :ref => '
 
 mod 'CiscoSystems/dnsmasq', :git => "#{base_url}/CiscoSystems/puppet-dnsmasq", :ref => 'origin/grizzly'
 mod 'CiscoSystems/naginator', :git => "#{base_url}/CiscoSystems/puppet-naginator", :ref => 'origin/grizzly'
-
-##### Modules that have been forked #####
-mod 'CiscoSystems/mysql', :git => "#{base_url}/CiscoSystems/puppet-mysql", :ref => 'origin/grizzly'
-mod 'CiscoSystems/rabbitmq', :git => "#{base_url}/CiscoSystems/puppet-rabbitmq", :ref => 'origin/grizzly'
 
 #### HA Modules ###
 mod 'CiscoSystems/augeas', :git => "#{base_url}/CiscoSystems/puppet-augeas", :ref => 'origin/grizzly'

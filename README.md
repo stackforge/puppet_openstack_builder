@@ -170,7 +170,7 @@ basic install against already provisioned nodes:
 
 first, log into your build server, and set it up:
 
- > export build_server_ip=X.X.X.X;bash -c "$(curl -fsS https://raw.github.com/CiscoSystems/master/openstack-installer/install-scripts/setup.sh)"
+ > export build_server_ip=X.X.X.X ; bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/setup.sh)
 
 then, install it as a puppet master
 
@@ -205,7 +205,7 @@ Choices are in:
 
   first setup each node:
 
-  > export build_server_ip=X.X.X.X;bash -c "$(curl -fsS https://raw.github.com/CiscoSystems/master/openstack-installer/install-scripts/setup.sh)"
+  > export build_server_ip=X.X.X.X ; bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/setup.sh)
 
   log into each server, and run (in a controller/compute scenario, you need to install the controller first):
 

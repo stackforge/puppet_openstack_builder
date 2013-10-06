@@ -18,8 +18,8 @@ system.
 
 Below are the links to the custom ENC and custom hiera backend:
 
-* https://github.com/bodepd/scenario\_node\_terminus
-* https://github.com/bodepd/hiera\_data\_mapper
+* https://github.com/bodepd/scenario_node_terminus
+* https://github.com/bodepd/hiera_data_mapper
 
 ## why data?
 
@@ -67,7 +67,7 @@ For example:
   The data provided to deploy a 3 role model: (compute/controller/network controller)
   is different from the data used to deploy a 2 role model (compute/controller)
 
-To make matters even a but more complicated:
+To make matters even a bit more complicated:
 
   Each of those models also supports a large number of configurable backends
   that each require their own specific configurations. Even with a 2 role scenario,
@@ -102,14 +102,14 @@ to compile a catalog for that node:
 In order for this to work with the data model, you need to install the following
 module:
 
-    https://github.com/bodepd/scenario\_node\_terminus
-    (this module is automatically installed if you use the Puppetfile that comes
-    with this project))
+    https://github.com/bodepd/scenario_node_terminus
 
-And add the following configuration to your puppet.conf file:
+This module is automatically installed if you use the Puppetfile that comes
+with this project. And add the following configuration to your puppet.conf file:
 
-  node\_terminus=scenario
-  (this is already configured if you bootstrap with setup.pp))
+    node_terminus=scenario
+
+This is already configured if you bootstrap with setup.pp.
 
 The following list of data is used to drive that classification process
 
@@ -119,12 +119,12 @@ For the general use case, most of the information in config.yaml
 can be ignored. Most of it is used for provisioning of virtual machine
 instances for the CD part of this work.
 
-The is one very important setting in config.yaml called scenario.
+There is one very important setting in config.yaml called scenario.
 
-  *scenario* scenario is used to select the specific references architecture
+  *scenario* is used to select the specific references architecture
   that you wish to deploy. It is used to select the roles for that scenario
   from the scenarios/<scenario>.yaml file, as well as the nodes to use from
-  nodes/<scenario>/yaml (for deployment of CI). It is also used as a hiera
+  nodes/<scenario>.yaml (for deployment of CI). It is also used as a hiera
   lookup and data mapping hierarchy.
 
 All data set in this file are passed on to Puppet as global variables.
@@ -133,7 +133,7 @@ All data set in this file are passed on to Puppet as global variables.
 
 This directory is used to specify the global variables that can be used
 to effect the hierarchical overrides that will be used to determine both
-the classes contained in a scenarios roles as well as the hiera overrides
+the classes contained in a scenario roles as well as the hiera overrides
 for both data mappings and the regular yaml hierarchy.
 
 The selection of the global\_hiera\_params is driven by hiera using the following
@@ -170,7 +170,7 @@ The current supported variables are:
 
   *network_plugin* Network plugin to use (defaults to ovs)
 
-  *network_type* The type of network (defaults to router-per-tenant)
+  *network_type* The type of network (defaults to per-tenant-router)
 
   *tenant_network_type* Type of tenant network to use. (defaults to gre).
 
@@ -190,7 +190,7 @@ key in config.yaml.
 Each of the roles for a specific scenario is specified in its scenario
 file:
 
-  data/scenario/<scenario>.yaml
+    data/scenario/<scenario>.yaml
 
 This file defines what roles exists for a specific scenario, and which classes
 and classgroups should be assined to nodes of that role.
@@ -212,17 +212,17 @@ terminus it begins to compile the catalog. During this process,
 every single class parameter is resolved through Puppet's data-binding system
 that came into existence in Puppet 3.x. Basically:
 
-  for every class
-    let's say foo
-  for every parameter
-    let's say param1
-  the fully qualified variable is lookup in hiera automatically:
-    hiera('foo::param') for our example
+    for every class
+      let's say foo
+    for every parameter
+      let's say param1
+    the fully qualified variable is lookup in hiera automatically:
+      hiera('foo::param') for our example
 
 When this lookup is performed, for the data model, our default
 hiera backend is used:
 
-  https://github.com/bodepd/hiera\_data\_mapper
+    https://github.com/bodepd/hiera_data_mapper
 
 This should be configured in your hiera config
 

@@ -48,7 +48,7 @@ def process_nodes(config)
       apt_cache_proxy = ''
       unless options['apt_cache'] == false || options['apt_cache'] == 'false'
         if v_config['apt_cache'] != 'false'
-          apt_cache_proxy = 'echo "Acquire::http { Proxy \"http://%s:3142\"; };" > /etc/apt/apt.conf.d/01apt-cacher-ng-proxy;' % options['apt_cache'] || v_config['apt_cache']
+          apt_cache_proxy = 'echo "Acquire::http { Proxy \"http://%s:3142\"; };" > /etc/apt/apt.conf.d/01apt-cacher-ng-proxy;' % ( options['apt_cache'] || v_config['apt_cache'] )
         end
       end
       configure_openstack_node(

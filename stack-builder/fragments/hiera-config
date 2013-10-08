@@ -1,6 +1,10 @@
-# Override hiera values that have been passed in
-# through metadata
+# Set facts for facter from config.yaml
 python /root/openstack-installer/stack-builder/hiera_config.py
+
+# Can't set bash env vars from shild processes
+for i in `cat /root/fact_exports`; do export $i; done
 
 cp /root/config.yaml /etc/puppet/data
 cp /root/user.yaml   /etc/puppet/data/hiera_data
+chmod a+r /etc/puppet/data/config.yaml
+chmod a+r /etc/puppet/data/hiera_data/user.yaml

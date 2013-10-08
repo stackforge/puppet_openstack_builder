@@ -45,11 +45,14 @@ def config_builder():
             
 #config_builder()
 
+# Child processes cannot set environment variables, so
+# create a bash file to set some exports for facter
 def facter_config():
     with open(metadata_path, 'r') as metadata:
         meta = yaml.load(metadata.read())
         print meta
-        for key,value in meta.items():
-            os.environ[key] = str(value)
+        with open('/root/fact_exports', 'w') as facts:
+            for key,value in meta.items():
+                facts.write('FACTER_' + str(key) + '=' + str(value) + '\n')
 
 facter_config()

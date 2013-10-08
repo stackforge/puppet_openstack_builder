@@ -107,6 +107,8 @@ To create a basic 2 role cluster with a build, compute and control node outside 
     export osi_user_tunnel_ip='%{ipaddress_eth1}'
     export osi_conf_initial_ntp=ntp.esl.cisco.com
     export osi_conf_installer_repo=michaeltchapman
+    export osi_conf_build_server_domain_name=domain.name
+    export osi_conf_operatingsystem=Ubuntu
 
 The order of precedence is environment variables > user.yaml > jenkins.yaml > others. This heirarchy can be more clearly seen in manifests/setup.pp which defines the hiera ordering.
 

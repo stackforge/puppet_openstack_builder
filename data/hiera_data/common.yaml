@@ -10,6 +10,8 @@ enabled_services:
   - quantum
   - swift
 
+allowed_hosts: "%"
+
 # openstack parameters
 admin_email: root@localhost
 rpc_user: openstack_rabbit_user

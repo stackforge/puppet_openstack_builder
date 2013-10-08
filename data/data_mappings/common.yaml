@@ -34,6 +34,15 @@ rpc_user:
 enabled_services:
   - coi::profiles::openstack::endpoints::enabled_services
   - coi::profiles::openstack::databases::mysql::enabled_services
+
+allowed_hosts:
+  - ceilometer::db::mysql::allowed_hosts
+  - cinder::db:mysql::allowed_hosts
+  - glance::db:mysql::allowed_hosts
+  - keystone::db::mysql::allowed_hosts
+  - nova::db:mysql::allowed_hosts
+  - quantum::db::mysql::allowed_hosts
+  - neutron::db::mysql::allowed_hosts
 #
 # The all_in_one specification of how to map services to each other
 # is assumed to be a default. When you want to move away from all_in_one,
@@ -71,13 +80,6 @@ controller_internal_address:
   - quantum::keystone::auth::internal_address
   - neutron::keystone::auth::internal_address
   - openstack::auth_file::controller_node
-  - ceilometer::db::mysql::allowed_hosts
-  - cinder::db:mysql::allowed_hosts
-  - glance::db:mysql::allowed_hosts
-  - keystone::db::mysql::allowed_hosts
-  - nova::db:mysql::allowed_hosts
-  - quantum::db::mysql::allowed_hosts
-  - neutron::db::mysql::allowed_hosts
   - postgresql::config::listen_addresses
   - mysql::config::bind_address
   - quantum::agents::metadata::metadata_ip

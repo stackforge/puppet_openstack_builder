@@ -1,0 +1,9 @@
+# This gives the controller access to the floating network
+# without entering the namespace
+ifconfig br-ex 172.16.2.1 netmask 255.255.255.0 up
+
+# allow compute nodes to come up
+sleep 20
+
+# This is a basic test of nova, keystone and quantum functionality
+/tmp/test_nova.sh

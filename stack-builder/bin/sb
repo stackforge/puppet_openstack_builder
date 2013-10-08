@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 from build import make, get 
 from clean import kill
-from fragment import show 
+from fragment import show as frag_show
+from metadata import show as meta_show
 
 from novaclient.v1_1 import client as nclient
 from quantumclient.quantum import client as qclient
@@ -38,13 +39,19 @@ def main():
     parser_kill.add_argument('-t', '--test_id', default=None, help='id of the test to kill')
     parser_kill.set_defaults(func=kill)
 
-
     parser_frag = subparsers.add_parser('frag', help='fragment help')
     parser_frag.add_argument('node', help='node to build a fragment for')
     parser_frag.add_argument('-f', '--fragment_dir', default='./stack-builder/fragments', help='name of image to use')
     parser_frag.add_argument('-y', '--yaml_dir', default='./data', help='name of image to use')
     parser_frag.add_argument('-s', '--scenario', default='2_role', help='Scenario to use')
-    parser_frag.set_defaults(func=show)
+    parser_frag.set_defaults(func=frag_show)
+
+    parser_meta = subparsers.add_parser('meta', help='metadata help')
+    parser_meta.add_argument('node', help='node to build metadata for')
+    parser_meta.add_argument('-y', '--yaml_dir', default='./data', help='name of image to use')
+    parser_meta.add_argument('-s', '--scenario', default='2_role', help='Scenario to use')
+    parser_meta.add_argument('-c', '--config', default='config', help='Type of config to build - user or config')
+    parser_meta.set_defaults(func=meta_show)
 
     args = parser.parse_args()
 

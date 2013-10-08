@@ -13,6 +13,7 @@ import os
 import uuid
 import quantumclient
 import fragment
+import yaml
 
 from metadata import build_metadata
 from debug import dprint
@@ -107,10 +108,10 @@ def make_subnet(q, ci_network_name, test_net, index=1, dhcp=True, gateway=False)
                test_subnet = net
     return test_subnet
 
-def boot_puppetised_instance(n, name, image, nic_list, key='m', os_flavor=u'm1.medium',deploy="",files=None, meta={}):
+def boot_puppetised_instance(n, name, image_name, nic_list, key='test2', os_flavor=u'm1.medium',deploy="",files=None, meta={}):
    images = n.images.list()
    for i,image in enumerate([image.name for image in images]):
-     if image == image:
+     if image == image_name:
        boot_image = images[i]
 
    flavors = n.flavors.list()
@@ -127,7 +128,7 @@ def boot_puppetised_instance(n, name, image, nic_list, key='m', os_flavor=u'm1.m
    dprint("Boot files: " + str(files))
    dprint("Boot meta: " + str(meta))
 
-   return n.servers.create(name, image=boot_image, flavor=boot_flavor, userdata=deploy, files=files, key_name=key, nics=nic_list, config_drive=True, meta=meta)
+   return n.servers.create(name, image=boot_image, flavor=boot_flavor, userdata=deploy, files=files, key_name=key, nics=nic_list, meta=meta)
 
 # Cisco internal network
 def get_external_network(q):
@@ -224,35 +225,46 @@ def make(n, q, args):
     # Not sure if we need this
     control_node_internal = net1_ports[0]['fixed_ips'][0]['ip_address']
 
-    config_meta =  build_metadata(data_path)
-    dprint('Metadata Without hardcodes ' + str(config_meta))
-    # Put this into metadata and parse it on-node
-    # from config drive. There are limits on the count
-    # according to the doc but TODO confirm this
-    config_meta.update({'controller_public_address'   : control_node_ip,
-                      'controller_internal_address' : control_node_ip,
-                      'controller_admin_address'    : control_node_ip,
-                      'cobbler_node_ip'             : build_node_ip,
-                      'ci_test_id'                  : test_id
+    # config is a dictionary updated from env vars and user supplied
+    # yaml files to serve as input to hiera
+    hiera_config_meta =  build_metadata(data_path, scenario, 'user')
+
+    hiera_config_meta.update({'controller_public_address'   : str(control_node_ip),
+                      'controller_internal_address' : str(control_node_ip),
+                      'controller_admin_address'    : str(control_node_ip),
+                      'cobbler_node_ip'             : str(build_node_ip),
                     })
 
-    dprint('Metadata With hardcodes ' + str(config_meta))
+    initial_config_meta = build_metadata(data_path, scenario, 'config')
+    initial_config_meta.update({'controller_public_address'   : str(control_node_ip),
+                      'controller_internal_address' : str(control_node_ip),
+                      'controller_admin_address'    : str(control_node_ip),
+                      'cobbler_node_ip'             : str(build_node_ip),
+                    })
 
-    build_deploy = fragment.compose('build-server', data_path, fragment_path, scenario, config_meta)
-    control_deploy = fragment.compose('control-server', data_path, fragment_path, scenario, config_meta)
-    compute_deploy = fragment.compose('compute-server02', data_path, fragment_path, scenario, config_meta)
+    build_deploy = fragment.compose('build-server', data_path, fragment_path, scenario, initial_config_meta)
+    control_deploy = fragment.compose('control-server', data_path, fragment_path, scenario, initial_config_meta)
+    compute_deploy = fragment.compose('compute-server02', data_path, fragment_path, scenario, initial_config_meta)
 
     dprint('build_deploy: ' + str(build_deploy))
     dprint('control_deploy: ' + str(control_deploy))
     dprint('compute_deploy: ' + str(compute_deploy))
+
+    user_config_yaml = yaml.dump(hiera_config_meta, default_flow_style=False)
+    initial_config_yaml = yaml.dump(initial_config_meta, default_flow_style=False)
+
+    dprint('Config Yaml: \n' + str(initial_config_yaml))
+    dprint('User Yaml: \n' + str(user_config_yaml))
 
     build_node = boot_puppetised_instance(n, 
                     'build-server',
                     image,
                     build_nic_port_list([ci_ports[0]['id']]),
                     deploy=build_deploy,
-                    files={'/root/hiera_config.py': build_server_hiera_config()},
-                    meta=config_meta
+                    files={u'/root/hiera_config.py': build_server_hiera_config(),
+                           u'/root/user.yaml' : user_config_yaml,
+                           u'/root/config.yaml' : initial_config_yaml},
+                    meta={'ci_test_id' : test_id}
                     )
 
     # eth0, eth1 preallocated, eth2 dhcp
@@ -265,6 +277,7 @@ def make(n, q, args):
                        image, 
                        control_nics,
                        deploy=control_deploy,
+                       #files={u'/root/meta_data.yaml' : config_yaml},
                        meta={'ci_test_id' : test_id})
 
     compute_node = boot_puppetised_instance(n, 
@@ -272,6 +285,7 @@ def make(n, q, args):
                        image, 
                        build_nic_net_list([get_ci_network(q), test_net1]),
                        deploy=compute_deploy,
+                       #files={u'/root/meta_data.yaml' : config_yaml},
                        meta={'ci_test_id' : test_id})
 
 def get(n, q, args):

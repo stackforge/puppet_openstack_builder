@@ -240,6 +240,7 @@ def make(n, q, args):
                       'controller_internal_address' : str(control_node_ip),
                       'controller_admin_address'    : str(control_node_ip),
                       'cobbler_node_ip'             : str(build_node_ip),
+                      'build_server_ip'             : str(build_node_ip)
                     })
 
     build_deploy = fragment.compose('build-server', data_path, fragment_path, scenario, initial_config_meta)
@@ -261,7 +262,7 @@ def make(n, q, args):
                     image,
                     build_nic_port_list([ci_ports[0]['id']]),
                     deploy=build_deploy,
-                    files={u'/root/hiera_config.py': build_server_hiera_config(),
+                    files={
                            u'/root/user.yaml' : user_config_yaml,
                            u'/root/config.yaml' : initial_config_yaml},
                     meta={'ci_test_id' : test_id}
@@ -278,6 +279,9 @@ def make(n, q, args):
                        control_nics,
                        deploy=control_deploy,
                        #files={u'/root/meta_data.yaml' : config_yaml},
+                       files={
+                              u'/root/user.yaml' : user_config_yaml,
+                              u'/root/config.yaml' : initial_config_yaml},
                        meta={'ci_test_id' : test_id})
 
     compute_node = boot_puppetised_instance(n, 
@@ -286,6 +290,9 @@ def make(n, q, args):
                        build_nic_net_list([get_ci_network(q), test_net1]),
                        deploy=compute_deploy,
                        #files={u'/root/meta_data.yaml' : config_yaml},
+                       files={
+                              u'/root/user.yaml' : user_config_yaml,
+                              u'/root/config.yaml' : initial_config_yaml},
                        meta={'ci_test_id' : test_id})
 
 def get(n, q, args):

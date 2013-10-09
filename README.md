@@ -218,4 +218,4 @@ then log into each server, and run:
 
 where build-server is the fully qualified name of the build server (or `` `hostname -f` `` on an all-in-one node), or its IP address that was set in user.common.yaml and ROLE\_CERT\_NAME is the fully qualified name of the local machine (or `` `hostname -f` `` which should return the same thing)
 
-#### NOTE: you'll want to run the puppet agent command on any controll class nodes (or the all-in-one node) first, before running it on any compute or storage nodes.
+#### NOTE: you'll want to run the puppet agent command on any control class nodes (or the all-in-one node) first, before running it on any compute or storage nodes.

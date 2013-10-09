@@ -5,19 +5,18 @@ roles:
   all_in_one:
     classes:
       - coe::base
+      - naginator::compute_target
+      - cinder::setup_test_volume
     class_groups:
       - build
       - controller
       - compute
       - network_controller
       - test_file
-      - openstack::swift::storage-node
-      - naginator::compute_target
-      - cinder::setup_test_volume
   compute:
     classes:
       - coe::base
-    class_groups:
-      - compute
       - naginator::compute_target
       - cinder::setup_test_volume
+    class_groups:
+      - compute

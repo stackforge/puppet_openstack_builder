@@ -98,8 +98,8 @@ The python scripts under stack-builder can be used to instantiate scenarios on a
 
     git clone https://github.com/CiscoSystems/openstack-installer.git
     cd openstack-installer
-    export PATH=`pwd`/stackbuilder/bin:$PATH
-    export PYTHONPATH=`pwd`/stackbuilder:$PYTHONPATH
+    export PATH=`pwd`/stack-builder/bin:$PATH
+    export PYTHONPATH=`pwd`/stack-builder:$PYTHONPATH
 
 To create a basic 2 role cluster with a build, compute and control node outside of the jenkins environment, some configuration must be set either in data/heira_data/user.yaml or by setting environment variables prefixed with "jenkins_"
 
@@ -107,6 +107,7 @@ To create a basic 2 role cluster with a build, compute and control node outside 
     export osi_user_tunnel_ip='%{ipaddress_eth1}'
     export osi_conf_initial_ntp=ntp.esl.cisco.com
     export osi_conf_installer_repo=michaeltchapman
+    export osi_conf_installer_branch=master
     export osi_conf_build_server_domain_name=domain.name
     export osi_conf_operatingsystem=Ubuntu
 

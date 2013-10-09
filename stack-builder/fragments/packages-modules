@@ -1,5 +1,8 @@
 apt-get update
-apt-get install -y puppet git rubygems curl python-yaml
+apt-get install -y puppet git rubygems curl python-yaml apache2
+
+chmod a+r /var/log/cloud-init-output.log
+ln -s /var/log/cloud-init-output.log /var/www/cloud-init-output.log
 
 git clone https://github.com/%{installer_repo}/openstack-installer.git /root/openstack-installer
 cd /root/openstack-installer

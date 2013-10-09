@@ -50,8 +50,8 @@ If you want to test the PXE deployment system, add the basebox
 ## Configuration ##
 
 There is a config.yaml file that can be edited to suit the environment. 
-The apt_cache server can be any server running apt-cacher-ng - it doesn't have to be the cache instance mentioned below if you already have one handy. It can be set to false to disable use of apt-cacher altogether.
-The apt_mirror will be used to set sources.list on each machine, and on the build server it will be used to import the 30MB ubuntu netboot image used during the PXE deploy process.
+The apt-cache server can be any server running apt-cacher-ng - it doesn't have to be the cache instance mentioned below if you already have one handy. It can be set to false to disable use of apt-cacher altogether.
+The apt-mirror will be used to set sources.list on each machine, and on the build server it will be used to import the 30MB ubuntu netboot image used during the PXE deploy process.
 Make sure the domain matches the domain specified in the site.pp in the manifests you intend to use. 
 
 The puppet modules used are taken from stackforge. To use the CiscoSystems releases of the puppet modules:
@@ -87,7 +87,7 @@ Log into your controller at: ssh localadmin@192.168.242.10 (password ubuntu)
 
 and run through the 'Deploy Your First VM' section of this document:
 
-  http://docwiki.cisco.com/wiki/OpenStack:Folsom-Multinode#Creating_a_build_server
+    http://docwiki.cisco.com/wiki/OpenStack:Folsom-Multinode#Creating_a_build_server
 
 
 ## Spinning up virtual machines with Openstack
@@ -129,7 +129,7 @@ After sourcing openstack credentials...
 To create a scenario:
 
     sb make
-
+    
     Running test: e824830b269544d39a632d89e0a1902c
     CI network 1 doesn't exist. Creating ...
     CI subnet 1 doesn't exist. Creating ...
@@ -142,7 +142,7 @@ To create a scenario:
 To destroy all resources created by the sb tool:
 
     sb kill
-
+    
     deleted port b68c7ff8-7598-42fd-ac3c-2e2b7021d2c6
     deleted port baa3c279-2b3d-4dad-a76a-f699de96d629
     deleted port c6603b5d-cc0c-47be-a897-e667727294ae
@@ -154,7 +154,7 @@ To destroy all resources created by the sb tool:
 To destroy a specific test run's resources:
 
     sb kill -t e824830b269544d39a632d89e0a1902c
-
+    
     deleted port b68c7ff8-7598-42fd-ac3c-2e2b7021d2c6
     deleted port baa3c279-2b3d-4dad-a76a-f699de96d629
     deleted port c6603b5d-cc0c-47be-a897-e667727294ae
@@ -165,29 +165,29 @@ To destroy a specific test run's resources:
 
 More information about this tool can be found under the stack-builder directory.
 
-## 
-
-basic install against already provisioned nodes:
+## basic install against already provisioned nodes:
 
 ### install your build server
 
 first, log into your build server, and set it up:
 
- > export build_server_ip=X.X.X.X ; bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/setup.sh)
+    export build_server_ip=X.X.X.X ; bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/setup.sh)
 
 then, install it as a puppet master
 
- > bash /root/openstack-installer/install-scripts/master.sh 
+    bash /root/openstack-installer/install-scripts/master.sh
 
 download all plugins for your puppetmaster
 
- > puppet plugin download --server `hostname -f`; service apache2 restart
+``
+    puppet plugin download --server `hostname -f`; service apache2 restart
+``
 
 ### set up your data
 
 on your build server, all of the data you may need to override can be found in:
 
-   /etc/puppet/data/user.common
+    /etc/puppet/data/hiera_data/user.common.yaml
 
 at the very least, you may need to update the controller ip addresses and set the
 interfaces to use.
@@ -206,13 +206,16 @@ Choices are in:
 
 ### install each of your components
 
-  first setup each node:
+first setup each node (unless you're doing all\_in\_one scenario, in which case you'll already have done this from the previous step):
 
-  > export build_server_ip=X.X.X.X ; bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/setup.sh)
+    export build_server_ip=X.X.X.X ; bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/setup.sh)
 
-  log into each server, and run (in a controller/compute scenario, you need to install the controller first):
+then log into each server, and run:
 
-  > puppet agent -td --server build-server.<DOMAIN_NAME> --certname <ROLE_CERT_NAME>
+``
+    puppet agent -td --server build-server.`hostname -d` --certname `hostname -f`
+``
 
-  where build-server is the fully qualified name of the build server or its IP address that was set in user.common.yaml and ROLE\_CERT\_NAME is the fully qualified name of the local machine (or `hostname -f` which should return the same thing)
+where build-server is the fully qualified name of the build server (or `` `hostname -f` `` on an all-in-one node), or its IP address that was set in user.common.yaml and ROLE\_CERT\_NAME is the fully qualified name of the local machine (or `` `hostname -f` `` which should return the same thing)
 
+#### NOTE: you'll want to run the puppet agent command on any control class nodes (or the all-in-one node) first, before running it on any compute or storage nodes.

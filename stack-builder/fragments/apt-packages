@@ -1,0 +1,2 @@
+apt-get update
+apt-get install -y puppet git rubygems curl python-yaml apache2

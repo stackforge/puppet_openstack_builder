@@ -18,6 +18,15 @@ import yaml
 from metadata import build_metadata
 from debug import dprint
 
+cloud_init="""#cloud-config
+runcmd:
+ - [chmod, ug+x, /root/deploy]
+ - [sh, /root/deploy]
+ - echo 'complete' > /var/www/deploy
+
+output: {all: '| tee -a /var/log/cloud-init-output.log'}
+"""
+
 def build_server_deploy():
     with open ('./stack-builder/fragments/build-config.sh', 'r') as b:
         return b.read()
@@ -61,7 +70,7 @@ def make_subnet(q, ci_network_name, test_net, index=1, dhcp=True, gateway=False)
         ci_network_name = ci_network_name + str(index)
 
     if ci_network_name not in [subnet['name'] for subnet in subnets['subnets']]:
-        print "CI subnet " + str(index) + " doesn't exist. Creating ..."
+        dprint("CI subnet " + str(index) + " doesn't exist. Creating ...")
         try:
             # internal networks
             if not gateway:
@@ -119,7 +128,7 @@ def boot_puppetised_instance(n, name, image_name, nic_list, key='test2', os_flav
      if flavor == os_flavor:
        boot_flavor = flavors[i]
 
-   print("Booting " + name)
+   dprint("Booting " + name)
    dprint("Boot image: " + str(boot_image))
    dprint("Boot flavor: " + str(boot_flavor))
    dprint("Boot nics: " + str(nic_list))
@@ -190,11 +199,10 @@ def make(n, q, args):
     fragment_path   = args.fragment_path
 
     if args.debug:
-        print 'Debugging is on!'
         debug.debug = True
 
     test_id = uuid.uuid4().hex
-    print "Running test: " + test_id 
+    print test_id 
 
     ci_network_name = u'ci-' + unicode(test_id)
 
@@ -261,8 +269,9 @@ def make(n, q, args):
                     'build-server',
                     image,
                     build_nic_port_list([ci_ports[0]['id']]),
-                    deploy=build_deploy,
+                    deploy=cloud_init,
                     files={
+                           u'/root/deploy'    : build_deploy,
                            u'/root/user.yaml' : user_config_yaml,
                            u'/root/config.yaml' : initial_config_yaml},
                     meta={'ci_test_id' : test_id}
@@ -277,9 +286,9 @@ def make(n, q, args):
                       'control-server', 
                        image, 
                        control_nics,
-                       deploy=control_deploy,
-                       #files={u'/root/meta_data.yaml' : config_yaml},
+                       deploy=cloud_init,
                        files={
+                              u'/root/deploy'    : control_deploy,
                               u'/root/user.yaml' : user_config_yaml,
                               u'/root/config.yaml' : initial_config_yaml},
                        meta={'ci_test_id' : test_id})
@@ -288,9 +297,9 @@ def make(n, q, args):
                       'compute-server02', 
                        image, 
                        build_nic_net_list([get_ci_network(q), test_net1]),
-                       deploy=compute_deploy,
-                       #files={u'/root/meta_data.yaml' : config_yaml},
+                       deploy=cloud_init,
                        files={
+                              u'/root/deploy'    : compute_deploy,
                               u'/root/user.yaml' : user_config_yaml,
                               u'/root/config.yaml' : initial_config_yaml},
                        meta={'ci_test_id' : test_id})

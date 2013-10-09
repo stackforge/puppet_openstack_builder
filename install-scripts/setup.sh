@@ -13,8 +13,8 @@ apt-get update
 apt-get install -y git apt rubygems puppet
 
 # use the domain name if one exists
-if [ `domainname` != '(none)' ]; then
-  domain=`domainname`
+if [ `hostname -d` != '' ]; then
+  domain=`hostname -d`
 else
   # otherwise use the domain
   domain='domain.name'

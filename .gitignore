@@ -5,3 +5,4 @@ vendor
 .vagrant
 *.log*
 data/hiera_data/jenkins.yaml
+*.pyc

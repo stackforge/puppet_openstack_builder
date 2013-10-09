@@ -27,7 +27,7 @@ def kill(n, q, args):
     instances = n.servers.list()
   
     for instance in instances:
-        if 'ci_test_id' in instance.metadata or instance.name[-3:] == '-ci':
+        if 'ci_test_id' in instance.metadata:
             if ((test_id and instance.metadata['ci_test_id'] == test_id) or not test_id):
                 print "Deleting instance " + instance.id + " from test " + instance.metadata['ci_test_id']
                 n.servers.delete(instance)
@@ -41,7 +41,7 @@ def kill(n, q, args):
 
     for p in ports['ports']:
         if p['name'][0:3] == 'ci-':
-           if ((test_id and p['name'][3:-1]) or not test_id):
+           if ((test_id and p['name'][-32:] == test_id) or not test_id):
                try:
                    q.delete_port(p['id'])
                    print 'deleted port ' + p['id']
@@ -50,7 +50,7 @@ def kill(n, q, args):
 
     for r in routers['routers']:
         if r['name'][0:3] == 'ci-':
-           if ((test_id and r['name'][3:-1]) or not test_id):
+           if ((test_id and r['name'][-32:] == test_id) or not test_id):
                 try:
                     q.remove_gateway_router(r['id'])
                     for subnet in subnets['subnets']:
@@ -64,7 +64,7 @@ def kill(n, q, args):
 
     for net in subnets['subnets']:
         if net['name'][0:3] == 'ci-':
-            if ((test_id and net['name'][3:-1]) or not test_id):
+            if ((test_id and net['name'][-32:] == test_id) or not test_id):
                 try:
                     q.delete_subnet(net['id'])
                     print 'deleted subnet ' + net['name']
@@ -73,7 +73,7 @@ def kill(n, q, args):
 
     for net in nets['networks']:
         if net['name'][0:3] == 'ci-':
-            if ((test_id and net['name'][3:-1]) or not test_id):
+            if ((test_id and net['name'][-32:] == test_id) or not test_id):
                 try:
                     q.delete_network(net['id'])
                     print 'deleted network ' + net['name']

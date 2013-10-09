@@ -14,6 +14,9 @@ import uuid
 import quantumclient
 import fragment
 import yaml
+import json
+import time
+import urllib2
 
 from metadata import build_metadata
 from debug import dprint
@@ -49,8 +52,8 @@ def make_network(q, ci_network_name, index=0):
     networks = q.list_networks()
 
     # the shared CI network 
-    if ci_network_name != 'ci':
-        ci_network_name = ci_network_name + str(index)
+    #if ci_network_name != 'ci':
+    #    ci_network_name = ci_network_name + str(index)
 
     if ci_network_name not in [network['name'] for network in networks['networks']]:
         dprint("q.create_network({'network': {'name':" + ci_network_name + ", 'admin_state_up': True}})['network']")
@@ -66,8 +69,8 @@ def make_subnet(q, ci_network_name, test_net, index=1, dhcp=True, gateway=False)
     subnets = q.list_subnets()
 
     # the shared CI network 
-    if ci_network_name != 'ci':
-        ci_network_name = ci_network_name + str(index)
+    #if ci_network_name != 'ci':
+    #    ci_network_name = ci_network_name + str(index)
 
     if ci_network_name not in [subnet['name'] for subnet in subnets['subnets']]:
         dprint("CI subnet " + str(index) + " doesn't exist. Creating ...")
@@ -204,34 +207,64 @@ def make(n, q, args):
     test_id = uuid.uuid4().hex
     print test_id 
 
-    ci_network_name = u'ci-' + unicode(test_id)
+    networks = {}
+    subnets = {}
+    ports = {}
 
     # Ci network with external route
     # There can be only one of these per tenant
     # because overlapping subnets + router doesn't work
-    make_network(q, 'ci')
-    make_subnet(q, 'ci', get_ci_network(q), ci_subnet_index, gateway=True)
+    networks['ci'] = make_network(q, 'ci')
+    subnets['ci']  = make_subnet(q, 'ci', networks['ci'], ci_subnet_index, gateway=True)
     set_external_routing(q, get_ci_subnet(q))
+    ci_subnet_index = ci_subnet_index + 1
 
-    # The build server IP on the 'build' (ci) network must be known
-    # so we preallocate it here, as well as the control node ip
-    ci_ports = allocate_ports(q, get_ci_network(q)['id'], test_id, 2)
+    with open(data_path + '/nodes/' + scenario + '.yaml') as scenario_yaml_file:
+        scenario_yaml = yaml.load(scenario_yaml_file.read())
 
-    # the openstack management network ('public interface')
-    test_net1 = make_network(q, ci_network_name, 1)
-    subnet1 = make_subnet(q, ci_network_name, test_net1, 1)
-    # This is needed for tunnel_ip unless we use %eth2 or similar
-    net1_ports = allocate_ports(q, test_net1['id'], test_id, 1)
+    # Find needed internal networks
+    for node, props in scenario_yaml['nodes'].items():
+        for network in props['networks']:
+            if network != 'ci': # build network with NAT services
+                networks[network] = False
 
-    # Pretend external network for the controller to simulate l3
-    test_net2 = make_network(q, ci_network_name, 2)
-    subnet2 = make_subnet(q, ci_network_name, test_net2, 2)
+    # Create internal networks
+    for network, gate in networks.items():
+        if network != 'ci':
+            networks[network] = make_network(q, 'ci-' + network + '-' + test_id)
+            subnets[network] = make_subnet(q, 'ci-' + network + '-' + test_id,
+                                        networks[network], index=ci_subnet_index, gateway=gate)
+            ci_subnet_index = ci_subnet_index + 1
+
+    # Allocate ports
+    for node, props in scenario_yaml['nodes'].items():
+        for network in props['networks']:
+            if node not in ports:
+                ports[node] = {}
+                ports[node][network] = allocate_ports(q, networks[network]['id'], test_id)
+            else:
+                ports[node][network] = allocate_ports(q, networks[network]['id'], test_id)
+
+    dprint("networks")
+    for net, value in networks.items():
+        dprint (net + str(value))
+    dprint ("subnets")
+    for snet, value in subnets.items():
+        dprint (snet + str(value))
+    dprint ("ports")
+    dprint (json.dumps(ports,sort_keys=True, indent=4))
+
+
+    # Quantum won't schedule dhcp agents to networks when using
+    # port preallocation. This requires the admin role
+    agent = q.list_dhcp_agent_hosting_networks(networks['ci']['id'])
+    for name, network in networks.items():
+        if name != 'ci':
+            q.add_network_to_dhcp_agent(agent['agents'][0]['id'], {"network_id" : network['id']})
 
     # To be put into the test run config
-    build_node_ip = ci_ports[0]['fixed_ips'][0]['ip_address']
-    control_node_ip = ci_ports[1]['fixed_ips'][0]['ip_address']
-    # Not sure if we need this
-    control_node_internal = net1_ports[0]['fixed_ips'][0]['ip_address']
+    build_node_ip = ports['build-server']['ci'][0]['fixed_ips'][0]['ip_address']
+    control_node_ip = ports['control-server']['ci'][0]['fixed_ips'][0]['ip_address']
 
     # config is a dictionary updated from env vars and user supplied
     # yaml files to serve as input to hiera
@@ -251,13 +284,11 @@ def make(n, q, args):
                       'build_server_ip'             : str(build_node_ip)
                     })
 
-    build_deploy = fragment.compose('build-server', data_path, fragment_path, scenario, initial_config_meta)
-    control_deploy = fragment.compose('control-server', data_path, fragment_path, scenario, initial_config_meta)
-    compute_deploy = fragment.compose('compute-server02', data_path, fragment_path, scenario, initial_config_meta)
-
-    dprint('build_deploy: ' + str(build_deploy))
-    dprint('control_deploy: ' + str(control_deploy))
-    dprint('compute_deploy: ' + str(compute_deploy))
+    # fragment composition
+    deploy_files = {}
+    for node, props in scenario_yaml['nodes'].items():
+        deploy_files[node] = fragment.compose(node, data_path, fragment_path, scenario, initial_config_meta)
+        dprint(node + 'deploy:\n' + deploy_files[node])
 
     user_config_yaml = yaml.dump(hiera_config_meta, default_flow_style=False)
     initial_config_yaml = yaml.dump(initial_config_meta, default_flow_style=False)
@@ -265,44 +296,32 @@ def make(n, q, args):
     dprint('Config Yaml: \n' + str(initial_config_yaml))
     dprint('User Yaml: \n' + str(user_config_yaml))
 
-    build_node = boot_puppetised_instance(n, 
-                    'build-server',
-                    image,
-                    build_nic_port_list([ci_ports[0]['id']]),
-                    deploy=cloud_init,
-                    files={
-                           u'/root/deploy'    : build_deploy,
-                           u'/root/user.yaml' : user_config_yaml,
-                           u'/root/config.yaml' : initial_config_yaml},
-                    meta={'ci_test_id' : test_id}
-                    )
+    port_list = {}
+    for node, props in scenario_yaml['nodes'].items():
+        nics = []
+        for network in props['networks']:
+            nics.append(ports[node][network][0]['id'])
+        port_list[node] = build_nic_port_list(nics)
 
-    # eth0, eth1 preallocated, eth2 dhcp
-    control_nics = (build_nic_port_list([ci_ports[1]['id']]) + 
-                   build_nic_port_list([net1_ports[0]['id']]) + 
-                   build_nic_net_list([test_net2]))
+    for node, props in scenario_yaml['nodes'].items():
+        boot_puppetised_instance(n,
+                        node,
+                        image,
+                        port_list[node],
+                        deploy=cloud_init,
+                        files={
+                               u'/root/deploy'      : deploy_files[node],
+                               u'/root/user.yaml'   : user_config_yaml,
+                               u'/root/config.yaml' : initial_config_yaml},
+                        meta={'ci_test_id' : test_id}
+                        )
 
-    control_node = boot_puppetised_instance(n, 
-                      'control-server', 
-                       image, 
-                       control_nics,
-                       deploy=cloud_init,
-                       files={
-                              u'/root/deploy'    : control_deploy,
-                              u'/root/user.yaml' : user_config_yaml,
-                              u'/root/config.yaml' : initial_config_yaml},
-                       meta={'ci_test_id' : test_id})
-
-    compute_node = boot_puppetised_instance(n, 
-                      'compute-server02', 
-                       image, 
-                       build_nic_net_list([get_ci_network(q), test_net1]),
-                       deploy=cloud_init,
-                       files={
-                              u'/root/deploy'    : compute_deploy,
-                              u'/root/user.yaml' : user_config_yaml,
-                              u'/root/config.yaml' : initial_config_yaml},
-                       meta={'ci_test_id' : test_id})
+def cli_get(n,q,args):
+    run_instances = get(n,q,args)
+    for test_id, servers in run_instances.items():
+        print "Test ID: " + test_id
+        for server in servers:
+            print "%-8.8s %16.16s %12.12s" % (server.id, server.name, str(server.networks['ci'][0]))
 
 def get(n, q, args):
     run_instances = {}
@@ -314,7 +333,38 @@ def get(n, q, args):
                     run_instances[instance.metadata['ci_test_id']] = [instance]
                 else:
                     run_instances[instance.metadata['ci_test_id']].append(instance)
-    for test_id, servers in run_instances.items():
-        print "Test ID: " + test_id
-        for server in servers:
-            print "%-8.8s %16.16s" % (server.id, server.name)
+    return run_instances
+
+# Wait for deployment to finish
+def wait(n,q,args):
+    test_id = args.test_id
+
+    servers = get(n,q,args)
+    for server in servers[test_id]:
+        response = False
+        while not response:
+            try:
+                response = urllib2.urlopen('http://' + str(server.networks['ci'][0]) + '/deploy')
+                response = True
+            except:
+                time.sleep(15)
+
+# Get cloud-init logs
+# TODO get all service logs
+def log(n, q, args):
+    test_id = args.test_id
+    path = args.data_path
+    scenario = args.scenario
+
+    servers = get(n,q,args)
+    for server in servers[test_id]:
+        response = False
+        while not response:
+            try:
+                response = urllib2.urlopen('http://' + str(server.networks['ci'][0]) + '/deploy')
+                with open('./' + str(server.name) + '-cloud-init.log', 'w') as output:
+                    output.write(response.read())
+                response = True
+            except:
+                time.sleep(20)
+

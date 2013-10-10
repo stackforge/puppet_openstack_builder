@@ -15,13 +15,4 @@ network_plugin: ovs
 network_type: per-tenant-router
 # supports gre or vlan
 tenant_network_type: gre
-# end networking top scope vars
-enabled_services:
-  - glance
-  - cinder
-  - keystone
-  - nova
-  # should I be able to interpolate this?
-  - quantum
-  - swift
 enable_ha: false

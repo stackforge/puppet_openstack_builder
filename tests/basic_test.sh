@@ -84,7 +84,7 @@ if [ -n "${openstack_package_repo:-}" ]; then
 fi
 
 if [ $openstack_version = 'havana' ];then
-  sed -i 's/quantum/neutron/' data/config.yaml
+  echo 'network_service: neutron' >> data/global_hiera_params/jenkins.yaml
 fi
 
 if [ "${test_type:-}" = 'swift' ]; then

@@ -245,6 +245,7 @@ def make(n, q, args):
             else:
                 ports[node][network] = allocate_ports(q, networks[network]['id'], test_id)
 
+
     dprint("networks")
     for net, value in networks.items():
         dprint (net + str(value))
@@ -262,27 +263,23 @@ def make(n, q, args):
         if name != 'ci':
             q.add_network_to_dhcp_agent(agent['agents'][0]['id'], {"network_id" : network['id']})
 
-    # To be put into the test run config
-    build_node_ip = ports['build-server']['ci'][0]['fixed_ips'][0]['ip_address']
-    control_node_ip = ports['control-server']['ci'][0]['fixed_ips'][0]['ip_address']
-
     # config is a dictionary updated from env vars and user supplied
-    # yaml files to serve as input to hiera
+    # yaml files to serve as input to hiera and build scripts
+    initial_config_meta = build_metadata(data_path, scenario, 'config')
     hiera_config_meta =  build_metadata(data_path, scenario, 'user')
 
-    hiera_config_meta.update({'controller_public_address'   : str(control_node_ip),
-                      'controller_internal_address' : str(control_node_ip),
-                      'controller_admin_address'    : str(control_node_ip),
-                      'cobbler_node_ip'             : str(build_node_ip),
-                    })
+    # IP addresses of particular nodes mapped to specified config
+    # values to go into hiera + build scripts. See data/nodes/2_role.yaml
+    meta_update = {}
+    for node, props in scenario_yaml['nodes'].items():
+        for network, mappings in props['networks'].items():
+            if mappings != None:
+                for mapping in mappings:
+                    meta_update[mapping] = str(ports[node][network][0]['fixed_ips'][0]['ip_address'])
 
-    initial_config_meta = build_metadata(data_path, scenario, 'config')
-    initial_config_meta.update({'controller_public_address'   : str(control_node_ip),
-                      'controller_internal_address' : str(control_node_ip),
-                      'controller_admin_address'    : str(control_node_ip),
-                      'cobbler_node_ip'             : str(build_node_ip),
-                      'build_server_ip'             : str(build_node_ip)
-                    })
+
+    hiera_config_meta.update(meta_update)
+    initial_config_meta.update(meta_update)
 
     # fragment composition
     deploy_files = {}

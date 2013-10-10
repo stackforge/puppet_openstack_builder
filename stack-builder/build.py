@@ -361,7 +361,7 @@ def log(n, q, args):
         response = False
         while not response:
             try:
-                response = urllib2.urlopen('http://' + str(server.networks['ci'][0]) + '/deploy')
+                response = urllib2.urlopen('http://' + str(server.networks['ci'][0]) + '/cloud-init-output.log')
                 with open('./' + str(server.name) + '-cloud-init.log', 'w') as output:
                     output.write(response.read())
                 response = True

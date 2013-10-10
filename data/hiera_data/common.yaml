@@ -7,7 +7,7 @@ enabled_services:
   - keystone
   - nova
   # should I be able to interpolate this?
-  - quantum
+  - "%{network_service}"
   - swift
 
 allowed_hosts: "%"

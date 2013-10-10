@@ -38,6 +38,7 @@ nodes:
       - 'cloud-init-log'
       - 'puppet-modules'
       - 'hiera-config'
+      - 'puppet-master-fact'
       - 'puppet-setup'
       - 'puppet-site'
       - 'build-sig-stack'

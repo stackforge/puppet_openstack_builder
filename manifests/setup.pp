@@ -24,10 +24,6 @@ case $::osfamily {
     $pkg_list       = ['git', 'curl', 'vim', 'cobbler']
     package { 'puppet-common':
       ensure => $puppet_version,
-    } ->
-    package { 'puppetmaster-common':
-      ensure => $puppet_version,
-      before => Package['puppet'],
     }
   }
 }
@@ -44,9 +40,23 @@ if $::build_server_ip {
   }
 }
 
-# set up our hiera-store!
-file { "${settings::confdir}/hiera.yaml":
-  content =>
+#
+# configure data or all machines who
+# have run mode set to master or apply
+#
+if $::puppet_run_mode != 'agent' {
+
+  if $::osfamily == 'Debian' {
+    package { 'puppetmaster-common':
+      ensure  => $puppet_version,
+      before  => Package['puppet'],
+      require => Package['puppet-common']
+    }
+  }
+
+  # set up our hiera-store!
+  file { "${settings::confdir}/hiera.yaml":
+    content =>
 '
 ---
 :backends:
@@ -76,16 +86,17 @@ file { "${settings::confdir}/hiera.yaml":
    # this should be contained in a module
    :datadir: /etc/puppet/data/data_mappings
 '
-}
+  }
 
-# add the correct node terminus
-ini_setting {'puppetmastermodulepath':
-  ensure  => present,
-  path    => '/etc/puppet/puppet.conf',
-  section => 'main',
-  setting => 'node_terminus',
-  value   => 'scenario',
-  require => Package['puppet'],
+  # add the correct node terminus
+  ini_setting {'puppetmastermodulepath':
+    ensure  => present,
+    path    => '/etc/puppet/puppet.conf',
+    section => 'main',
+    setting => 'node_terminus',
+    value   => 'scenario',
+    require => Package['puppet'],
+  }
 }
 
 # lay down a file that can be used for subsequent runs to puppet. Often, the

@@ -169,19 +169,9 @@ More information about this tool can be found under the stack-builder directory.
 
 ### install your build server
 
-first, log into your build server, and set it up:
+first, log into your build server, and run the following script to bootstrap it as a puppet master:
 
-    export build_server_ip=X.X.X.X ; bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/setup.sh)
-
-then, install it as a puppet master
-
-    bash /root/openstack-installer/install-scripts/master.sh
-
-download all plugins for your puppetmaster
-
-``
-    puppet plugin download --server `hostname -f`; service apache2 restart
-``
+    export build_server_ip=X.X.X.X ; bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/master.sh)
 
 ### set up your data
 

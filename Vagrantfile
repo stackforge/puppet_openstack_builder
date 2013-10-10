@@ -116,7 +116,7 @@ end
 #
 # run puppet apply on the site manifest
 #
-def apply_manifest(config, v_config, manifest_name='site.pp', certname=nil)
+def apply_manifest(config, v_config, manifest_name='site.pp', certname=nil, puppet_type=nil)
 
   options = []
 
@@ -161,6 +161,7 @@ def apply_manifest(config, v_config, manifest_name='site.pp', certname=nil)
     puppet.facter = {
       "build_server_ip"          => "192.168.242.100",
       "build_server_domain_name" => v_config['domain'],
+      "puppet_run_mode"          => puppet_type,
     }
   end
 
@@ -230,7 +231,7 @@ def configure_openstack_node(
     configure_apt_mirror(config, v_config['apt_mirror'], apt_cache_proxy)
   end
 
-  apply_manifest(config, v_config, 'setup.pp')
+  apply_manifest(config, v_config, 'setup.pp', nil, puppet_type)
 
   if puppet_type == 'apply'
     apply_manifest(config, v_config, 'site.pp', cert_name)

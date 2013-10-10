@@ -39,5 +39,6 @@ librarian-puppet install --verbose
 
 export FACTER_build_server_domain_name=$domain
 export FACTER_build_server_ip=$build_server_ip
+export FACTER_puppet_run_mode="${puppet_run_mode:-agent}"
 
 puppet apply manifests/setup.pp --modulepath modules

@@ -23,6 +23,7 @@ admin_tenant: admin
 package_ensure: present
 nova::compute::libvirt::libvirt_type: qemu
 nova::compute::libvirt::vncserver_listen: 0.0.0.0
+nova::compute::force_config_drive: true
 
 # information for package repos
 coe::base::openstack_release: grizzly

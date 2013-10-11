@@ -1,0 +1,3 @@
+# By default, setup.pp will omit some components
+# required by puppet master
+export FACTER_puppet_run_mode=master

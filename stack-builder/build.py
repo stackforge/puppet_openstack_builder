@@ -196,7 +196,7 @@ def make_key(n, test_id):
 
 def make(n, q, args):
     image           = args.image
-    ci_subnet_index = args.ci_subnet_index
+    ci_subnet_index = 123 # TODO fix inital setup stuff
     scenario        = args.scenario
     data_path       = args.data_path
     fragment_path   = args.fragment_path

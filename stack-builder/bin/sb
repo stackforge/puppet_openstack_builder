@@ -23,7 +23,6 @@ def main():
 
     parser_make = subparsers.add_parser('make', help='make help')
     parser_make.add_argument('-i', '--image', default='precise-x86_64', help='name of image to use')
-    parser_make.add_argument('-c', '--ci_subnet_index', default=123, type=int, help='subnet to use (10.x.0.0/16)')
     parser_make.add_argument('-s', '--scenario', default='2_role', help='Scenario to run')
     parser_make.add_argument('-p', '--data_path', default='./data', help='Path to the data directory containing yaml config')
     parser_make.add_argument('-f', '--fragment_path', default='./stack-builder/fragments', help='Path to config fragments')

@@ -3,14 +3,21 @@ Openstack Installer
 
 Project for building out OpenStack COE.
 
-## Installing dependencies
+## Spinning up VMs with Vagrant
+
+This project historically supported spinning up VMs to test OpenStack with Vagrant.
+
+This approach is recommended for development environment or for users who want
+to get up and going in the simplest way possible.
+
+### requirements
 
 This setup requires that a few additional dependencies are installed:
 
 * virtualbox
 * vagrant
 
-## Developer instructions
+### Developer instructions
 
 Developers should be started by installing the following simple utility:
 
@@ -35,30 +42,14 @@ To download modules
 
     librarian-puppet install --verbose
 
-Now, if you are using the Cisco modules:
+### Configuration
 
-    cp site.pp.downstream modules/manifests/manifests
-
-If you are using the stackforge modules:
-
-    cp site.pp modules/manifests/manifests
-
-If you want to test the PXE deployment system, add the basebox
-
-    vagrant box add blank blank.box
-
-## Configuration ##
-
-There is a config.yaml file that can be edited to suit the environment. 
+There is a config.yaml file that can be edited to suit the environment.
 The apt-cache server can be any server running apt-cacher-ng - it doesn't have to be the cache instance mentioned below if you already have one handy. It can be set to false to disable use of apt-cacher altogether.
 The apt-mirror will be used to set sources.list on each machine, and on the build server it will be used to import the 30MB ubuntu netboot image used during the PXE deploy process.
-Make sure the domain matches the domain specified in the site.pp in the manifests you intend to use. 
+Make sure the domain matches the domain specified in the site.pp in the manifests you intend to use.
 
-The puppet modules used are taken from stackforge. To use the CiscoSystems releases of the puppet modules:
-
-    export repos_to_use=downstream
-
-## Spinning up virtual machines with vagrant
+### Spinning up virtual machines with vagrant
 
 Now that you have set up the puppet content, the next step is to build
 out your multi-node environment using vagrant.
@@ -77,13 +68,14 @@ Now, bring up the blank boxes so that they can PXE boot against the master
 
     vagrant up compute_basevm
 
-
 Now, you have created a fully functional openstack environment, now have a look at some services:
 
   * service dashboard: http://192.168.242.100/
   * horizon:           http://192.168.242.10/ (username: admin, password: Cisco123)
 
-Log into your controller at: ssh localadmin@192.168.242.10 (password ubuntu)
+Log into your controller:
+
+    vagrant ssh control_basevm
 
 and run through the 'Deploy Your First VM' section of this document:
 
@@ -115,9 +107,9 @@ The order of precedence is environment variables > user.yaml > jenkins.yaml > ot
 
 Currently there are five config items that are set at runtime, and will override anything set by the user, these are:
 
-    controller_public_address 
-    controller_internal_address 
-    controller_admin_address 
+    controller_public_address
+    controller_internal_address
+    controller_admin_address
     cobbler_node_ip
 
 These will all be set to the address allocated by quantum to the relevant node.
@@ -129,7 +121,7 @@ After sourcing openstack credentials...
 To create a scenario:
 
     sb make
-    
+
     Running test: e824830b269544d39a632d89e0a1902c
     CI network 1 doesn't exist. Creating ...
     CI subnet 1 doesn't exist. Creating ...
@@ -142,7 +134,7 @@ To create a scenario:
 To destroy all resources created by the sb tool:
 
     sb kill
-    
+
     deleted port b68c7ff8-7598-42fd-ac3c-2e2b7021d2c6
     deleted port baa3c279-2b3d-4dad-a76a-f699de96d629
     deleted port c6603b5d-cc0c-47be-a897-e667727294ae
@@ -154,7 +146,7 @@ To destroy all resources created by the sb tool:
 To destroy a specific test run's resources:
 
     sb kill -t e824830b269544d39a632d89e0a1902c
-    
+
     deleted port b68c7ff8-7598-42fd-ac3c-2e2b7021d2c6
     deleted port baa3c279-2b3d-4dad-a76a-f699de96d629
     deleted port c6603b5d-cc0c-47be-a897-e667727294ae
@@ -171,7 +163,7 @@ More information about this tool can be found under the stack-builder directory.
 
 first, log into your build server, and run the following script to bootstrap it as a puppet master:
 
-    export build_server_ip=X.X.X.X ; bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/master.sh)
+    bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/master.sh)
 
 ### set up your data
 
@@ -208,4 +200,4 @@ then log into each server, and run:
 
 where build-server is the fully qualified name of the build server (or `` `hostname -f` `` on an all-in-one node), or its IP address that was set in user.common.yaml and ROLE\_CERT\_NAME is the fully qualified name of the local machine (or `` `hostname -f` `` which should return the same thing)
 
-#### NOTE: you'll want to run the puppet agent command on any control class nodes (or the all-in-one node) first, before running it on any compute or storage nodes.
+*NOTE: you'll want to run the puppet agent command on any control class nodes (or the all-in-one node) first, before running it on any compute or storage nodes.*

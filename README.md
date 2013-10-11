@@ -86,50 +86,39 @@ and run through the 'Deploy Your First VM' section of this document:
 
 (Experimental)
 
-The python scripts under stack-builder can be used to instantiate scenarios on an openstack cluster. To do this, clone this repository, add stackbuilder/bin to your PATH, and add stackbuilder to your PYTHONPATH. It is not necessary to install the modules or librarian to your local machine when running in this manner.
+The python scripts under stack-builder can be used to instantiate scenarios on an openstack cluster. To do this, clone this repository, add stackbuilder/bin to your PATH, and add stackbuilder to your PYTHONPATH. It is not necessary to install the modules or librarian to your local machine when running in this manner, but the openstack clients and the python yaml library are needed.
 
-    git clone https://github.com/CiscoSystems/openstack-installer.git
+    https://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.10.1.tar.gz
+    tar xvfz virtualenv-1.10.1.tar.gz
+    cd virtualenv-1.10.1
+    python virtualenv.py test
+    cd test
+    source bin/activate
+    pip install python-novaclient==2.14.1
+    pip install python-quantumclient==2.2.3
+    pip install PyYaml
+    git clone "https://github.com/CiscoSystems/openstack-installer"
     cd openstack-installer
     export PATH=`pwd`/stack-builder/bin:$PATH
     export PYTHONPATH=`pwd`/stack-builder:$PYTHONPATH
 
-To create a basic 2 role cluster with a build, compute and control node outside of the jenkins environment, some configuration must be set either in data/heira_data/user.yaml or by setting environment variables prefixed with "jenkins_"
+The scripts are currently limited by a quantum bug that means admin credentials are required to launch. Using standard user credentials will result in networks that have no dhcp agent scheduled to them.
+
+    source openrc
+
+To create a basic 2 role cluster with a build, compute and control node outside of the jenkins environment, some configuration must be set either in data/heira\_data/user.yaml or by setting environment variables prefixed with "jenkins\_"
 
     export osi_user_internal_ip='%{ipaddress_eth1}'
     export osi_user_tunnel_ip='%{ipaddress_eth1}'
     export osi_conf_initial_ntp=ntp.esl.cisco.com
-    export osi_conf_installer_repo=michaeltchapman
+    export osi_conf_installer_repo=CiscoSystems
     export osi_conf_installer_branch=master
     export osi_conf_build_server_domain_name=domain.name
     export osi_conf_operatingsystem=Ubuntu
 
-The order of precedence is environment variables > user.yaml > jenkins.yaml > others. This heirarchy can be more clearly seen in manifests/setup.pp which defines the hiera ordering.
-
-Currently there are five config items that are set at runtime, and will override anything set by the user, these are:
-
-    controller_public_address
-    controller_internal_address
-    controller_admin_address
-    cobbler_node_ip
-
-These will all be set to the address allocated by quantum to the relevant node.
-
-After sourcing openstack credentials...
-
-    . openrc
-
-To create a scenario:
-
     sb make
-
-    Running test: e824830b269544d39a632d89e0a1902c
-    CI network 1 doesn't exist. Creating ...
-    CI subnet 1 doesn't exist. Creating ...
-    CI network 2 doesn't exist. Creating ...
-    CI subnet 2 doesn't exist. Creating ...
-    Booting build-server
-    Booting control-server
-    Booting compute-server02
+    
+    e824830b269544d39a632d89e0a1902c
 
 To destroy all resources created by the sb tool:
 

@@ -18,6 +18,7 @@ rpc_user: openstack_rabbit_user
 verbose: false
 cinder::scheduler::scheduler_driver: 'cinder.scheduler.simple.SimpleScheduler'
 nova::compute::quantum::libvirt_vif_driver: nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver
+nova::compute::neutron::libvirt_vif_driver: nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver
 service_tenant: services
 admin_tenant: admin
 package_ensure: present

@@ -1,0 +1,4 @@
+cinder::volume::rbd::rbd_pool: 'rbd'
+cinder::volume::rbd::glance_api_version: '2'
+cinder::volume::rbd::rbd_user: 'no user'
+cinder::volume::rbd::rbd_secret_uuid: false

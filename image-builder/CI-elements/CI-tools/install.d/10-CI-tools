@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if ! [ type git 2>/dev/null ]; then
+    apt-get install -y git
+fi
+
+# Install openstack-installer
+cd /root/
+if ! [ -f openstack-installer ]; then
+    git clone https://github.com/CiscoSystems/openstack-installer.git /root/openstack-installer
+fi
+

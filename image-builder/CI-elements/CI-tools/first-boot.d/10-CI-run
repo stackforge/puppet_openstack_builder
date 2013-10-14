@@ -1,0 +1,10 @@
+#!/bin/bash
+
+cd /root/openstack-installer/install-scripts
+chmod 775 master.sh
+chmod 775 setup.sh
+
+/root/openstack-installer/install-scripts/setup.sh
+
+/root/openstack-installer/install-scripts/master.sh
+

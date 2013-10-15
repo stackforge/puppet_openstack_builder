@@ -7,11 +7,24 @@
 export build_server_ip="${build_server_ip:-127.0.0.1}"
 export puppet_run_mode="apply"
 
+# scenarios will map to /etc/puppet/data/scenarios/*.yaml
+export scenario="${scenario:-2_role}"
+# if you change your build_server name, or if you want 
+# to run all_in_one, you will likely want to set this
+export build_server="${build_server:-build-server}"
+
 bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/setup.sh)
 
 cp -Rv /root/openstack-installer/modules /etc/puppet/
 cp -Rv /root/openstack-installer/data /etc/puppet/
 cp -Rv /root/openstack-installer/manifests /etc/puppet/
 
-puppet apply /etc/puppet/manifests/site.pp --certname build-server --debug
+if [ ${scenario} != "2_role" ] ; then
+ sed -i "s/2_role/$scenario/" /etc/puppet/data/config.yaml
+fi
+if [ ${scenario} == "all_in_one" ] ; then
+  echo `hostname`: all_in_one >> /etc/puppet/data/role_mappings.yaml
+fi
+
+puppet apply /etc/puppet/manifests/site.pp --certname ${build_server} --debug
 puppet plugin download --server `hostname -f`; service apache2 restart

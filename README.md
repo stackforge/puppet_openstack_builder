@@ -159,6 +159,27 @@ If you want to use the havana version of the packages, set the following ENV var
 
     bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/master.sh)
 
+####Note:
+If you want to install an all-in-one style node, you will often want your build server to be a name other that "build-server", most likley the name of your actual machine. In which case, first
+
+    export build_server='name_of_your_build_server'
+
+or
+
+``
+    export build_server=`hostname`
+``
+
+Also, if you want to run against the all-in-one case, or you want to run against a scenario where your build and control server(s) are collapsed, you may want set your scenario before the script runs puppet for the first time, in whic case do the following:
+
+    export scenario='all_in_one'
+
+After these exports, you _then_ run the bash script from above
+
+After the master.sh script is run, you will need to run puppet one more time (after following the next section on data updates). In which case, you will then want to run:
+
+    puppet apply -v /etc/puppet/manifests/site.pp
+
 ### set up your data
 
 on your build server, all of the data you may need to override can be found in:

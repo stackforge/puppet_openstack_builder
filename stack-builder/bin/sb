@@ -27,6 +27,7 @@ def main():
     parser_make.add_argument('-p', '--data_path', default='./data', help='Path to the data directory containing yaml config')
     parser_make.add_argument('-f', '--fragment_path', default='./stack-builder/fragments', help='Path to config fragments')
     parser_make.add_argument('-d', '--debug', action='store_true', help='print debug output')
+    parser_make.add_argument('-n', '--public_network', default='public' help='The name of the public network on the cluster')
     parser_make.set_defaults(func=make)
 
     parser_get = subparsers.add_parser('get', help='get help')

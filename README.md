@@ -88,7 +88,7 @@ and run through the 'Deploy Your First VM' section of this document:
 
 The python scripts under stack-builder can be used to instantiate scenarios on an openstack cluster. To do this, clone this repository, add stackbuilder/bin to your PATH, and add stackbuilder to your PYTHONPATH. It is not necessary to install the modules or librarian to your local machine when running in this manner, but the openstack clients and the python yaml library are needed.
 
-    https://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.10.1.tar.gz
+    curl -O https://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.10.1.tar.gz
     tar xvfz virtualenv-1.10.1.tar.gz
     cd virtualenv-1.10.1
     python virtualenv.py test

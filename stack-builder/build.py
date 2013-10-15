@@ -160,14 +160,22 @@ def get_external_router(q):
         if router['name'] == 'ci':
             return router
 
-def get_ci_network(q):
+def get_tenant_id(k):
+    tenant_name = os.environ['OS_TENANT_NAME']
+    for tenant in k.tenants.list():
+        if tenant.name == tenant_name:
+            return str(tenant.id)
+
+# This can easily be problematic with multiple tenants,
+# So make sure we get the one for the current tenant
+def get_ci_network(q, k):
     for network in q.list_networks()['networks']:
-        if network['name'] == 'ci':
+        if network['name'] == 'ci' and network['tenant_id'] == get_tenant_id(k):
             return network
 
-def get_ci_subnet(q):
+def get_ci_subnet(q, k):
     for subnet in q.list_subnets()['subnets']:
-        if subnet['name'] == 'ci':
+        if subnet['name'] == 'ci' and subnet['tenant_id'] == get_tenant_id(k):
             return subnet 
 
 def set_external_routing(q, subnet, public_network):
@@ -188,13 +196,25 @@ def allocate_ports(q, network_id, test_id="", count=1):
         request_body['ports'].append({ "network_id" : network_id, "name" : "ci-" + str(port) + '-' + test_id })
     return q.create_port(request_body)['ports']
 
+def metadata_update(scenario_yaml, ports):
+    # IP addresses of particular nodes mapped to specified config
+    # values to go into hiera + build scripts. See data/nodes/2_role.yaml
+    meta_update = {}
+    for node, props in scenario_yaml['nodes'].items():
+        for network, mappings in props['networks'].items():
+            if mappings != None:
+                for mapping in mappings:
+                    meta_update[mapping] = str(ports[node][network][0]['fixed_ips'][0]['ip_address'])
+    return meta_update
+
+
 # Not used atm
 def make_key(n, test_id):
     command = 'ssh-keygen -t rsa -q -N "" -f keys/'+test_id
     process = subprocess.Popen(command)
     n.keypairs.create(test_id, 'keys/'+test_id)
 
-def make(n, q, args):
+def make(n, q, k, args):
     image           = args.image
     ci_subnet_index = 123 # TODO fix inital setup stuff
     scenario        = args.scenario
@@ -217,7 +237,7 @@ def make(n, q, args):
     # because overlapping subnets + router doesn't work
     networks['ci'] = make_network(q, 'ci')
     subnets['ci']  = make_subnet(q, 'ci', networks['ci'], ci_subnet_index, gateway=True)
-    set_external_routing(q, get_ci_subnet(q), public_network)
+    set_external_routing(q, get_ci_subnet(q, k), public_network)
     ci_subnet_index = ci_subnet_index + 1
 
     with open(data_path + '/nodes/' + scenario + '.yaml') as scenario_yaml_file:
@@ -269,15 +289,7 @@ def make(n, q, args):
     initial_config_meta = build_metadata(data_path, scenario, 'config')
     hiera_config_meta =  build_metadata(data_path, scenario, 'user')
 
-    # IP addresses of particular nodes mapped to specified config
-    # values to go into hiera + build scripts. See data/nodes/2_role.yaml
-    meta_update = {}
-    for node, props in scenario_yaml['nodes'].items():
-        for network, mappings in props['networks'].items():
-            if mappings != None:
-                for mapping in mappings:
-                    meta_update[mapping] = str(ports[node][network][0]['fixed_ips'][0]['ip_address'])
-
+    meta_update = metadata_update(scenario_yaml, ports)
 
     hiera_config_meta.update(meta_update)
     initial_config_meta.update(meta_update)
@@ -314,14 +326,14 @@ def make(n, q, args):
                         meta={'ci_test_id' : test_id}
                         )
 
-def cli_get(n,q,args):
-    run_instances = get(n,q,args)
+def cli_get(n,q,k,args):
+    run_instances = get(n,q,k,args)
     for test_id, servers in run_instances.items():
         print "Test ID: " + test_id
         for server in servers:
             print "%-8.8s %16.16s %12.12s" % (server.id, server.name, str(server.networks['ci'][0]))
 
-def get(n, q, args):
+def get(n, q, k, args):
     run_instances = {}
     instances = n.servers.list()
     for instance in instances:
@@ -334,10 +346,10 @@ def get(n, q, args):
     return run_instances
 
 # Wait for deployment to finish
-def wait(n,q,args):
+def wait(n, q, k, args):
     test_id = args.test_id
 
-    servers = get(n,q,args)
+    servers = get(n,q,k,args)
     for server in servers[test_id]:
         response = False
         while not response:
@@ -349,12 +361,12 @@ def wait(n,q,args):
 
 # Get cloud-init logs
 # TODO get all service logs
-def log(n, q, args):
+def log(n, q, k, args):
     test_id = args.test_id
     path = args.data_path
     scenario = args.scenario
 
-    servers = get(n,q,args)
+    servers = get(n,q,k,args)
     for server in servers[test_id]:
         response = False
         while not response:
@@ -365,4 +377,3 @@ def log(n, q, args):
                 response = True
             except:
                 time.sleep(20)
-

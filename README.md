@@ -96,6 +96,7 @@ The python scripts under stack-builder can be used to instantiate scenarios on a
     source bin/activate
     pip install python-novaclient==2.14.1
     pip install python-quantumclient==2.2.3
+    pip install python-keystoneclient==0.3.2
     pip install PyYaml
     git clone "https://github.com/CiscoSystems/openstack-installer"
     cd openstack-installer

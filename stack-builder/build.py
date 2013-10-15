@@ -150,9 +150,9 @@ def get_external_network(q):
 
 # Used only for setting router gateway, VMs
 # belong on external network
-def get_public_network(q):
+def get_public_network(q, public_network):
     for network in q.list_networks()['networks']:
-        if network['name'] == 'public':
+        if network['name'] == public_network:
             return network
 
 def get_external_router(q):
@@ -170,13 +170,13 @@ def get_ci_subnet(q):
         if subnet['name'] == 'ci':
             return subnet 
 
-def set_external_routing(q, subnet):
+def set_external_routing(q, subnet, public_network):
     routers = q.list_routers()
     ci_router = [router for router in routers['routers'] if router['name'] == 'ci']
     if len(ci_router) == 0:
         ci_router = q.create_router( { 'router': { 'name': 'ci',
                                                    'admin_state_up': 'true'} })['router']
-        q.add_gateway_router(ci_router['id'], {'network_id': get_public_network(q)['id']})    
+        q.add_gateway_router(ci_router['id'], {'network_id': get_public_network(q, public_network)['id']})
         q.add_interface_router(ci_router['id'], {'subnet_id': subnet['id']})
     else:
         ci_router = ci_router[0]
@@ -200,6 +200,7 @@ def make(n, q, args):
     scenario        = args.scenario
     data_path       = args.data_path
     fragment_path   = args.fragment_path
+    public_network  = args.public_network
 
     if args.debug:
         debug.debug = True
@@ -216,7 +217,7 @@ def make(n, q, args):
     # because overlapping subnets + router doesn't work
     networks['ci'] = make_network(q, 'ci')
     subnets['ci']  = make_subnet(q, 'ci', networks['ci'], ci_subnet_index, gateway=True)
-    set_external_routing(q, get_ci_subnet(q))
+    set_external_routing(q, get_ci_subnet(q), public_network)
     ci_subnet_index = ci_subnet_index + 1
 
     with open(data_path + '/nodes/' + scenario + '.yaml') as scenario_yaml_file:

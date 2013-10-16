@@ -37,10 +37,10 @@ enabled_services:
 
 allowed_hosts:
   - ceilometer::db::mysql::allowed_hosts
-  - cinder::db:mysql::allowed_hosts
-  - glance::db:mysql::allowed_hosts
+  - cinder::db::mysql::allowed_hosts
+  - glance::db::mysql::allowed_hosts
   - keystone::db::mysql::allowed_hosts
-  - nova::db:mysql::allowed_hosts
+  - nova::db::mysql::allowed_hosts
   - quantum::db::mysql::allowed_hosts
   - neutron::db::mysql::allowed_hosts
 #

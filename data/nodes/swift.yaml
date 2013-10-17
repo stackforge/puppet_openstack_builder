@@ -1,22 +1,22 @@
 nodes:
   control_basevm:
-    hostname:    control-server
+    vagrant_name: control_basevm
     memory:      3000
     ip_number:   10
     post_config: 'route add -net 172.16.2.0 netmask 255.255.255.0 gw 192.168.242.100'
-  swift_proxy:
-    hostname: swift-proxy01
+  swift-proxy01:
+    vagrant_name: swift_proxy
     memory: 512
     ip_number: 41
-  swift_storage_1:
-    hostname: swift-storage01
+  swift-storage01:
+    vagrant_name: swift_storage_1
     memory: 512
     ip_number: 51
-  swift_storage_2:
-    hostname: swift-storage02
+  swift-storage02:
+    vagrant_name: swift_storage_2
     memory: 512
     ip_number: 52
-  swift_storage_3:
-    hostname: swift-storage03
+  swift-storage03:
+    vagrant_name: swift_storage_3
     memory: 512
     ip_number: 53

@@ -81,7 +81,7 @@ def make_subnet(q, ci_network_name, test_net, index=1, dhcp=True, gateway=False)
                        "            'network_id': " + test_net['id'] + ",\n" +
                        "            'ip_version': 4,\n" +
                        "            'cidr': '10.2." + str(index) + ".0/24',\n" +
-                       "            'enable_dhcp': dhcp,\n" +
+                       "            'enable_dhcp': True,\n" +
                        "            'gateway_ip': None}})['subnet']\n")
 
                 test_subnet = q.create_subnet({'subnet': { 'name': ci_network_name + str(index), 
@@ -275,14 +275,6 @@ def make(n, q, k, args):
         dprint (snet + str(value))
     dprint ("ports")
     dprint (json.dumps(ports,sort_keys=True, indent=4))
-
-
-    # Quantum won't schedule dhcp agents to networks when using
-    # port preallocation. This requires the admin role
-    agent = q.list_dhcp_agent_hosting_networks(networks['ci']['id'])
-    for name, network in networks.items():
-        if name != 'ci':
-            q.add_network_to_dhcp_agent(agent['agents'][0]['id'], {"network_id" : network['id']})
 
     # config is a dictionary updated from env vars and user supplied
     # yaml files to serve as input to hiera and build scripts

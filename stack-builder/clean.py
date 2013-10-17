@@ -15,7 +15,7 @@ from quantumclient.quantum import client as qclient
 from time import sleep
 import os
 
-def kill(n, q, args):
+def kill(n, q, k, args):
     """
     Destroy either all virtual test resources,
     or the resources from a particular run.

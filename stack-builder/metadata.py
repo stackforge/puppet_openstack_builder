@@ -54,7 +54,7 @@ def build_metadata(path, scenario, config):
     else:
         print "Invalid config type: choose from 'user' and 'conf'"
 
-def show(n, q, args):
+def show(n, q, k, args):
     hostname = args.node
     yaml_dir = args.yaml_dir
     scenario = args.scenario

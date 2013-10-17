@@ -1,4 +1,47 @@
 nodes:
+  cache:
+    vagrant_name:    cache
+    memory:      2500
+    ip_number:   99
+    puppet_type: apply
+    apt_cache:   false
+
+    networks:
+      ci:
+    flavor: 'm1.medium'
+    image:  'precise-x86_64'
+    fragments:
+      - 'bash-top'
+      - 'apt-packages'
+      - 'cloud-init-log'
+  build-server:
+    vagrant_name: build
+    memory:       2500
+    ip_number:    100
+    puppet_type:  apply
+    post_config:
+      - 'puppet plugin download --server build-server.domain.name'
+      - 'service apache2 restart'
+      - "ip addr add 172.16.2.1/24 dev eth2; sysctl -w net.ipv4.ip_forward=1; iptables -A FORWARD -o eth0 -i eth1 -s 172.16.2.0/24 -m conntrack --ctstate NEW -j ACCEPT; iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT; iptables -t nat -F POSTROUTING; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE"
+
+    networks:
+      ci:
+        - 'cobbler_node_ip'
+        - 'build_server_ip'
+    flavor: 'm1.medium'
+    image:  'precise-x86_64'
+    fragments:
+      - 'bash-top'
+      - 'fqdn-fix'
+      - 'pw-mirror-network'
+      - 'apt-packages'
+      - 'cloud-init-log'
+      - 'puppet-modules'
+      - 'hiera-config'
+      - 'puppet-master-fact'
+      - 'puppet-setup'
+      - 'puppet-site'
+      - 'build-sig-stack'
   control_basevm:
     vagrant_name: control_basevm
     memory:      3000

@@ -1,0 +1,26 @@
+roles:
+  cache:
+    classes:
+      - coi::profiles::cache_server
+  build:
+    classes:
+      - coe::base
+    class_groups:
+      - test_file
+      - build
+  controller:
+    classes:
+      - naginator::control_target
+      - coe::base
+    class_groups:
+      - controller
+      - network_controller
+      - test_file
+  swift_proxy:
+    classes:
+      - coe::base
+      - openstack::swift::proxy
+  swift_storage:
+    classes:
+      - coe::base
+      - openstack::swift::storage-node

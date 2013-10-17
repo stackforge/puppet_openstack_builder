@@ -41,7 +41,7 @@ def compose(hostname, yaml_dir, fragment_dir, scenario, replacements):
     script = build_deploy(fragments)
     return PercentTemplate(script).safe_substitute(replacements)
 
-def show(n, q, args):
+def show(n, q, k, args):
     hostname = args.node
     yaml_dir = args.yaml_dir
     fragment_dir = args.fragment_dir

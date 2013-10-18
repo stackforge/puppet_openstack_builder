@@ -153,6 +153,10 @@ More information about this tool can be found under the stack-builder directory.
 
 first, log into your build server, and run the following script to bootstrap it as a puppet master:
 
+If you want to use the havana version of the packages, set the following ENV var:
+
+    export openstack_version=havana
+
     bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/master.sh)
 
 ### set up your data
@@ -175,6 +179,12 @@ You may also find a need to change the default scenario in:
 Choices are in:
 
     /etc/puppet/data/scenarios
+
+Defaults for end user data should be located in one of the following files:
+
+    /etc/puppet/data/hiera_data/user.yaml
+    /etc/puppet/data/hiera_data/user.common.yaml
+    /etc/puppet/data/hiera_data/user.<scenario>.yaml
 
 ### install each of your components
 

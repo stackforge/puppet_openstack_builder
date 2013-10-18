@@ -239,7 +239,7 @@ from your selected scenario.
 The following example shows how to map a certname of controller-server to
 a role of controller:
 
-    controller-serer: controller
+    controller-server: controller
 
 The certificate name in Puppet defaults to a systems hostname, but can be
 overridden from the command line using the --certname option. The following

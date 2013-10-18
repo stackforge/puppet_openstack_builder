@@ -1,0 +1,14 @@
+# all of the connection specific data-mappings are
+# stored here b/c all connections on via the controller
+# addresses in this scenario
+#
+swift_admin_address:
+  - swift::keystone::auth::admin_address
+swift_internal_address:
+  - swift::keystone::auth::internal_address
+swift_public_address:
+  - swift::keystone::auth::public_address
+  - openstack::swift::proxy::swift_proxy_net_ip
+swift_local_net_ip:
+  - openstack::swift::proxy::swift_local_net_ip
+  - openstack::swift::storage-node::swift_local_net_ip

@@ -54,6 +54,7 @@ if $::puppet_run_mode != 'agent' {
     }
     package { 'puppetmaster-passenger':
       ensure  => $puppet_version,
+      require => Package['puppet'],
     }
   }
 

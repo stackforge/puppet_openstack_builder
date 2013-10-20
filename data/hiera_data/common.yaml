@@ -47,3 +47,7 @@ openstack::swift::storage-node::storage_devices:
   - 3
 
 apache::mpm_module: prefork
+
+quantum::agents::ovs::local_ip: "%{ipaddress}"
+neutron::agents::ovs::local_ip: "%{ipaddress}"
+

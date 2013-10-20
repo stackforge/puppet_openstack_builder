@@ -21,7 +21,7 @@ case $::osfamily {
   } 
   'Debian': {
     $puppet_version = '3.2.3-1puppetlabs1'
-    $pkg_list       = ['git', 'curl', 'vim', 'cobbler']
+    $pkg_list       = ['git', 'curl', 'vim', 'cobbler','apache2']
     package { 'puppet-common':
       ensure => $puppet_version,
     }
@@ -33,12 +33,12 @@ package { 'puppet':
 }
 
 # dns resolution should be setup correctly
-if $::build_server_ip {
-  host { 'build-server':
-    ip => $::build_server_ip,
-    host_aliases => "build-server.${::build_server_domain_name}"
-  }
-}
+#  if $::build_server_ip {
+#    host { 'build-server':
+#      ip => $::build_server_ip,
+#      host_aliases => "build-server.${::build_server_domain_name}"
+#    }
+#  }
 
 #
 # configure data or all machines who

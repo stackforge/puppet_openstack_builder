@@ -15,9 +15,9 @@ export build_server="${build_server:-build-server}"
 
 bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/setup.sh)
 
-cp -Rv /root/openstack-installer/modules /etc/puppet/
-cp -Rv /root/openstack-installer/data /etc/puppet/
-cp -Rv /root/openstack-installer/manifests /etc/puppet/
+cp -R /root/openstack-installer/modules /etc/puppet/
+cp -R /root/openstack-installer/data /etc/puppet/
+cp -R /root/openstack-installer/manifests /etc/puppet/
 
 if [ ${scenario} != "2_role" ] ; then
  sed -i "s/2_role/$scenario/" /etc/puppet/data/config.yaml

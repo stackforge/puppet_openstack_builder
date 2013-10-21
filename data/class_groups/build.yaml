@@ -1,6 +1,7 @@
 classes:
-  - coi::profiles::monitoring_server
-  # I should eventaully test this work cobbler
+  - apache
+  - naginator
+  - collectd
   # - coi::profiles::cobbler_server
   - coi::profiles::cache_server
   - coi::profiles::puppet::master

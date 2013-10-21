@@ -13,6 +13,8 @@ export scenario="${scenario:-2_role}"
 # to run all_in_one, you will likely want to set this
 export build_server="${build_server:-build-server}"
 
+export openstack_version="${openstack_scenario:-havana}"
+
 bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/setup.sh)
 
 cp -R /root/openstack-installer/modules /etc/puppet/
@@ -24,7 +26,9 @@ if [ ${scenario} != "2_role" ] ; then
 fi
 if [ ${scenario} == "all_in_one" ] ; then
   echo `hostname`: all_in_one >> /etc/puppet/data/role_mappings.yaml
+  export FACTER_build_server_ip=`ip addr show eth0 | grep "inet " | tr "/" " " | awk -F' ' '{print $2}'`
 fi
+
 
 puppet apply /etc/puppet/manifests/site.pp --certname ${build_server} --debug
 puppet plugin download --server `hostname -f`; service apache2 restart

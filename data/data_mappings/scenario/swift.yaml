@@ -6,6 +6,7 @@ swift_admin_address:
   - swift::keystone::auth::admin_address
 swift_internal_address:
   - swift::keystone::auth::internal_address
+  - openstack::swift::storage-node::ring_server
 swift_public_address:
   - swift::keystone::auth::public_address
   - openstack::swift::proxy::swift_proxy_net_ip

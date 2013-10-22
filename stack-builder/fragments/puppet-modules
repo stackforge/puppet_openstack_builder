@@ -7,6 +7,7 @@ gem install thor --no-ri --no-rdoc
 git clone https://github.com/bodepd/librarian-puppet-simple.git vendor/librarian-puppet-simple
 export PATH=`pwd`/vendor/librarian-puppet-simple/bin/:$PATH
 export git_protocol='https'
+export openstack_version=%{openstack_version}
 librarian-puppet install --verbose --path /etc/puppet/modules
 
 sed -i 's/192.168.242.100/%{cobbler_node_ip}/g' /root/openstack-installer/manifests/setup.pp

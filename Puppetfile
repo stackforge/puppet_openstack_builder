@@ -3,7 +3,7 @@
 # this file also accepts a few environment variables
 #
 git_protocol=ENV['git_protocol'] || 'git'
-openstack_version=ENV['openstack_version'] || 'grizzly'
+openstack_version=ENV['openstack_version'] || 'havana'
 
 #
 # this modulefile has been configured to use two sets of repos.
@@ -17,42 +17,39 @@ openstack_version=ENV['openstack_version'] || 'grizzly'
 # work yet
 #
 
+unless ['grizzly', 'havana'].include?(openstack_version)
+  abort("Only grizzly and havana are currently supported")
+end
+
+if openstack_version == 'grizzly'
+  neutron_name = 'quantum'
+else
+  neutron_name = 'neutron'
+end
+
 if ENV['repos_to_use']  == 'downstream'
-  if openstack_version != 'grizzly'
-    abort('Cisco packages only support grizzly')
-  end
   # this assumes downstream which is the Cisco branches
-  branch_name               = 'origin/grizzly'
+  branch_name               = "origin/#{openstack_version}"
+  cisco_branch_name         = branch_name
   openstack_module_branch   = branch_name
   openstack_module_account  = 'CiscoSystems'
-  neutron_name              = 'quantum'
   puppetlabs_module_prefix = 'CiscoSystems/puppet-'
-  # manifests
-  user_name = 'CiscoSystems'
-  release         = 'grizzly'
-  manifest_branch = 'origin/multi-node'
-  mysql_ref       = ''
-  apache_branch   = 'origin/grizzly'
-  mysql_branch    = 'origin/grizzly'
-  rabbitmq_branch = 'origin/grizzly'
+  apache_branch   = branch_name
+  mysql_branch    = branch_name
+  rabbitmq_branch = branch_name
 else
   if openstack_version == 'grizzly'
     openstack_module_branch   = 'origin/stable/grizzly'
-    neutron_name              = 'quantum'
   elsif openstack_version == 'havana'
     openstack_module_branch   = 'master'
-    neutron_name              = 'neutron'
   else
     abort('only grizzly and havana are supported atm')
   end
   # use the upstream modules where they exist
   branch_name               = 'master'
+  cisco_branch_name         = "origin/#{openstack_version}"
   openstack_module_account  = 'stackforge'
   puppetlabs_module_prefix  = 'puppetlabs/puppetlabs-'
-  # manifests
-  user_name = 'bodepd'
-  release = 'grizzly'
-  manifest_branch = 'origin/master'
   apache_branch   = 'origin/0.x'
   mysql_branch    = 'origin/0.x'
   rabbitmq_branch = 'origin/2.x'
@@ -60,109 +57,146 @@ end
 
 base_url = "#{git_protocol}://github.com"
 
-###### Installer Manifests ##############
-mod 'manifests', :git => "#{base_url}/#{user_name}/#{release}-manifests", :ref => "#{manifest_branch}"
-
 ###### module under development #####
 
 # this following modules are still undergoing their initial development
 # and have not yet been ported to CiscoSystems.
 
-# This top level module contains the roles that are used to deploy openstack
-mod 'bodepd/hiera_data_mapper',  :git => 'https://github.com/bodepd/hiera_data_mapper'
-mod 'bodepd/scenario_node_terminus', :git => 'https://github.com/bodepd/scenario_node_terminus'
-
-mod 'CiscoSystems/coi', :git => "#{base_url}/CiscoSystems/puppet-COI", :ref => 'master'
-# no existing downstream module
-mod 'puppetlabs/postgresql', :git => "#{base_url}/puppetlabs/puppetlabs-postgresql", :ref => '2.5.0'
-mod 'puppetlabs/puppetdb', :git => "#{base_url}/puppetlabs/puppetlabs-puppetdb", :ref => 'master'
-mod 'puppetlabs/vcsrepo', :git => "#{base_url}/puppetlabs/puppetlabs-vcsrepo", :ref => 'master'
-mod 'ripienaar/ruby-puppetdb', :git => "#{base_url}/ripienaar/ruby-puppetdb"
-mod 'ripienaar/catalog-diff', :git => "#{base_url}/ripienaar/puppet-catalog-diff", :ref => 'master'
-# do I really need this firewall module?
-mod 'puppetlabs/firewall', :git => "#{base_url}/puppetlabs/puppetlabs-firewall", :ref => 'master'
-# stephenrjohnson
-# this what I am testing Puppet 3.2 deploys with
-# I am pointing it at me until my patch is accepted
-mod 'stephenjohrnson/puppet', :git => "#{base_url}/stephenrjohnson/puppetlabs-puppet", :ref => 'master'
-# stephen johnson's puppet module does not work with the older ciscosystems version of apache
-mod 'CiscoSystems/apache', :git => "#{base_url}/#{puppetlabs_module_prefix}apache", :ref => apache_branch
+mod 'bodepd/hiera_data_mapper',
+  :git => 'https://github.com/bodepd/hiera_data_mapper'
+mod 'bodepd/scenario_node_terminus',
+  :git => 'https://github.com/bodepd/scenario_node_terminus'
+mod 'CiscoSystems/coi',
+  :git => "#{base_url}/CiscoSystems/puppet-COI",
+  :ref => 'master'
+mod 'puppetlabs/postgresql',
+  :git => "#{base_url}/puppetlabs/puppetlabs-postgresql",
+  :ref => '2.5.0'
+mod 'puppetlabs/puppetdb',
+  :git => "#{base_url}/puppetlabs/puppetlabs-puppetdb",
+  :ref => 'master'
+mod 'puppetlabs/vcsrepo',
+  :git => "#{base_url}/puppetlabs/puppetlabs-vcsrepo",
+  :ref => 'master'
+mod 'ripienaar/ruby-puppetdb',
+  :git => "#{base_url}/ripienaar/ruby-puppetdb"
+mod 'ripienaar/catalog-diff',
+  :git => "#{base_url}/ripienaar/puppet-catalog-diff",
+  :ref => 'master'
+mod 'puppetlabs/firewall',
+  :git => "#{base_url}/puppetlabs/puppetlabs-firewall",
+  :ref => 'master'
+mod 'stephenjohrnson/puppet',
+  :git => "#{base_url}/stephenrjohnson/puppetlabs-puppet",
+  :ref => 'master'
 
 ###### stackforge openstack modules #####
 
-openstack_repo_prefix = "#{base_url}/#{openstack_module_account}/puppet"
+openstack_repo_prefix = "#{base_url}/#{openstack_module_account}/puppet-"
 
-mod 'stackforge/openstack', :git => "#{openstack_repo_prefix}-openstack", :ref => openstack_module_branch
-mod 'stackforge/cinder',    :git => "#{openstack_repo_prefix}-cinder",    :ref => openstack_module_branch
-mod 'stackforge/glance',    :git => "#{openstack_repo_prefix}-glance",    :ref => openstack_module_branch
-mod 'stackforge/keystone',  :git => "#{openstack_repo_prefix}-keystone",  :ref => openstack_module_branch
-mod 'stackforge/horizon',   :git => "#{openstack_repo_prefix}-horizon",   :ref => openstack_module_branch
-mod 'stackforge/nova',
-  :git => "#{openstack_repo_prefix}-nova",
-  :ref => openstack_module_branch
-mod "stackforge/#{neutron_name}",
-  :git => "#{openstack_repo_prefix}-neutron",
-  :ref => openstack_module_branch
-mod 'stackforge/swift',     :git => "#{openstack_repo_prefix}-swift",     :ref => openstack_module_branch
-mod 'stackforge/ceilometer',:git => "#{openstack_repo_prefix}-ceilometer",:ref => openstack_module_branch
-mod 'stackforge/tempest',:git => "#{openstack_repo_prefix}-tempest",:ref => openstack_module_branch
+[
+  'openstack',
+  'cinder',
+  'glance',
+  'keystone',
+  'horizon',
+  'nova',
+  neutron_name,
+  'swift',
+  'tempest',
+].each do |module_name|
+  mod "stackforge/#{module_name}",
+    :git => "#{openstack_repo_prefix}#{module_name}",
+    :ref => openstack_module_branch
+end
+
+# stackforge module with no grizzly release
+[
+  'ceilometer',
+  'vswitch'
+].each do |module_name|
+  mod "stackforge/#{module_name}",
+    :git => "#{openstack_repo_prefix}#{module_name}",
+    :ref => 'master'
+end
 
 ##### Puppet Labs modules #####
 
-openstack_repo_prefix = "#{base_url}/#{openstack_module_account}/puppet"
 
-mod 'CiscoSystems/apt', :git => "#{base_url}/CiscoSystems/puppet-apt", :ref => 'origin/grizzly'
-mod 'CiscoSystems/stdlib', :git => "#{base_url}/#{puppetlabs_module_prefix}stdlib", :ref => branch_name
-mod 'CiscoSystems/xinetd', :git => "#{base_url}/#{puppetlabs_module_prefix}xinetd", :ref => branch_name
-mod 'CiscoSystems/ntp', :git => "#{base_url}/#{puppetlabs_module_prefix}ntp", :ref => branch_name
-mod 'CiscoSystems/rsync', :git => "#{base_url}/#{puppetlabs_module_prefix}rsync", :ref => branch_name
-mod 'CiscoSystems/mysql', :git => "#{base_url}/#{puppetlabs_module_prefix}mysql", :ref => mysql_branch
-mod 'CiscoSystems/rabbitmq', :git => "#{base_url}/#{puppetlabs_module_prefix}rabbitmq", :ref => rabbitmq_branch
+# this module needs to be alighed with upstream
+mod 'puppetlabs/apt',
+  :git => "#{base_url}/CiscoSystems/puppet-apt",
+  :ref => cisco_branch_name
 
+[
+  'stdlib',
+  'xinetd',
+  'ntp',
+  'rsync',
+  'inifile'
+].each do |module_name|
+  mod "puppetlabs/#{module_name}",
+    :git => "#{base_url}/#{puppetlabs_module_prefix}#{module_name}",
+    :ref => branch_name
+end
+
+## PuppetLabs modules that are too unstable to use master ##
+{
+  'mysql'    => mysql_branch,
+  'rabbitmq' => rabbitmq_branch,
+  'apache'   => apache_branch
+}.each do |module_name, ref|
+  mod "puppetlabs/#{module_name}",
+    :git => "#{base_url}/#{puppetlabs_module_prefix}#{module_name}",
+    :ref => ref
+end
 
 ##### modules with other upstreams #####
 
-# upstream is ripienaar
-mod 'ripienaar/concat', :git => "#{base_url}/CiscoSystems/puppet-concat", :ref => 'origin/grizzly'
-
-# upstream is cprice-puppet/puppetlabs-inifile
-mod 'CiscoSystems/inifile', :git => "#{base_url}/CiscoSystems/puppet-inifile", :ref => 'origin/grizzly'
-
-# upstream is saz
-mod 'CiscoSystems/memcached', :git => "#{base_url}/CiscoSystems/puppet-memcached", :ref => 'origin/grizzly'
-# this uses master b/c the grizzly branch does not exist
-mod 'CiscoSystems/ssh',  :git => "#{base_url}/bodepd/puppet-ssh", :ref => 'master'
-
-# upstream is duritong
-mod 'CiscoSystems/sysctl', :git => "#{base_url}/CiscoSystems/puppet-sysctl", :ref => 'origin/grizzly'
-
-# unclear who the upstream is
-mod 'CiscoSystems/vswitch', :git => "#{base_url}/CiscoSystems/puppet-vswitch", :ref => 'origin/grizzly'
-
+mod 'saz/memcached',
+  :git => "#{base_url}/CiscoSystems/puppet-memcached",
+  :ref => cisco_branch_name
+mod 'saz/ssh',
+  :git => "#{base_url}/bodepd/puppet-ssh",
+  :ref => 'master'
+mod 'duritong/sysctl',
+  :git => "#{base_url}/CiscoSystems/puppet-sysctl",
+  :ref => cisco_branch_name
 
 ##### Modules without upstreams #####
 
-# TODO - this is still pointing at my fork
-mod 'CiscoSystems/coe', :git => "#{base_url}/CiscoSystems/puppet-coe", :ref => 'origin/grizzly'
-mod 'CiscoSystems/cobbler', :git => "#{base_url}/CiscoSystems/puppet-cobbler", :ref => 'origin/grizzly'
-mod 'CiscoSystems/apt-cacher-ng', :git => "#{base_url}/CiscoSystems/puppet-apt-cacher-ng", :ref => 'origin/grizzly'
-mod 'CiscoSystems/collectd', :git => "#{base_url}/pkilambi/puppet-module-collectd", :ref => 'master'
-# based on pradeep's fork
-# this is forked and needs to be updated
-mod 'CiscoSystems/graphite', :git => "#{base_url}/bodepd/puppet-graphite/", :ref => 'master'
-#mod 'CiscoSystems/monit', :git => "#{base_url}/CiscoSystems/puppet-monit", :ref => 'origin/grizzly'
-mod 'CiscoSystems/pip', :git => "#{base_url}/CiscoSystems/puppet-pip", :ref => 'origin/grizzly'
+cisco_module_prefix = "#{base_url}/CiscoSystems/puppet-"
 
-mod 'CiscoSystems/dnsmasq', :git => "#{base_url}/CiscoSystems/puppet-dnsmasq", :ref => 'origin/grizzly'
-mod 'CiscoSystems/naginator', :git => "#{base_url}/CiscoSystems/puppet-naginator", :ref => 'origin/grizzly'
+[
+  'ceph',
+  'coe',
+  'cobbler',
+  'concat',
+  'apt-cacher-ng',
+  'collectd',
+  'graphite',
+  'pip',
+  'dnsmasq',
+  'naginator'
+].each do |module_name|
+  mod "CiscoSystems/#{module_name}",
+    :git => "#{cisco_module_prefix}#{module_name}",
+    :ref => cisco_branch_name
+end
 
 #### HA Modules ###
-mod 'CiscoSystems/augeas', :git => "#{base_url}/CiscoSystems/puppet-augeas", :ref => 'origin/grizzly'
-mod 'CiscoSystems/filemapper', :git => "#{base_url}/CiscoSystems/puppet-filemapper", :ref => 'origin/grizzly'
-mod 'CiscoSystems/galera', :git => "#{base_url}/CiscoSystems/puppet-galera", :ref => 'origin/grizzly'
-mod 'CiscoSystems/haproxy', :git => "#{base_url}/CiscoSystems/puppet-haproxy", :ref => 'origin/grizzly'
-mod 'CiscoSystems/keepalived', :git => "#{base_url}/CiscoSystems/puppet-keepalived", :ref => 'origin/grizzly'
-mod 'CiscoSystems/network', :git => "#{base_url}/CiscoSystems/puppet-network", :ref => 'origin/grizzly'
-mod 'CiscoSystems/openstack-ha', :git => "#{base_url}/CiscoSystems/puppet-openstack-ha", :ref => 'origin/grizzly'
-mod 'CiscoSystems/ceph', :git => "#{base_url}/CiscoSystems/puppet-ceph", :ref => 'origin/grizzly'
-mod 'CiscoSystems/boolean', :git => "#{base_url}/CiscoSystems/puppet-boolean", :ref => 'origin/grizzly'
+
+[
+  'augeas',
+  'filemapper',
+  'galera',
+  'haproxy',
+  'keepalived',
+  'network',
+  'openstack-ha',
+  'boolean'
+].each do |module_name|
+  mod "CiscoSystems/#{module_name}",
+    :git => "#{cisco_module_prefix}#{module_name}",
+    :ref => cisco_branch_name
+end

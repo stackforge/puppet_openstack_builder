@@ -1,0 +1,28 @@
+domain_name: "%{domain}"
+ntp_servers:
+  - ntp.esl.cisco.com
+
+# node addresses
+build_node_name: "build_server"
+controller_internal_address: "build_server_ip"
+controller_public_address: "build_server_ip"
+controller_admin_address: "build_server_ip"
+swift_internal_address: "build_server_ip"
+swift_public_address: "build_server_ip"
+swift_admin_address: "build_server_ip"
+
+# this is not done yet
+internal_ip: "%{ipaddress}"
+# interfaces
+# TODO are all of these even used?
+external_interface: eth1
+public_interface: eth0
+private_interface: eth0
+
+internal_ip: "%{ipaddress}"
+nova::compute::vncserver_proxyclient_address: "%{ipaddress}"
+swift_local_net_ip: "%{ipaddress}"
+nova::compute::vncserver_proxyclient_address: "0.0.0.0"
+
+admin_password: Cisco123
+admin_token: keystone_admin_token

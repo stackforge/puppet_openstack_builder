@@ -170,11 +170,21 @@ or
     export build_server=`hostname`
 ``
 
-Also, if you want to run against the all-in-one case, or you want to run against a scenario where your build and control server(s) are collapsed, you may want set your scenario before the script runs puppet for the first time, in whic case do the following:
+Also, if you want to run against the all-in-one case, or you want to run against a scenario where your build and control server(s) are collapsed, you may want set your scenario before the script runs puppet for the first time, in which case do the following:
 
     export scenario='all_in_one'
 
+
+And lastly, if you want to expand the system, you will want to define the IP address of the build environment:
+
+``
+    export build_server_ip=`ip addr show eth0 | grep 'inet ' | tr '/' ' ' | awk -F' ' '{print $2}'`
+``
+  
 After these exports, you _then_ run the bash script from above
+
+    bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/master.sh)
+
 
 After the master.sh script is run, you will need to run puppet one more time (after following the next section on data updates). In which case, you will then want to run:
 

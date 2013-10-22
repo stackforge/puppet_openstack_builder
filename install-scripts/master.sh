@@ -13,6 +13,17 @@ export scenario="${scenario:-2_role}"
 # to run all_in_one, you will likely want to set this
 export build_server="${build_server:-build-server}"
 
+if [ ${scenario} != "2_role" ] ; then
+ sed -e "s/2_role/$scenario/" -i /root/openstack-installer/data/config.yaml
+fi
+if  ${scenario} == "all_in_one" ; then
+  echo `hostname`: all_in_one >> /root/openstack-installer/data/role_mappings.yaml
+  export FACTER_build_server_ip=`ip addr show eth0 | grep "inet " | tr "/" " " | awk -F' ' '{print $2}'`
+  export FACTER_build_server=${build_server}
+  sed -e "s/build_server_ip/${FACTER_build_server_ip}/" -i /root/openstack-installer/data/hiera_data/user.all_in_one.yaml
+  set -e "s/build_server/${FACTER_build_server}/" -i /root/openstack-installer/data/hiera_data/user.all_in_one.yaml
+fi
+
 export openstack_version="${openstack_scenario:-havana}"
 
 bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/setup.sh)
@@ -20,14 +31,6 @@ bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/
 cp -R /root/openstack-installer/modules /etc/puppet/
 cp -R /root/openstack-installer/data /etc/puppet/
 cp -R /root/openstack-installer/manifests /etc/puppet/
-
-if [ ${scenario} != "2_role" ] ; then
- sed -i "s/2_role/$scenario/" /etc/puppet/data/config.yaml
-fi
-if [ ${scenario} == "all_in_one" ] ; then
-  echo `hostname`: all_in_one >> /etc/puppet/data/role_mappings.yaml
-  export FACTER_build_server_ip=`ip addr show eth0 | grep "inet " | tr "/" " " | awk -F' ' '{print $2}'`
-fi
 
 
 puppet apply /etc/puppet/manifests/site.pp --certname ${build_server} --debug

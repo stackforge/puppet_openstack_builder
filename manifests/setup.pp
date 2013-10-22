@@ -21,7 +21,7 @@ case $::osfamily {
   } 
   'Debian': {
     $puppet_version = '3.2.3-1puppetlabs1'
-    $pkg_list       = ['git', 'curl', 'vim', 'cobbler','apache2']
+    $pkg_list       = ['git', 'curl', 'vim', 'cobbler']
     package { 'puppet-common':
       ensure => $puppet_version,
     }

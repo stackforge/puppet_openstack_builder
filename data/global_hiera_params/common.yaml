@@ -8,7 +8,7 @@ cinder_backend: iscsi
 glance_backend: file
 compute_type: libvirt
 # networking options
-network_service: quantum
+network_service: neutron
 # supports linuxbridge and ovs
 network_plugin: ovs
 # supports single-flat, provider-router, and per-tenant-router

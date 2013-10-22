@@ -8,6 +8,7 @@ secret_key:
   - quantum::agents::metadata::shared_secret
   - neutron::agents::metadata::shared_secret
   - nova::api::quantum_metadata_proxy_shared_secret
+  - nova::api::neutron_metadata_proxy_shared_secret
   # TODO this should place the data right into the underlying class
   - openstack::swift::proxy::swift_hash_suffix
   - openstack::swift::storage-node::swift_hash_suffix

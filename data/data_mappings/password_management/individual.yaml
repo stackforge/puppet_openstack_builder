@@ -66,5 +66,6 @@ metadata_shared_secret:
   - quantum::agents::metadata::shared_secret
   - neutron::agents::metadata::shared_secret
   - nova::api::quantum_metadata_proxy_shared_secret
+  - nova::api::neutron_metadata_proxy_shared_secret
 horizon_secret_key:
   - horizon::secret_key

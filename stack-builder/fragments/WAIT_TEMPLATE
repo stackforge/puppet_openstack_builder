@@ -1,0 +1,6 @@
+for node in %{nodes}; do
+  until [ $(curl http://$node/status | grep %{signal}) ]; do
+    echo "waited for $node" >> /root/waiting
+    sleep 1
+  done
+done

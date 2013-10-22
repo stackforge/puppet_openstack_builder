@@ -199,14 +199,19 @@ def allocate_ports(q, network_id, test_id="", count=1):
 def metadata_update(scenario_yaml, ports):
     # IP addresses of particular nodes mapped to specified config
     # values to go into hiera + build scripts. See data/nodes/2_role.yaml
+    # all values will also be mapped to a generic key:
+    # meta['hostname_networkname'] = ip
     meta_update = {}
     for node, props in scenario_yaml['nodes'].items():
         for network, mappings in props['networks'].items():
             if mappings != None:
                 for mapping in mappings:
                     meta_update[mapping] = str(ports[node][network][0]['fixed_ips'][0]['ip_address'])
+            # replace dashes since bash variables can't contain dashes
+            # but be careful when using this since hostnames can't contain underscores
+            # so they need to be converted back
+            meta_update[network + '_' + node.replace('-', '_')] = str(ports[node][network][0]['fixed_ips'][0]['ip_address'])
     return meta_update
-
 
 # Not used atm
 def make_key(n, test_id):
@@ -265,7 +270,6 @@ def make(n, q, k, args):
                 ports[node][network] = allocate_ports(q, networks[network]['id'], test_id)
             else:
                 ports[node][network] = allocate_ports(q, networks[network]['id'], test_id)
-
 
     dprint("networks")
     for net, value in networks.items():

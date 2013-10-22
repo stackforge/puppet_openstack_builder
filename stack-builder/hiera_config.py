@@ -19,32 +19,6 @@ metadata_path = '/root/config.yaml'
 #metadata_path = './sample.json'
 #hiera_dir = './openstack-installer/data/'
 
-def config_builder():
-    # load metadata from config-drive
-    with open(metadata_path, 'r') as metadata:
-       meta = yaml.load(metadata.read())
-       print meta
-
-    # Set values specified in config_drive
-    for path, dirs, files in os.walk(hiera_dir):
-        if '.git' in dirs:
-            dirs.remove('.git')
-        if 'data_mappings' in dirs:
-            dirs.remove('data_mappings')
-        for yaml_file in files:
-            if yaml_file[-5:] == '.yaml':
-                with open(path + '/' + yaml_file, 'r') as hiera_file:
-                    y = yaml.load(hiera_file.read())
-                    for key, value in meta.items():
-                        if (y != None and key in y):
-                            print "Setting : " + key + " with " + str(value)
-                            y[key] = value
-
-                with open(path + '/' + yaml_file, 'w') as hiera_file:
-                    hiera_file.write(yaml.dump(y, default_flow_style=False))
-            
-#config_builder()
-
 # Child processes cannot set environment variables, so
 # create a bash file to set some exports for facter
 def facter_config():
@@ -54,5 +28,13 @@ def facter_config():
         with open('/root/fact_exports', 'w') as facts:
             for key,value in meta.items():
                 facts.write('FACTER_' + str(key) + '=' + str(value) + '\n')
+
+#TODO
+def hostname_config():
+    with open(metadata_path, 'r') as metadata:
+        meta = yaml.load(metadata.read())
+        with open('/root/openstack-installer/manifests/setup.pp', 'a') as facts:
+            for key,value in meta.items():
+                pass
 
 facter_config()

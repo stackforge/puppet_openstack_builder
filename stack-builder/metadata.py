@@ -49,10 +49,14 @@ def build_metadata(path, scenario, config):
         return import_environ_keys(import_yaml(path+'/', files), prefix)
     if config == 'user':
         prefix = 'osi_user_'
-        files = ['user', 'jenkins', 'user.common', 'user.'+scenario]
+        files = ['user']
         return import_environ_keys(import_yaml(path+'/hiera_data/',files), prefix)
+    if config == "global":
+        prefix = 'osi_glob_'
+        files = ['user']
+        return import_environ_keys(import_yaml(path+'/global_hiera_params/', files), prefix)
     else:
-        print "Invalid config type: choose from 'user' and 'conf'"
+        print "Invalid config type: choose from 'user', 'conf' and 'glob'"
 
 def show(n, q, k, args):
     hostname = args.node

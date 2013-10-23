@@ -284,6 +284,7 @@ def make(n, q, k, args):
     # yaml files to serve as input to hiera and build scripts
     initial_config_meta = build_metadata(data_path, scenario, 'config')
     hiera_config_meta =  build_metadata(data_path, scenario, 'user')
+    global_config_meta =  build_metadata(data_path, scenario, 'global')
 
     meta_update = metadata_update(scenario_yaml, ports)
 
@@ -298,9 +299,11 @@ def make(n, q, k, args):
 
     user_config_yaml = yaml.dump(hiera_config_meta, default_flow_style=False)
     initial_config_yaml = yaml.dump(initial_config_meta, default_flow_style=False)
+    global_config_yaml = yaml.dump(global_config_meta, default_flow_style=False)
 
     dprint('Config Yaml: \n' + str(initial_config_yaml))
     dprint('User Yaml: \n' + str(user_config_yaml))
+    dprint('Global Yaml: \n' + str(global_config_yaml))
 
     port_list = {}
     for node, props in scenario_yaml['nodes'].items():
@@ -318,7 +321,8 @@ def make(n, q, k, args):
                         files={
                                u'/root/deploy'      : deploy_files[node],
                                u'/root/user.yaml'   : user_config_yaml,
-                               u'/root/config.yaml' : initial_config_yaml},
+                               u'/root/config.yaml' : initial_config_yaml,
+                               u'/root/global.yaml' : global_config_yaml},
                         meta={'ci_test_id' : test_id}
                         )
 

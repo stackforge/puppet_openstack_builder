@@ -6,6 +6,11 @@ if ! [ type qemu-img 2>/dev/null ]; then
    apt-get install -y qemu-utils
 fi
 
+#need kpartx for Fedora
+if ! [ type kpartx 2>/dev/null ]; then
+    apt-get install -y kpartx
+fi
+
 if ! [ -f diskimage-builder ]; then
     git clone https://github.com/openstack/diskimage-builder.git
 fi

@@ -1,7 +1,9 @@
 usermod --password p1fhTXKKhbc0M root
 
 # Rstarmer's precise mirror
-sed -i 's/nova.clouds.archive.ubuntu.com/172.29.74.100/g' /etc/apt/sources.list
+# Different ubuntu images have different defaults
+sed -i 's/nova.clouds.archive.ubuntu.com/%{apt_mirror_ip}/g' /etc/apt/sources.list
+sed -i 's/archive.ubuntu.com/%{apt_mirror_ip}/g' /etc/apt/sources.list
 
 for i in 1 2 3
 do

@@ -111,8 +111,6 @@ swift_local_net_ip:
   - openstack::swift::proxy::swift_local_net_ip
   - openstack::swift::storage-node::swift_local_net_ip
 
-compute_internal_address:
-  - quantum::agents::ovs::ovs_local_ip
 # right now , the sql conneciton creates a tight coupling between the scenario
 # and the key used to retrieve its password. This is an indicator that this needs to
 # be changed.

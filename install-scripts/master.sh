@@ -50,8 +50,6 @@ nova::compute::vncserver_proxyclient_address: "0.0.0.0"
 EOF
 fi
 
-export openstack_version="${openstack_scenario:-havana}"
-
 bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/setup.sh)
 
 cp -R /root/openstack-installer/modules /etc/puppet/

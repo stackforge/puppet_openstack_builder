@@ -33,12 +33,12 @@ package { 'puppet':
 }
 
 # dns resolution should be setup correctly
-#  if $::build_server_ip {
-#    host { 'build-server':
-#      ip => $::build_server_ip,
-#      host_aliases => "build-server.${::build_server_domain_name}"
-#    }
-#  }
+if $::build_server_ip {
+  host { 'build-server':
+    ip => $::build_server_ip,
+    host_aliases => "build-server.${::build_server_domain_name}"
+  }
+}
 
 #
 # configure data or all machines who

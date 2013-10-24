@@ -16,6 +16,7 @@ allowed_hosts: "%"
 admin_email: root@localhost
 rpc_user: openstack_rabbit_user
 verbose: false
+debug: false
 cinder::scheduler::scheduler_driver: 'cinder.scheduler.simple.SimpleScheduler'
 nova::compute::quantum::libvirt_vif_driver: nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver
 nova::compute::neutron::libvirt_vif_driver: nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver

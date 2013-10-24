@@ -4,27 +4,37 @@
 # it runs on into a puppetmaster/build-server
 #
 
-export build_server_ip="${build_server_ip:-127.0.0.1}"
-export puppet_run_mode="apply"
+# All in one defaults to the local host name for pupet master
+export build_server="${build_server:-`hostname`}"
+# It'd be good to konw our domain name as well
 export domain_name=`hostname -d`
+# We need to know the IP address as well, so either tell me
+# or I will assume it's the address associated with eth0
+export default_interface="${default_interface:-eth0}"
+# So let's grab that address
+export build_server_ip="${build_server_ip:-`ip addr show ${default_interface} | grep 'inet ' | tr '/' ' ' | awk -F' ' '{print $2}'`}"
+# Our default mode also assumes at least one other interface for OpenStack network
+export external_interface="${external_interface:-eth1}"
+
+# For good puppet hygene, we'll want NTP setup.  Let's borrow one from Cisco
+export ntp_server="${ntp_server:-ntp.esl.cisco.com}"
+
+# Since this is the master script, we'll run in apply mode
+export puppet_run_mode="apply"
 
 # scenarios will map to /etc/puppet/data/scenarios/*.yaml
-export scenario="${scenario:-2_role}"
-# if you change your build_server name, or if you want 
-# to run all_in_one, you will likely want to set this
-export build_server="${build_server:-build-server}"
+export scenario="${scenario:-all_in_one}"
 
-if [ "${scenario}" != "2_role" ] ; then
- sed -e "s/2_role/$scenario/" -i /root/openstack-installer/data/config.yaml
-fi
+sed -e "s/2_role:*/$scenario/" -i /root/openstack-installer/data/config.yaml
+
 if [ "${scenario}" == "all_in_one" ] ; then
   echo `hostname`: all_in_one >> /root/openstack-installer/data/role_mappings.yaml
-  export FACTER_build_server_ip=`ip addr show eth0 | grep "inet " | tr "/" " " | awk -F' ' '{print $2}'`
+  export FACTER_build_server_ip=${build_server_ip}
   export FACTER_build_server=${build_server}
-  cat > /root/openstack-installer/data/hiera_data/user.all_in_one.yaml<<EOF
+  cat > /root/openstack-installer/data/hiera_data/user.yaml<<EOF
 domain_name: "${domain_name}"
 ntp_servers:
-  - ntp.esl.cisco.com
+  - ${ntp_server}
 
 # node addresses
 build_node_name: ${build_server}
@@ -35,13 +45,10 @@ swift_internal_address: "${build_server_ip}"
 swift_public_address: "${build_server_ip}"
 swift_admin_address: "${build_server_ip}"
 
-# this is not done yet
-internal_ip: "%{ipaddress}"
-# interfaces
-# TODO are all of these even used?
-external_interface: eth1
-public_interface: eth0
-private_interface: eth0
+# physical interface definitions
+external_interface: ${external_interface}
+public_interface: ${default_interface}
+private_interface: ${default_interface}
 
 internal_ip: "%{ipaddress}"
 nova::compute::vncserver_proxyclient_address: "%{ipaddress}"

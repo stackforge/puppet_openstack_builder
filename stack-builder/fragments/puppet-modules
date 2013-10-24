@@ -10,7 +10,5 @@ export git_protocol='https'
 export openstack_version=%{openstack_version}
 librarian-puppet install --verbose --path /etc/puppet/modules
 
-sed -i 's/192.168.242.100/%{cobbler_node_ip}/g' /root/openstack-installer/manifests/setup.pp
-
 cp -r /root/openstack-installer/data /etc/puppet
 cp -r /root/openstack-installer/manifests /etc/puppet

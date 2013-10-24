@@ -24,6 +24,7 @@ case $::osfamily {
     $pkg_list       = ['git', 'curl', 'vim', 'cobbler']
     package { 'puppet-common':
       ensure => $puppet_version,
+      require => Apt::Source[puppetlabs]
     }
   }
 }

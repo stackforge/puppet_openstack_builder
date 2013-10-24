@@ -121,30 +121,6 @@ To create a basic 2 role cluster with a build, compute and control node outside 
     
     e824830b269544d39a632d89e0a1902c
 
-To destroy all resources created by the sb tool:
-
-    sb kill
-
-    deleted port b68c7ff8-7598-42fd-ac3c-2e2b7021d2c6
-    deleted port baa3c279-2b3d-4dad-a76a-f699de96d629
-    deleted port c6603b5d-cc0c-47be-a897-e667727294ae
-    deleted subnetci-9cbbfa7d10b54ff0b87e5983a492e05c22
-    deleted subnetci-9cbbfa7d10b54ff0b87e5983a492e05c11
-    deleted networkci-9cbbfa7d10b54ff0b87e5983a492e05c1
-    deleted networkci-9cbbfa7d10b54ff0b87e5983a492e05c2
-
-To destroy a specific test run's resources:
-
-    sb kill -t e824830b269544d39a632d89e0a1902c
-
-    deleted port b68c7ff8-7598-42fd-ac3c-2e2b7021d2c6
-    deleted port baa3c279-2b3d-4dad-a76a-f699de96d629
-    deleted port c6603b5d-cc0c-47be-a897-e667727294ae
-    deleted subnetci-9cbbfa7d10b54ff0b87e5983a492e05c22
-    deleted subnetci-9cbbfa7d10b54ff0b87e5983a492e05c11
-    deleted networkci-9cbbfa7d10b54ff0b87e5983a492e05c1
-    deleted networkci-9cbbfa7d10b54ff0b87e5983a492e05c2
-
 More information about this tool can be found under the stack-builder directory.
 
 ## basic install against already provisioned nodes:

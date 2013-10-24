@@ -31,6 +31,7 @@ def main():
     parser_make.add_argument('-f', '--fragment_path', default='./stack-builder/fragments', help='Path to config fragments')
     parser_make.add_argument('-d', '--debug', action='store_true', help='print debug output')
     parser_make.add_argument('-n', '--public_network', default='public', help='The name of the public network on the cluster')
+    parser_make.add_argument('-a', '--nameserver', default='171.70.168.183', help='The DNS nameserver to use for all nodes being booted.')
     parser_make.set_defaults(func=make)
 
     parser_rebuild = subparsers.add_parser('rebuild', help='Rebuild a test using existing resources')

@@ -51,10 +51,6 @@ def build_nic_port_list(ports):
 def make_network(q, ci_network_name, index=0):
     networks = q.list_networks()
 
-    # the shared CI network 
-    #if ci_network_name != 'ci':
-    #    ci_network_name = ci_network_name + str(index)
-
     if ci_network_name not in [network['name'] for network in networks['networks']]:
         dprint("q.create_network({'network': {'name':" + ci_network_name + ", 'admin_state_up': True}})['network']")
         test_net = q.create_network({'network': {'name': ci_network_name, 'admin_state_up': True}})['network']
@@ -65,12 +61,8 @@ def make_network(q, ci_network_name, index=0):
               test_net = net
     return test_net
 
-def make_subnet(q, ci_network_name, test_net, index=1, dhcp=True, gateway=False):
+def make_subnet(q, ci_network_name, test_net, index=1, dhcp=True, gateway=False, dns_nameserver="171.70.168.183"):
     subnets = q.list_subnets()
-
-    # the shared CI network 
-    #if ci_network_name != 'ci':
-    #    ci_network_name = ci_network_name + str(index)
 
     if ci_network_name not in [subnet['name'] for subnet in subnets['subnets']]:
         dprint("CI subnet " + str(index) + " doesn't exist. Creating ...")
@@ -99,17 +91,17 @@ def make_subnet(q, ci_network_name, test_net, index=1, dhcp=True, gateway=False)
                            "            'network_id': " + test_net['id'] + ",\n" +
                            "            'ip_version': 4,\n" +
                            "            'cidr': '10." + str(index) + ".0.0/16',\n" +
-                           "            'enable_dhcp':" + dhcp + ",\n" +
-                           "            'gateway_ip': '10.'" + str(index) + ".0.1\n" +
-                           "            'dns_nameservers': ['171.70.168.183']\n")
+                           "            'enable_dhcp':" + str(dhcp) + ",\n" +
+                           "            'gateway_ip': '10." + str(index) + ".0.1'\n" +
+                           "            'dns_nameservers: ['" + dns_nameserver + "']\n")
 
                     test_subnet = q.create_subnet({'subnet': { 'name': ci_network_name, 
                                          'network_id': test_net['id'],
                                          'ip_version': 4,
                                          'cidr': '10.' + str(index) + '.0.0/16',
                                          'enable_dhcp': dhcp,
-                                         'gateway_ip' : '10.' + str(index) + '.0.1',
-                                         'dns_nameservers': ['171.70.168.183']
+                                         #'gateway_ip' : '10.' + str(index) + '.0.1',
+                                         'dns_nameservers': [unicode(dns_nameserver)]
 	                                 }})['subnet']
 
         except quantumclient.common.exceptions.QuantumClientException:
@@ -152,7 +144,7 @@ def get_external_network(q):
 # belong on external network
 def get_public_network(q, public_network):
     for network in q.list_networks()['networks']:
-        if network['name'] == public_network:
+        if network['name'] == unicode(public_network):
             return network
 
 def get_external_router(q):
@@ -160,22 +152,19 @@ def get_external_router(q):
         if router['name'] == 'ci':
             return router
 
-def get_tenant_id(k):
-    tenant_name = os.environ['OS_TENANT_NAME']
-    for tenant in k.tenants.list():
-        if tenant.name == tenant_name:
-            return str(tenant.id)
+def get_tenant_id(network):
+    return str(network['tenant_id'])
 
 # This can easily be problematic with multiple tenants,
 # So make sure we get the one for the current tenant
-def get_ci_network(q, k):
+def get_ci_network(q, n):
     for network in q.list_networks()['networks']:
-        if network['name'] == 'ci' and network['tenant_id'] == get_tenant_id(k):
+        if network['name'] == 'ci' and network['tenant_id'] == get_tenant_id(n):
             return network
 
-def get_ci_subnet(q, k):
+def get_ci_subnet(q, n):
     for subnet in q.list_subnets()['subnets']:
-        if subnet['name'] == 'ci' and subnet['tenant_id'] == get_tenant_id(k):
+        if subnet['name'] == 'ci' and subnet['tenant_id'] == get_tenant_id(n):
             return subnet 
 
 def set_external_routing(q, subnet, public_network):
@@ -226,6 +215,7 @@ def make(n, q, k, args):
     data_path       = args.data_path
     fragment_path   = args.fragment_path
     public_network  = args.public_network
+    nameserver      = args.nameserver
 
     if args.debug:
         debug.debug = True
@@ -241,8 +231,8 @@ def make(n, q, k, args):
     # There can be only one of these per tenant
     # because overlapping subnets + router doesn't work
     networks['ci'] = make_network(q, 'ci')
-    subnets['ci']  = make_subnet(q, 'ci', networks['ci'], ci_subnet_index, gateway=True)
-    set_external_routing(q, get_ci_subnet(q, k), public_network)
+    subnets['ci']  = make_subnet(q, 'ci', networks['ci'], ci_subnet_index, gateway=True, dns_nameserver=nameserver)
+    set_external_routing(q, get_ci_subnet(q, networks['ci']), public_network)
     ci_subnet_index = ci_subnet_index + 1
 
     with open(data_path + '/nodes/' + scenario + '.yaml') as scenario_yaml_file:
@@ -254,6 +244,7 @@ def make(n, q, k, args):
             if network != 'ci': # build network with NAT services
                 networks[network] = False
 
+
     # Create internal networks
     for network, gate in networks.items():
         if network != 'ci':
@@ -261,6 +252,23 @@ def make(n, q, k, args):
             subnets[network] = make_subnet(q, 'ci-' + network + '-' + test_id,
                                         networks[network], index=ci_subnet_index, gateway=gate)
             ci_subnet_index = ci_subnet_index + 1
+
+    # There seems to be a bug in quantum where networks are not scheduled a dhcp agent unless a VM
+    # boots on that network without a pre-made port. So we boot an instance that will do this
+    # on all our networks
+    dummynets = [network for network in networks.values()]
+    dummy = boot_puppetised_instance(n,
+                        'dummy',
+                        image,
+                        build_nic_net_list(dummynets),
+                        deploy=cloud_init,
+                        meta={'ci_test_id' : test_id},
+                        os_flavor=u'm1.small'
+                        )
+    while dummy.status != u'ACTIVE':
+        dummy = n.servers.get(dummy)
+        dprint('dummy status: ' + str(dummy.status))
+    dummy.delete()
 
     # Allocate ports
     for node, props in scenario_yaml['nodes'].items():

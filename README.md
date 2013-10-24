@@ -163,16 +163,26 @@ for persistent block volumes to be deployed against.
 
 Log in to your all_in_one node, and bootstrap it into production:
 
-``
-    export scenario=all_in_one
-    export build_server=`hostname`
-    export build_server_ip=`ip addr show eth0 | grep 'inet ' | tr '/' ' ' | awk -F' ' '{print $2}'`
-
     bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/master.sh)
+
+You can over-ride the default parameters, such as ethernet interface names, or hostname, and default ip address if you choose:
+
+scenario           : change this to a scenario defined in data/scenarios, defaults to all_in_one
+build_server       : Hostname for your build-server, defaults to `` `hostname` ``
+domain_name        : Domain name for your system, defaults to `` `hostname -d` ``
+default_interface  : This is the interface name for your management and API interfaces (and tunnel endpoints), defautls to eth0
+external_interface : This is the interface name for your "l3_agent provider router external network", defaults to eth1
+build_server_ip    : This is the IP that any additional devices can reach your build server on, defaults to the default_interface IP address
+ntp_server         : This is needed to keep puppet in sync across multiple nodes, defaults to ntp.esl.cisco.com
+puppet_run_mode    : Defaults to apply, and for AIO there is not a puppetmaster yet.
+
+To change these parameters, do something like:
+
+scenario=2_role bash <(curl.....master.sh)
 
 ### add additional nodes
 
-Adding additional nodes is fairly straigt forward (currently a compute node can be added, others require a bit of additional effort)
+Adding additional nodes is fairly straight forward (for all_in_one scenarion compute nodes can be added, others require a bit of additional effort by expanding the all_in_one scenario)
 
 1) on the All-in-one node, add a role mapping for the new node:
 

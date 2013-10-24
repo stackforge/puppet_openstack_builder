@@ -65,7 +65,8 @@ base_url = "#{git_protocol}://github.com"
 mod 'bodepd/hiera_data_mapper',
   :git => 'https://github.com/bodepd/hiera_data_mapper'
 mod 'bodepd/scenario_node_terminus',
-  :git => 'https://github.com/bodepd/scenario_node_terminus'
+  :git => 'https://github.com/michaeltchapman/scenario_node_terminus',
+  :ref => 'nocache'
 mod 'CiscoSystems/coi',
   :git => "#{base_url}/CiscoSystems/puppet-COI",
   :ref => 'master'

@@ -147,69 +147,56 @@ To destroy a specific test run's resources:
 
 More information about this tool can be found under the stack-builder directory.
 
-## basic install against already provisioned nodes:
+# Basic install against already provisioned nodes (Ubuntu 12.04.3 LTS):
 
-### install your build server
+### install your All-in-one Build, Control, Network, Compute, and Cinder node:
 
-first, log into your build server, and run the following script to bootstrap it as a puppet master:
+These instructions assume you will be building against a machine that has two interfaces:
 
-If you want to use the havana version of the packages, set the following ENV var:
+'eth0' for management, and API access, and also to be used for GRE/VXlan tunnel via OVS
+'eth1' for 'external' network access (in single provider router mode).  This interface
+is expected to provide an external router, and IP address range, and will leverage the
+l3_agent functionality to provide outbound overloaded NAT to the VMs and 1:1 NAT with 
+Floating IPs.  The current default setup also assumes a very small "generic" Cinder 
+setup, unless you create an LVM volume group called cinder-volume with free space
+for persistent block volumes to be deployed against.
 
-    export openstack_version=havana
-
-    bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/master.sh)
-
-####Note:
-If you want to install an all-in-one style node, you will often want your build server to be a name other that "build-server", most likley the name of your actual machine. In which case, first
-
-    export build_server='name_of_your_build_server'
-
-or
+Log in to your all_in_one node, and bootstrap it into production:
 
 ``
+    export scenario=all_in_one
     export build_server=`hostname`
-``
-
-Also, if you want to run against the all-in-one case, or you want to run against a scenario where your build and control server(s) are collapsed, you may want set your scenario before the script runs puppet for the first time, in which case do the following:
-
-    export scenario='all_in_one'
-
-
-And lastly, if you want to expand the system, you will want to define the IP address of the build environment:
-
-``
     export build_server_ip=`ip addr show eth0 | grep 'inet ' | tr '/' ' ' | awk -F' ' '{print $2}'`
-``
-  
-After these exports, you _then_ run the bash script from above
 
     bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/master.sh)
 
+### add additional nodes
 
-After the master.sh script is run, you will need to run puppet one more time (after following the next section on data updates). In which case, you will then want to run:
+Adding additional nodes is fairly straigt forward (currently a compute node can be added, others require a bit of additional effort)
 
-    puppet apply -v /etc/puppet/manifests/site.pp
+1) on the All-in-one node, add a role mapping for the new node:
 
-### set up your data
+echo "compute_node_name: compute" >> /etc/puppet/data/role_mappings.yaml
 
-on your build server, all of the data you may need to override can be found in:
+2) Build the phyiscal or virtual compute node
 
-    /etc/puppet/data/hiera_data/user.common.yaml
+3) Configure the system to point ot the all_in_one node for puppet deployment and set up the right version of puppet on the node:
 
-at the very least, you may need to update the controller ip addresses and set the
-interfaces to use.
+    export build_server_ip=X.X.X.X ; bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/setup.sh)
 
-Look at the puppet certnames that map to roles in:
+After which you may still have to run puppet in "agent" mode to actually deploy the openstack elements:
 
-    /etc/puppet/data/role_mappings.yaml
+``
+    puppet agent -td --server build-server.`hostname -d` --certname `hostname -f`
+``
 
-You may also find a need to change the default scenario in:
+### If other role types are desired
 
-    /etc/puppet/data/config.yaml
-
-Choices are in:
+At the scenario leve, choices are in:
 
     /etc/puppet/data/scenarios
+
+And you can extend the all_in_one scenario, or leverage a different variant all together.
 
 Defaults for end user data should be located in one of the following files:
 
@@ -217,18 +204,4 @@ Defaults for end user data should be located in one of the following files:
     /etc/puppet/data/hiera_data/user.common.yaml
     /etc/puppet/data/hiera_data/user.<scenario>.yaml
 
-### install each of your components
-
-first setup each node (unless you're doing all\_in\_one scenario, in which case you'll already have done this from the previous step):
-
-    export build_server_ip=X.X.X.X ; bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/setup.sh)
-
-then log into each server, and run:
-
-``
-    puppet agent -td --server build-server.`hostname -d` --certname `hostname -f`
-``
-
-where build-server is the fully qualified name of the build server (or `` `hostname -f` `` on an all-in-one node), or its IP address that was set in user.common.yaml and ROLE\_CERT\_NAME is the fully qualified name of the local machine (or `` `hostname -f` `` which should return the same thing)
-
-*NOTE: you'll want to run the puppet agent command on any control class nodes (or the all-in-one node) first, before running it on any compute or storage nodes.*
+###Additional information on the data model being leveraged is available in the data directory of this repository.

@@ -138,6 +138,7 @@ def apply_manifest(config, v_config, manifest_name='site.pp', certname=nil, pupp
   if manifest_name == 'site.pp'
     config.vm.share_folder("data", '/etc/puppet/data', './data')
   end
+  config.vm.share_folder("ssh", '/root/.ssh', './dot-ssh')
 
   # Explicitly mount the shared folders, so we dont break with newer versions of vagrant
   config.vm.share_folder("modules", '/etc/puppet/modules', './modules/')

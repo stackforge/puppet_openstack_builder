@@ -9,5 +9,7 @@ git clone https://github.com/puppetlabs/puppetlabs-apache /etc/puppet/modules/ap
 git clone https://github.com/puppetlabs/puppetlabs-stdlib /etc/puppet/modules/stdlib
 git clone https://github.com/bodepd/scenario_node_terminus /etc/puppet/modules/scenario_node_terminus
 
+export FACTER_puppet_run_mode=agent
+
 cp -r /root/openstack-installer/data /etc/puppet
 cp -r /root/openstack-installer/manifests /etc/puppet

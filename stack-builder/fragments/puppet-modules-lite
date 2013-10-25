@@ -7,7 +7,9 @@ git clone https://github.com/CiscoSystems/puppet-apt /etc/puppet/modules/apt
 git clone https://github.com/puppetlabs/puppetlabs-inifile /etc/puppet/modules/inifile
 git clone https://github.com/puppetlabs/puppetlabs-apache /etc/puppet/modules/apache
 git clone https://github.com/puppetlabs/puppetlabs-stdlib /etc/puppet/modules/stdlib
-git clone https://github.com/michaeltchapman/scenario_node_terminus -b nocache /etc/puppet/modules/scenario_node_terminus
+git clone https://github.com/bodepd/scenario_node_terminus /etc/puppet/modules/scenario_node_terminus
+
+export FACTER_puppet_run_mode=agent
 
 cp -r /root/openstack-installer/data /etc/puppet
 cp -r /root/openstack-installer/manifests /etc/puppet

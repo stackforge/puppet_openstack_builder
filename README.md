@@ -123,38 +123,66 @@ To create a basic 2 role cluster with a build, compute and control node outside 
 
 More information about this tool can be found under the stack-builder directory.
 
-## basic install against already provisioned nodes:
+# Basic install against already provisioned nodes (Ubuntu 12.04.3 LTS):
 
-### install your build server
+### install your All-in-one Build, Control, Network, Compute, and Cinder node:
 
-first, log into your build server, and run the following script to bootstrap it as a puppet master:
+These instructions assume you will be building against a machine that has two interfaces:
 
-If you want to use the havana version of the packages, set the following ENV var:
+'eth0' for management, and API access, and also to be used for GRE/VXlan tunnel via OVS
+'eth1' for 'external' network access (in single provider router mode).  This interface
+is expected to provide an external router, and IP address range, and will leverage the
+l3_agent functionality to provide outbound overloaded NAT to the VMs and 1:1 NAT with 
+Floating IPs.  The current default setup also assumes a very small "generic" Cinder 
+setup, unless you create an LVM volume group called cinder-volume with free space
+for persistent block volumes to be deployed against.
 
-    export openstack_version=havana
+Log in to your all_in_one node, and bootstrap it into production:
 
     bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/master.sh)
 
-### set up your data
+You can over-ride the default parameters, such as ethernet interface names, or hostname, and default ip address if you choose:
 
-on your build server, all of the data you may need to override can be found in:
+scenario           : change this to a scenario defined in data/scenarios, defaults to all_in_one
+build_server       : Hostname for your build-server, defaults to `` `hostname` ``
+domain_name        : Domain name for your system, defaults to `` `hostname -d` ``
+default_interface  : This is the interface name for your management and API interfaces (and tunnel endpoints), defautls to eth0
+external_interface : This is the interface name for your "l3_agent provider router external network", defaults to eth1
+build_server_ip    : This is the IP that any additional devices can reach your build server on, defaults to the default_interface IP address
+ntp_server         : This is needed to keep puppet in sync across multiple nodes, defaults to ntp.esl.cisco.com
+puppet_run_mode    : Defaults to apply, and for AIO there is not a puppetmaster yet.
 
-    /etc/puppet/data/hiera_data/user.common.yaml
+To change these parameters, do something like:
 
-at the very least, you may need to update the controller ip addresses and set the
-interfaces to use.
+scenario=2_role bash <(curl.....master.sh)
 
-Look at the puppet certnames that map to roles in:
+### add additional nodes
 
-    /etc/puppet/data/role_mappings.yaml
+Adding additional nodes is fairly straight forward (for all_in_one scenarion compute nodes can be added, others require a bit of additional effort by expanding the all_in_one scenario)
 
-You may also find a need to change the default scenario in:
+1) on the All-in-one node, add a role mapping for the new node:
 
-    /etc/puppet/data/config.yaml
+echo "compute_node_name: compute" >> /etc/puppet/data/role_mappings.yaml
 
-Choices are in:
+2) Build the phyiscal or virtual compute node
+
+3) Configure the system to point ot the all_in_one node for puppet deployment and set up the right version of puppet on the node:
+
+    export build_server_ip=X.X.X.X ; bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/setup.sh)
+
+After which you may still have to run puppet in "agent" mode to actually deploy the openstack elements:
+
+``
+    puppet agent -td --server build-server.`hostname -d` --certname `hostname -f`
+``
+
+### If other role types are desired
+
+At the scenario leve, choices are in:
 
     /etc/puppet/data/scenarios
+
+And you can extend the all_in_one scenario, or leverage a different variant all together.
 
 Defaults for end user data should be located in one of the following files:
 
@@ -162,18 +190,4 @@ Defaults for end user data should be located in one of the following files:
     /etc/puppet/data/hiera_data/user.common.yaml
     /etc/puppet/data/hiera_data/user.<scenario>.yaml
 
-### install each of your components
-
-first setup each node (unless you're doing all\_in\_one scenario, in which case you'll already have done this from the previous step):
-
-    export build_server_ip=X.X.X.X ; bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/setup.sh)
-
-then log into each server, and run:
-
-``
-    puppet agent -td --server build-server.`hostname -d` --certname `hostname -f`
-``
-
-where build-server is the fully qualified name of the build server (or `` `hostname -f` `` on an all-in-one node), or its IP address that was set in user.common.yaml and ROLE\_CERT\_NAME is the fully qualified name of the local machine (or `` `hostname -f` `` which should return the same thing)
-
-*NOTE: you'll want to run the puppet agent command on any control class nodes (or the all-in-one node) first, before running it on any compute or storage nodes.*
+###Additional information on the data model being leveraged is available in the data directory of this repository.

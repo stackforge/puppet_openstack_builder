@@ -53,6 +53,10 @@ if $::puppet_run_mode != 'agent' {
       before  => Package['puppet'],
       require => Package['puppet-common']
     }
+    package { 'puppetmaster-passenger':
+      ensure  => $puppet_version,
+      require => Package['puppet'],
+    }
   }
 
   # set up our hiera-store!

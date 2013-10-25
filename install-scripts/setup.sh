@@ -21,7 +21,7 @@ else
 fi
 # puppet's fqdn fact explodes if the domain is not setup
 if grep 127.0.1.1 /etc/hosts ; then
-  sed -i -e "s/127.0.1.1.*/127.0.1.1 $(hostname).$domain $(hostname)/" /etc/hosts\n
+  sed -i -e "s/127.0.1.1.*/127.0.1.1 $(hostname).$domain $(hostname)/" /etc/hosts
 else
   echo "127.0.1.1 $(hostname).$domain $(hostname)" >> /etc/hosts
 fi;

@@ -16,3 +16,5 @@ network_type: per-tenant-router
 # supports gre or vlan
 tenant_network_type: gre
 enable_ha: false
+
+install_tempest: false

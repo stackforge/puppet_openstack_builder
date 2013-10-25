@@ -51,3 +51,11 @@ apache::mpm_module: prefork
 
 # Fix odd behaviors
 horizon::django_debug: true
+
+# Tempest configuration
+openstack::provision::identity_uri: 'http://127.0.0.1:5000/v2.0/'
+openstack::provision::admin_tenant_name: openstack
+openstack::provision::admin_password: Cisco123
+openstack::provision::resize_available: false
+openstack::provision::change_password_available: false
+openstack::provision::public_network_name: nova

@@ -25,7 +25,7 @@ export puppet_run_mode="apply"
 # scenarios will map to /etc/puppet/data/scenarios/*.yaml
 export scenario="${scenario:-all_in_one}"
 
-sed -e "s/2_role:*/$scenario/" -i /root/openstack-installer/data/config.yaml
+sed -e "s/scenario: .*/scenario: ${scenario}/" -i /root/openstack-installer/data/config.yaml
 
 if [ "${scenario}" == "all_in_one" ] ; then
   echo `hostname`: all_in_one >> /root/openstack-installer/data/role_mappings.yaml

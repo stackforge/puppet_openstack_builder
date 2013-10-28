@@ -1,27 +1,16 @@
-# Deployment modeling data
+# configuring openstack as data
 
-This folder contains data that is used to express openstack
-deployment as data.
+####Table of Contents
 
-Technically, it is implemented as a custom [hiera](http://docs.puppetlabs.com/hiera/1/index.html) [backend](http://docs.puppetlabs.com/hiera/1/custom_backends.html),
-and an [external node classifier](http://docs.puppetlabs.com/guides/external_nodes.html) (more specfically, as a custom node terminus, but for our purposes here, they can be considered as the same thing)
+1. [Why Data?](#why-data)
+2. [Users - getting started](#getting-started-as-a-user)
+    * [Scenario Selcetion](#selecting-a-scenario)
+    * [Configuring Globals](#configuring-globals)
+    * [Scenarios](#scenarios)
+    * [User Data](#user-data)
+    * [Role Mappings](#role-mappings)
 
-It is critical to understand the following in order to understand this model:
-
-+ how hiera works (and how data-bindings work)
-+ the fact this uses a custom hiera backend (so it is not quite the same
-  as standard hiera)
-+ what an ENC is
-
-This solution ONLY works with Puppet 3.x or greater and relies on the data-bindings
-system.
-
-Below are the links to the custom ENC and custom hiera backend:
-
-* https://github.com/bodepd/scenario_node_terminus
-* https://github.com/bodepd/hiera_data_mapper
-
-## why data?
+## Why Data
 
 This is intended to replace the stackforge/puppet-openstack class
 as well as other tools that look at composing the core stackforge modules
@@ -98,71 +87,64 @@ of both multiple reference architectures as well as multiple backends, we need t
 be able to programatically understand the selected classes to provide the user with the
 correct interface.
 
-## what is used to express the data
+## Setup
 
-All of the data used to express the various reference architectures can be found
-in this projects data directory. The sections explains the various configuration
-files and directories that can be found in that directory..
+Applying [setup.pp](https://github.com/CiscoSystems/openstack-installer/blob/master/manifests/setup.pp)
+will configure your nodes to use the data model. It does the following:
 
-### Data driven by the custom ENC
+1. Installs a version of Puppet greater than 3.0.
+2. [Sets the node\_terminus as scenario.](https://github.com/CiscoSystems/openstack-installer/blob/master/manifests/setup.pp#L97)
+3. [Configures hiera](https://github.com/CiscoSystems/openstack-installer/blob/master/manifests/setup.pp#L63)
 
-When a node checks in with Puppet, the master invokes the scenario node terminus.
-This call is made to provide Puppet with two pieces of information that it needs
-to compile a catalog for that node:
+## Getting Started as a User
 
-+ what classes should be included for that node
-+ what top scope parameters should be set that can effect the hiera lookups
+This section is intended to provider users with what they need to know in order
+to use the data model to deploy a customized openstack deployment.
 
-In order for this to work with the data model, you need to install the following
-module:
+However, it is recommended that users understand the internals so that they
+can debug things. Full documentation of the implementation can be found here:
 
-    https://github.com/bodepd/scenario_node_terminus
+[scenario node terminus](https://github.com/bodepd/scenario_node_terminus/blob/master/README.md).
 
-This module is automatically installed if you use the Puppetfile that comes
-with this project. And add the following configuration to your puppet.conf file:
+The data model should be configured before you install any of your openstack
+components. It is responsible for building a deployment model that is used
+to assign both classes as well as data to each node that needs to be configured.
 
-    node_terminus=scenario
+### Selecting a Scenario
 
-This is already configured if you bootstrap with setup.pp.
+The first step as an end user is to select a scenario. Scenarios are defined
+in data/config.yaml as:
 
-The following list of data is used to drive that classification process
+    scenario: all_in_one
 
-#### config.yaml
+The scenarios represents the currently deployment model, and are used to
+determine the roles available as a part of that model.
 
-For the general use case, most of the information in config.yaml
-can be ignored. Most of it is used for provisioning of virtual machine
-instances for the CD part of this work.
+Currently, the following scenarios are supported:
 
-There is one very important setting in config.yaml called scenario.
+* *all\_in\_one* - installs everything on one node
+* *2\_role* -splits compute/controller
+* *full\_ha* - splits out an HA install that requires 13 nodes
 
-+  *scenario* is used to select the specific references architecture
-   that you wish to deploy. Its value is used to select the roles for
-   that specific deployment model from the file: scenarios/<scenario>.yaml.
-   If you are using this project for CD, scenario is also used to select
-   the set of nodes that will be provisioned for your deployment.
-   Scenario is also passed to Puppet as a global variable and used to drive
-   both interpolation as well as category selection in hiera.
+The following command returns your current scenario:
 
-#### global\_hiera\_params
+    puppet scenario get_scenario
 
-This directory is used to specify the global variables that can be used
-to effect the hierarchical overrides that will be used to determine both
-the classes contained in a scenario roles as well as the hiera overrides
-for both data mappings and the regular yaml hierarchy.
+Once you have selected a scenario, you can see how it effects your deployment model:
 
-The selection of the global\_hiera\_params is driven by hiera using the following
-hierarchy:
+    puppet scenario get_roles
 
-  - global\_hiera\_params/user.yaml - users can provide their own global
-  overrides in this file.
-  - global\_hiera\_params/scenario/%{scenario}.yaml - Default values specific to a
-  scenario are loaded from here (they override values from common.yaml)
-  - global\_hiera\_params/common.yaml - Default values for globals are located here.
+### Configuring Globals
 
-These variables are used by hiera to determine both what classes are included as a
-part of the role lookup, and are also used to drive the hierarchical lookups of
-data both by effecting the configuration files that are consulted (like the scenario
-specific config file from above)).
+This directory contains sets of global variables that can be used to determine
+what roles should be deployed as a part of your deployment model as well a how
+data should be assigned to those roles.
+
+In general, the following types of things can be configured:
+
+* Pluggable backend selection for components (ie: what backend should cinder use)
+* Selections that augment roles (ie: should tempest be installed, should a ceph
+role exist)
 
 The current supported variables are:
 
@@ -189,185 +171,120 @@ The current supported variables are:
 
   + *tenant_network_type* Type of tenant network to use. (defaults to gre).
 
-All data set in this file are passed on to Puppet as global variables.
+### Scenarios
 
-### scenarios
+Once you have selected your globals and scenario, you can now query the system to see
+what the scenarios looks like for your current deployment model:
 
-Scenarios are used to describe the reference architecture that you wish to
-deploy.
+    puppet scenario get_roles
 
-The scenario to be selected is driven by the scenario
-key in config.yaml.
+The output here shows 2 things:
 
-Each of the roles for a specific scenario is specified in its scenario
-file:
+* what roles can be assigned to nodes
+* what classes are included as a part of those roles
 
-    data/scenario/<scenario>.yaml
+### User Data
 
-This file defines what roles exists for a specific scenario, and which classes
-and class\_groups should be assigned to nodes of that role.
+Once you have know your roles, you will want to customize the data used
+to configure your deployment model.
 
-### class groups
+You can get a list of the default data a user should consider setting with:
 
-Class groups are simply a set of classes that can be referenced
-by a  single name. Class groups are used to store combinations
-of classes for reuse.
+    puppet scenario get_user_inputs
 
-For example, the class group nova\_compute contains the following data:
+This command shows a list of data that a user may want to provide along with
+it's current default value.
 
-    classes:
-      - nova
-      - nova::compute
-      - "nova::compute::%{compute_type}"
-      - "nova::network::%{network_service}"
-      - "nova::compute::%{network_service}"
-      - "%{network_service}"
-      - "%{network_service}::agents::%{network_plugin}"
+> NOTE: The current view of user data is not perfect. It still needs some
+> refinement.
 
-Two things to note here:
+Each of these values can be overridden by setting a key value pair in ``data/hiera_data/user.yaml``.
 
-1. It contains a list of classes that comprise nova compute
-2. Some of the classes use the hiera syntax for variable interpolation to
-   set the names of classes used to the values provided from the
-   hiera\_global\_params.
+Values can either receive static values:
 
-## role\_mappings
+    controller_admin_address: 192.168.242.10
 
-role\_mappings are used to map a Puppet certificate name to a specific roles
-from your selected scenario.
+Or values that are set with facts (or hiera global params):
 
-The following example shows how to map a certname of controller-server to
-a role of controller:
+    internal_ip: "%{ipaddress_eth3}"
 
-    controller-server: controller
+Once you have supplied all of your data, you can see how that data is applied to
+your roles by invoking:
 
-The certificate name in Puppet defaults to a systems hostname, but can be
-overridden from the command line using the --certname option. The following
-command could be used to convert a node into a controller.
+    puppet scenario compile_role <role_name>
 
-    puppet agent --certname controller-server
+Alternatively, as long as the node terminus is set in your main stanza of
+puppet.conf,you can run:
 
-**TODO: the role mappings do not currently support regex, but probably need to**
+    puppet node find --certname controller
 
-### Binding values to class parameters
+To see the exact data that is returned to Puppet for a specific node.
 
-After Puppet gets a list of classes and top scope parameters from the node
-terminus it begins to compile the catalog. During this process,
-every single class parameter is resolved through Puppet's data-binding system
-that came into existence in Puppet 3.x. Basically:
+### Role Mappings
 
-    for every class
-      let's say foo
-    for every parameter
-      let's say param1
-    the fully qualified variable is lookedup in hiera automatically:
-      hiera('foo::param') for our example
+You can map roles to nodes (via puppet cert names) in the file: ``data/role_mappings.yaml``
 
-When this lookup is performed, for the data model, our default
-hiera backend is used:
+For example, if the I run the following puppet command
 
-    https://github.com/bodepd/hiera_data_mapper
+    puppet agent --certname controller
 
-This should be configured in your hiera config
+Then I can map that certname to a role in this file:
 
-  /etc/puppet/hiera.yaml
+    controller: controller
 
-    ---
-    :backends:
-      - data_mapper
-    :hierarchy:
-      - "hostname/%{hostname}"
-      - user
-      - jenkins
-      - user.%{scenario}
-      - user.common
-      - "cinder_backend/%{cinder_backend}"
-      - "glance_backend/%{glance_backend}"
-      - "rpc_type/%{rpc_type}"
-      - "db_type/%{db_type}"
-      - "tenant_network_type/%{tenant_network_type}"
-      - "network_type/%{network_type}"
-      - "network_plugin/%{network_plugin}"
-      - "password_management/%{password_management}"
-      - "scenario/%{scenario}"
-      - grizzly_hack
-      - common
-    :yaml:
-       :datadir: /etc/puppet/data/hiera_data
-    :data_mapper:
-       # this should be contained in a module
-       :datadir: /etc/puppet/data/data_mappings
+> NOTE: certname defaults to hostname when not provided
 
-This entire hiera config is required for all of the default data to be set
-correctly. As the project matures, this default hierarchy may be subject to change.
 
-It is worth noting that both the scenario name as well the global\_heira\_params
-are used to determine which files are resolved as a part of a node's lookup
-hierarchy.
+## Getting started as a developer
 
-### data mappings
+If you intend to expand the data model, you should be familiar with
+how it work.
 
-Data mappings are used to express the way in which
-global variables from map to individual class parameters.
+[Data model Documentation](https://github.com/bodepd/scenario_node_terminus/blob/master/README.md)
 
-Previous, this was done with parameter forwarding in parameterized
-classes. In fact, this style of parameter forwarding is one of the main
-functions of the previous openstack module.
+There are may ways that you may wish to extend the data model.
 
-For example, in the openstack::controller class, we implemented the
-parameter verbose which is used to set verbose for all services.
+- adding new scenarios
+- addition new backends for openstack components
+- updating default data
+- Adding new data mappings
 
-    class openstack::controller(
-      $verbose = false
-    ) {
+### Adjusting Scenarios
 
-      class { 'nova': verbose => $verbose }
-      class { 'glance': verbose => $verbose }
-      class { 'keystone': verbose => $verbose }
-      class { 'cinder': verbose => $verbose }
-      class { 'quantum': verbose => $verbose }
+New scenarios should be added here:
 
-    }
+    data/scenario/<new_scenario>.yaml
 
-This is pretty concise way to express how a single data value assigns
-multiple class parameters. The problem is, that it uses the parameterized
-class declaration syntax to forward this data, meaning that it is hard to
-reuse this code if you want to provider different settings.
+When you add a new scenario, you also need to consider what data mappings
+and hiera data defaults should be supplied with that scenario.
 
-The same configuration above can be expressed with the data\_mappings as
-follows:
+### Adding new global config
 
-    verbose:
-      - nova::verbose
-      - glance::verbose
-      - keystone::verbose
-      - cinder::verbose
-      - quantum::verbose
+When you add new global config, you should consider the following:
 
-For each of those variables, the data-binding will call out to hiera when
-the classes are processed (if they are included)
+* are there additional roles that should be added when this data is set?
+* should classes be added to any existing roles?
+* are there specific data mappings that should be added?
+* are there defaults that should be set for this data?
 
-Example:
+You will also need to add this data to you hierarchy.
 
-  Puppet
-    calls hiera to determine the value of keystone::verbose"
-  Hiera
-    * consults data mappings (via the hierarchical lookup defined in hiera.yaml)
-    * determines that value maps to verbose
-    * performs a regular YAML lookup in the hiera\_data directory of 'verbose'
+### Setting data defaults
 
-### hiera data
+The default value to the provided for a class parameter should be supplied
+in the hier\_data directory.
 
-hiera data is used to express what values are going to be used to
-configure your openstack services.
+First, identify when the default value should be set.
 
-hiera data is used to either express global keys (that were mapped to
-class parameters in the data mappings), or fully qualified class parameter
-namespaces.
+1. If it should be set by default, it belongs in common.yaml
+2. If this default is specific to a scenario, it should be set in scenarios/<scenario\_name>.yaml
+3. If it is based on a global parameter, it should be supplied in the hiera data file for that
+parameter.
 
-NOTE: at the moment, fully qualified variables are ignored from hiera\_data
-if they were defined in the data\_mappings. This is probably a bug (b/c they should
-probably override), but this is how it works at the moment.
+### Setting user specific data
+
+All data that a user should supply should be set as a data mapping.
+
 
 ## CI/CD specific constructs:
 
@@ -384,46 +301,8 @@ should be replaces by a HEAT template.
 
 ## scenario command line tools
 
-The scenario node terminus project comes with a set of command lines tools
-that were created to make it easier to understand and debug issues with the
-data model.
+For a full list of debugging tools, run:
 
-These tools use the following system data:
+    puppet help scenario
 
-* /etc/puppet/hiera.yaml
-* /etc/puppet/data/config.yaml - to determine scenario
-* /etc/puppet/data/global\_hiera\_params
-* /etc/puppet/data/data\_mappings
-* /etc/puppet/hiera\_data
-
-+ *get_classes*
-
-    puppet scenario get_classes <role_name>
-
-This command is used to retrieve the list of classes assigned to a specific role.
-
-+ *compile_role*
-
-    puppet scenario compile_role <role_name>
-
-This command is used to retrieve the list of classes along with all data that will
-be set for those classes via hiera and puppet-data-bindings. It takes all available
-data and precalculates the values for all data.
-
-In order for this to be 100% accurate, it also needs fact values.
-
-By default, it will run facter as a part of the command to retrieve these
-values.
-
-This can also be configured to get facts for any server provided that:
-- you are on the puppetmaster
-- that node has already checked its facts into puppetdb
-
-    puppet scenario compile_role <role_name> --certname_for_facts <certname> \
-    --facts_terminus puppetdb
-
-+ *get_hiera_data*
-
-    puppet scenario get_hiera_data <namespace::parameter> [--verbose] [--debug]
-
-This command looks up an individual class parameter and returns the retrieved value.
+More in-depth documentation be be found [here](https://github.com/bodepd/scenario_node_terminus#command-line-debugging-tools).

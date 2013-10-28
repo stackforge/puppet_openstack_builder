@@ -4,6 +4,8 @@
 # it runs on into a puppetmaster/build-server
 #
 
+set -e
+
 # All in one defaults to the local host name for pupet master
 export build_server="${build_server:-`hostname`}"
 # It'd be good to konw our domain name as well

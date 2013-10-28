@@ -1,0 +1,6 @@
+ceph_deploy_password:
+  - cephdeploy::pass
+  - cephdeploy::baseconfig::pass
+ceph_deploy_user:
+  - cephdeploy::user
+  - cephdeploy::baseconfig::user

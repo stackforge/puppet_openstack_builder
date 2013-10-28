@@ -1,0 +1,3 @@
+class_groups:
+  - ceph_mon
+  - ceph_osd

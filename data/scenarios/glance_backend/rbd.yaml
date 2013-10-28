@@ -1,0 +1,4 @@
+roles:
+  controller:
+    class_groups:
+      - ceph_all

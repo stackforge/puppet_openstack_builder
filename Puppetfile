@@ -72,10 +72,10 @@ mod 'puppetlabs/postgresql',
   :ref => '2.5.0'
 mod 'puppetlabs/puppetdb',
   :git => "#{base_url}/puppetlabs/puppetlabs-puppetdb",
-  :ref => 'master'
+  :ref => '2.0.0'
 mod 'puppetlabs/vcsrepo',
   :git => "#{base_url}/puppetlabs/puppetlabs-vcsrepo",
-  :ref => 'master'
+  :ref => '0.1.2'
 mod 'ripienaar/ruby-puppetdb',
   :git => "#{base_url}/ripienaar/ruby-puppetdb"
 mod 'ripienaar/catalog-diff',
@@ -83,10 +83,10 @@ mod 'ripienaar/catalog-diff',
   :ref => 'master'
 mod 'puppetlabs/firewall',
   :git => "#{base_url}/puppetlabs/puppetlabs-firewall",
-  :ref => 'master'
+  :ref => '0.4.0'
 mod 'stephenjohrnson/puppet',
   :git => "#{base_url}/stephenrjohnson/puppetlabs-puppet",
-  :ref => 'master'
+  :ref => '0.0.18'
 
 ###### stackforge openstack modules #####
 

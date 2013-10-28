@@ -18,7 +18,7 @@ case $::osfamily {
   'Redhat': {
     $puppet_version = '3.2.3-1.el6'
     $pkg_list       = ['git', 'curl', 'httpd']
-  } 
+  }
   'Debian': {
     $puppet_version = '3.2.3-1puppetlabs1'
     $pkg_list       = ['git', 'curl', 'vim', 'cobbler']
@@ -73,6 +73,7 @@ if $::puppet_run_mode != 'agent' {
   - jenkins
   - user.%{scenario}
   - user.common
+  - "osfamily/%{osfamily}"
   - "enable_ha/%{enable_ha}"
   - "cinder_backend/%{cinder_backend}"
   - "glance_backend/%{glance_backend}"

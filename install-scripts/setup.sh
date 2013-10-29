@@ -29,7 +29,7 @@ fi;
 
 # Install openstack-installer
 cd /root/
-if ! [ -f openstack-installer ]; then
+if ! [ -d openstack-installer ]; then
   git clone https://github.com/CiscoSystems/openstack-installer.git /root/openstack-installer
 fi
 

@@ -3,6 +3,7 @@ application:
 - openstack
 password_management: individual
 db_type: mysql
+ceilometer_db_type: mongodb
 rpc_type: rabbitmq
 cinder_backend: iscsi
 glance_backend: file

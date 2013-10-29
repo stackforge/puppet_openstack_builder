@@ -4,6 +4,7 @@ class_groups:
   - cinder_controller
   - nova_controller
   - horizon
+  - ceilometer_controller
   - "%{db_type}_database"
 classes:
   - "nova::%{rpc_type}"

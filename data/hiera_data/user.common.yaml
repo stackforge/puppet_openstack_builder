@@ -31,13 +31,15 @@ database_root_password: mysql_pass
 cinder_service_password: cinder_pass
 glance_service_password: glance_pass
 nova_service_password: nova_pass
+ceilometer_service_password: ceilometer_pass
 admin_password: Cisco123
 admin_token: keystone_admin_token
 network_service_password: quantum_pass
 rpc_password: openstack_rabbit_password
-metadata_shared_secret: metadata_shared_secret,
+metadata_shared_secret: metadata_shared_secret
 horizon_secret_key: horizon_secret_key
-
+ceilometer_metering_secret: ceilometer_metering_secret
+ceilometer_db_password: ceilometer
 # for single password config
 secret_key: secret
 password: password123

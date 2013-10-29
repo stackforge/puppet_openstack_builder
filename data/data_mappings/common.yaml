@@ -8,6 +8,7 @@ debug:
   - neutron::debug
   - quatum::agents::dhcp::debug
   - quatum::agents::metadata::debug
+  - ceilometer::debug
 verbose:
   - cinder::verbose
   - glance::api::verbose
@@ -15,8 +16,10 @@ verbose:
   - keystone::verbose
   - quantum::verbose
   - neutron::verbose
+  - ceilometer::verbose
 admin_email:
   - keystone::roles::admin::email
+  - ceilometer::keystone::auth::email
 # this needs to be supplied as a defualt
 # b/c the default to guest is kind of annoying
 # (and not entirely reasonable)
@@ -31,6 +34,8 @@ rpc_user:
   - neutron::rabbit_user
   - quantum::qpid_username
   - neutron::qpid_username
+  - ceilometer::rabbit_userid
+  - ceilometer::qpid_username
 enabled_services:
   - coi::profiles::openstack::endpoints::enabled_services
   - coi::profiles::openstack::databases::mysql::enabled_services
@@ -59,6 +64,8 @@ controller_internal_address:
   - neutron::qpid_hostname
   - neutron::rabbit_host
   - ceilometer::db::mysql::host
+  - ceilometer::rabbit_host
+  - ceilometer::qpid_hostname
   - cinder::db::mysql::host
   - glance::db::mysql::host
   - keystone::db::mysql::host
@@ -86,6 +93,8 @@ controller_internal_address:
   - neutron::agents::metadata::metadata_ip
   - openstack::swift::proxy::keystone_host
   - swift::keystone::auth::internal_address
+  - ceilometer::keystone::auth::internal_address
+  - ceilometer::api::keystone_host
   - coe::base::controller_node_internal
   - coe::base::controller_hostname
 controller_public_address:
@@ -98,6 +107,7 @@ controller_public_address:
   - quantum::keystone::auth::public_address
   - neutron::keystone::auth::public_address
   - swift::keystone::auth::public_address
+  - ceilometer::keystone::auth::public_address
   - openstack::swift::proxy::swift_proxy_net_ip
 controller_admin_address:
   - cinder::keystone::auth::admin_address
@@ -107,6 +117,7 @@ controller_admin_address:
   - quantum::keystone::auth::admin_address
   - neutron::keystone::auth::admin_address
   - swift::keystone::auth::admin_address
+  - ceilometer::keystone::auth::admin_address
 swift_local_net_ip:
   - openstack::swift::proxy::swift_local_net_ip
   - openstack::swift::storage-node::swift_local_net_ip
@@ -128,6 +139,10 @@ swift_local_net_ip:
   - quantum::plugins::linuxbridge::sql_connection
   - neutron::plugins::ovs::sql_connection
   - neutron::plugins::linuxbridge::sql_connection
+#"%{ceilometer_db_type}://ceilometer:%{ceilometer_db_password}@%{controller_internal_address}/ceilometer":
+# NOTE: Workaround for connection issues with mongo
+"%{ceilometer_db_type}://localhost:27017/ceilometer":
+  - ceilometer::db::database_connection
 "http://%{controller_internal_address}:9696":
   - nova::network::quantum::quantum_url
   - nova::network::neutron::neutron_url
@@ -136,6 +151,8 @@ swift_local_net_ip:
   - nova::network::neutron::neutron_admin_auth_url
   - quantum::agents::metadata::auth_url
   - neutron::agents::metadata::auth_url
+  - ceilometer::agent::compute::auth_url
+  - ceilometer::agent::auth::auth_url
 "%{controller_internal_address}:9292":
   - nova::glance_api_servers
 # cisco specific data

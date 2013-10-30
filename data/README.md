@@ -146,6 +146,10 @@ In general, the following types of things can be configured:
 * Selections that augment roles (ie: should tempest be installed, should a ceph
 role exist)
 
+As a user, you should specify any of these variables that you wish to override in:
+
+    global_hiera_params/user.yaml
+
 The current supported variables are:
 
   + *db_type* selects the database to use (defaults to mysql)

@@ -58,3 +58,9 @@ password:
   - quantum::agents::metadata::auth_password
   - neutron::agents::metadata::auth_password
   - openstack::auth_file::admin_password
+  - ceilometer::keystone::auth::password
+  - ceilometer::api::keystone_password
+  - ceilometer::db::mysql::password
+  - ceilometer::agent::auth::auth_password
+  - ceilometer::qpid_password
+  - ceilometer::rabbit_password

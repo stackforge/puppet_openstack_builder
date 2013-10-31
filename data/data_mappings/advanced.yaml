@@ -16,6 +16,7 @@ package_ensure:
   - nova::objectstore::ensure_package
   - nova::scheduler::ensure_package
   - nova::vncproxy::ensure_package
+  - ceilometer::package_ensure
 region:
   - cinder::keystone::auth::region
   - glance:keystone::auth::region
@@ -27,3 +28,4 @@ region:
   - nova::network::neutronclient::neutron_region_name
   - quantum::agents::metadata::auth_region
   - neutron::agents::metadata::auth_region
+  - ceilometer::keystone::auth::region

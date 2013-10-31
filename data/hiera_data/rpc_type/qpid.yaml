@@ -6,3 +6,5 @@ quantum::rpc_backend:
   'neutron.openstack.common.rpc.impl_qpid'
 neutron::rpc_backend:
   'neutron.openstack.common.rpc.impl_qpid'
+ceilometer:rpc_backend:
+  'ceilometer.openstack.common.rpc.impl_qpid'

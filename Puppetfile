@@ -131,7 +131,8 @@ mod 'puppetlabs/apt',
   'xinetd',
   'ntp',
   'rsync',
-  'inifile'
+  'inifile',
+  'mongodb'
 ].each do |module_name|
   mod "puppetlabs/#{module_name}",
     :git => "#{base_url}/#{puppetlabs_module_prefix}#{module_name}",

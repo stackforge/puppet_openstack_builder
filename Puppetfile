@@ -102,6 +102,7 @@ openstack_repo_prefix = "#{base_url}/#{openstack_module_account}/puppet-"
   neutron_name,
   'swift',
   'tempest',
+  'heat',
 ].each do |module_name|
   mod "stackforge/#{module_name}",
     :git => "#{openstack_repo_prefix}#{module_name}",

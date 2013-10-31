@@ -339,7 +339,11 @@ def cli_get(n,q,k,args):
     for test_id, servers in run_instances.items():
         print "Test ID: " + test_id
         for server in servers:
-            print "%-8.8s %16.16s %12.12s" % (server.id, server.name, str(server.networks['ci'][0]))
+            if 'ci' in server.networks:
+                print "%-16.16s %16.16s %12.12s" % (str(server.networks['ci'][0]), server.name, server.id)
+            else:
+                print "%-16.16s %16.16s %12.12s" % ('-', server.name, server.id)
+
 
 def get(n, q, k, args):
     run_instances = {}

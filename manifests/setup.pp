@@ -24,7 +24,6 @@ case $::osfamily {
     $pkg_list       = ['git', 'curl', 'vim', 'cobbler']
     package { 'puppet-common':
       ensure => $puppet_version,
-      require => Apt::Source[puppetlabs]
     }
   }
 }
@@ -38,6 +37,14 @@ if $::build_server_ip {
   host { 'build-server':
     ip => $::build_server_ip,
     host_aliases => "build-server.${::build_server_domain_name}"
+  }
+}
+
+if $::apt_proxy_host {
+
+  class { 'apt':
+    proxy_host => $::apt_proxy_host,
+    proxy_port => $::apt_proxy_port
   }
 }
 
@@ -75,6 +82,7 @@ if $::puppet_run_mode != 'agent' {
   - user.common
   - "osfamily/%{osfamily}"
   - "enable_ha/%{enable_ha}"
+  - "install_tempest/%{install_tempest}"
   - "cinder_backend/%{cinder_backend}"
   - "glance_backend/%{glance_backend}"
   - "rpc_type/%{rpc_type}"

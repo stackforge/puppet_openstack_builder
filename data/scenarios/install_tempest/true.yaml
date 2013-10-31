@@ -1,0 +1,6 @@
+roles:
+  controller:
+    classes:
+      - openstack::provision
+
+

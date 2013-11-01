@@ -10,5 +10,8 @@ export git_protocol=%{git_protocol}
 export openstack_version=%{openstack_version}
 librarian-puppet install --verbose --path /etc/puppet/modules
 
+cd /etc/puppet/modules/%{zuul_project}
+%{checkout_branch_command}
+
 cp -r /root/openstack-installer/data /etc/puppet
 cp -r /root/openstack-installer/manifests /etc/puppet

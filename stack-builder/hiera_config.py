@@ -28,7 +28,7 @@ def facter_config():
         with open('/root/fact_exports', 'w') as facts:
             for key,value in meta.items():
                 # Things with spaces can't be exported
-                if ' ' not in value:
+                if ' ' not in str(value):
                     facts.write('FACTER_' + str(key) + '="' + str(value) + '"\n')
 
 #TODO

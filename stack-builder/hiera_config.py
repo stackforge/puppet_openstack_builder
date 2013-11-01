@@ -29,7 +29,7 @@ def facter_config():
             for key,value in meta.items():
                 # Things with spaces can't be exported
                 if ' ' not in str(value):
-                    facts.write('FACTER_' + str(key) + '="' + str(value) + '"\n')
+                    facts.write('FACTER_' + str(key) + '=' + str(value) + '\n')
 
 #TODO
 def hostname_config():

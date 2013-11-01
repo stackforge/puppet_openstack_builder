@@ -12,6 +12,7 @@ librarian-puppet install --verbose --path /etc/puppet/modules
 
 cd /etc/puppet/modules/%{zuul_project}
 %{checkout_branch_command}
+cd -
 
 cp -r /root/openstack-installer/data /etc/puppet
 cp -r /root/openstack-installer/manifests /etc/puppet

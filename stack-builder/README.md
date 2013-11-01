@@ -36,6 +36,12 @@ These instructions are copied almost directly from the jenkins job:
     export osi_conf_operatingsystem=Ubuntu
     export osi_conf_build_server_domain_name=domain.name
 
+    cd image-builder
+    sudo ./build-image.sh
+    glance delete precise-x86_64
+    glance add name=precise-x86_64 is_public=true disk_format=qcow2 container_format=bare < ubuntu-heat-cfntools.qcow2
+    cd ..
+
 ## Commands
 
 For all commands, the data path refers to the data directory in openstack-installer, and defaults to './data', while the fragment path refers to the location of the bash snippets used to composed cloud-init scripts, and defaults to './stack-builder/fragments'. Current the only supported image is ubuntu and defaults to 'precise-x86\_64'.

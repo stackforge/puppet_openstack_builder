@@ -27,7 +27,9 @@ def facter_config():
         print meta
         with open('/root/fact_exports', 'w') as facts:
             for key,value in meta.items():
-                facts.write('FACTER_' + str(key) + '="' + str(value) + '"\n')
+                # Things with spaces can't be exported
+                if ' ' not in value:
+                    facts.write('FACTER_' + str(key) + '="' + str(value) + '"\n')
 
 #TODO
 def hostname_config():

@@ -25,5 +25,5 @@ if [[ "$os" == "ubuntu" ]]; then
     export DIB_RELEASE=precise
     diskimage-builder/bin/disk-image-create vm $os heat-cfntools CI-tools -a i386 -o $os-heat-cfntools
 else
-    diskimage-builder/bin/disk-image-create vm $os heat-cfntools CI-tools -a amd64 -o $os-heat-cfntools 
+    diskimage-builder/bin/disk-image-create vm $os heat-cfntools CI-tools -a amd64 -o $os-heat-cfntools
 fi

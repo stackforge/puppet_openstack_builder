@@ -1,8 +1,9 @@
 #!/bin/bash
 
-if ! [ type git 2>/dev/null ]; then
-    apt-get install -y git
-fi
+#install required apps
+apt-get install -y git
+apt-get install -d -y puppet rubygems curl python-yaml apache2
+
 
 # Install openstack-installer
 cd /root/

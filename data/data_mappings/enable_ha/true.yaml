@@ -7,6 +7,7 @@ sql_idle_timeout:
   - nova::sql_idle_timeout
   - cinder::sql_idle_timeout
   - quantum::plugins::ovs::sql_idle_timeout
+  - neutron::server::sql_idle_timeout
 rabbit_hosts:
   - quantum::rabbit_hosts
   - nova::rabbit_hosts
@@ -53,8 +54,7 @@ bind_address:
 "mysql://%{network_service}:%{network_db_password}@%{controller_internal_address}/%{network_service}?charset=utf8":
   - quantum::plugins::ovs::sql_connection
   - quantum::plugins::linuxbridge::sql_connection
-  - neutron::plugins::ovs::sql_connection
-  - neutron::plugins::linuxbridge::sql_connection
+  - neutron::server::sql_connection
 "http://%{controller_public_address}:5000/v2.0/":
   - glance::backend::swift::swift_store_auth_address
   - glance::api::auth_url

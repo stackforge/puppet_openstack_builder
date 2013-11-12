@@ -68,16 +68,6 @@ swift_internal_address:
   - openstack-ha::load-balancer::swift_proxy_virtual_ip
 swift_public_address:
   - swift::keystone::auth::public_address
-#  - openstack::swift::proxy::swift_proxy_net_ip 
-swift_storage_interface:
-  - coe::network::interface::interface_name
-swift_local_net_ip:
-  - openstack::swift::proxy::swift_local_net_ip
-  - openstack::swift::storage-node::swift_local_net_ip
-  - coe::network::interface::ipaddress
-  - openstack::swift::proxy::memcached_listen_ip
-swift_storage_netmask:
-  - coe::network::interface::netmask
 private_interface:
   - openstack-ha::load-balancer::keepalived_interface
 controller_names:

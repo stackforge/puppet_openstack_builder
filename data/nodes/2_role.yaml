@@ -12,6 +12,8 @@ nodes:
     image:  'precise-x86_64'
     fragments:
       - 'bash-top'
+      - 'fqdn-fix'
+      - 'pw-mirror-network'
       - 'apt-packages'
       - 'cloud-init-log'
   build-server:

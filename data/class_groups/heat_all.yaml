@@ -1,0 +1,9 @@
+classes:
+  - heat
+  - heat::api
+  - heat::api_cfn
+  - heat::api_cloudwatch
+  - heat::db::mysql
+  - heat::engine
+  - heat::keystone::auth
+  - heat::keystone::auth_cfn

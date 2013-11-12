@@ -5,6 +5,7 @@ class_groups:
   - nova_controller
   - horizon
   - ceilometer_controller
+  - heat_all
   - "%{db_type}_database"
 classes:
   - "nova::%{rpc_type}"

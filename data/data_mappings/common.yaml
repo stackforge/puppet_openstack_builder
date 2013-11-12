@@ -9,6 +9,7 @@ debug:
   - quatum::agents::dhcp::debug
   - quatum::agents::metadata::debug
   - ceilometer::debug
+  - heat::debug
 verbose:
   - cinder::verbose
   - glance::api::verbose
@@ -17,6 +18,7 @@ verbose:
   - quantum::verbose
   - neutron::verbose
   - ceilometer::verbose
+  - heat::verbose
 admin_email:
   - keystone::roles::admin::email
   - ceilometer::keystone::auth::email
@@ -36,6 +38,7 @@ rpc_user:
   - neutron::qpid_username
   - ceilometer::rabbit_userid
   - ceilometer::qpid_username
+  - heat::rabbit_userid
 enabled_services:
   - coi::profiles::openstack::endpoints::enabled_services
   - coi::profiles::openstack::databases::mysql::enabled_services
@@ -48,6 +51,7 @@ allowed_hosts:
   - nova::db::mysql::allowed_hosts
   - quantum::db::mysql::allowed_hosts
   - neutron::db::mysql::allowed_hosts
+  - heat::db::mysql::allowed_hosts
 #
 # The all_in_one specification of how to map services to each other
 # is assumed to be a default. When you want to move away from all_in_one,
@@ -97,6 +101,7 @@ controller_internal_address:
   - ceilometer::api::keystone_host
   - coe::base::controller_node_internal
   - coe::base::controller_hostname
+  - heat::db::mysql::host
 controller_public_address:
   - nova::vncproxy::host
   - nova::compute::vncproxy_host
@@ -142,6 +147,8 @@ swift_local_net_ip:
 # NOTE: Workaround for connection issues with mongo
 "%{ceilometer_db_type}://localhost:27017/ceilometer":
   - ceilometer::db::database_connection
+"%{db_type}://heat:%{heat_db_password}@%{controller_internal_address}/heat":
+  - heat::sql_connection
 "http://%{controller_internal_address}:9696":
   - nova::network::quantum::quantum_url
   - nova::network::neutron::neutron_url

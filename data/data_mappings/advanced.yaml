@@ -17,6 +17,7 @@ package_ensure:
   - nova::scheduler::ensure_package
   - nova::vncproxy::ensure_package
   - ceilometer::package_ensure
+  - heat::package_ensure
 region:
   - cinder::keystone::auth::region
   - glance:keystone::auth::region

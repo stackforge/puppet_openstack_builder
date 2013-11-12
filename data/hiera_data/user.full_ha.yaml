@@ -67,8 +67,8 @@ openstack-ha::load-balancer::controller_ipaddresses:
   - 192.168.220.42
   - 192.168.220.43
 openstack-ha::load-balancer::swift_proxy_names:
-  - swiftproxy01
-  - swiftproxy02
+  - swift-proxy01
+  - swift-proxy02
 openstack-ha::load-balancer::swift_proxy_ipaddresses:
   - 192.168.220.61
   - 192.168.220.62

@@ -3,10 +3,6 @@
 # I guess this means that it should be added to the data_mappings
 galera::server::cluster_name: controller_cluster
 
-rabbitmq::server::config_cluster: true
-rabbitmq::server::wipe_db_on_cookie_change: true
-
-
 keystone::token_driver: keystone.token.backends.sql.Token
 keystone::token_format: UUID
 

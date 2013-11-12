@@ -10,6 +10,7 @@ sql_idle_timeout:
   - neutron::server::sql_idle_timeout
 rabbit_hosts:
   - quantum::rabbit_hosts
+  - neutron::rabbit_hosts
   - nova::rabbit_hosts
   - cinder::rabbit_hosts
 localhost:

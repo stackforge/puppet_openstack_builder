@@ -87,7 +87,8 @@ bind_address: "%{ipaddress_eth0}"
 
 cinder::volume::iscsi::iscsi_ip_address: "%{ipaddress_eth0}"
 
-"%{network_service}::plugins::ovs::network_vlan_ranges": physnet1:223:225
+quantum::plugins::ovs::network_vlan_ranges: physnet1:223:225
+neutron::plugins::ovs::network_vlan_ranges: physnet1:223:225
 
 openstack::swift::storage-node::storage_type: disk
 openstack::swift::storage-node::storage_devices:

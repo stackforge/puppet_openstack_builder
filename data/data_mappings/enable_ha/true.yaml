@@ -71,5 +71,5 @@ swift_public_address:
 private_interface:
   - openstack-ha::load-balancer::keepalived_interface
 controller_names:
-  - rabbitmq::server::cluster_disk_nodes
+  - nova::rabbitmq::cluster_disk_nodes
   - openstack-ha::load-balancer::controller_names

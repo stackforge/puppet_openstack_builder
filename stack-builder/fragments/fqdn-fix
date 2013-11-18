@@ -1,7 +1,0 @@
-# Fix fqdn so puppet apply doesn't give us one on the wrong domain
-sed -i 's/\#supersede/supersede/g' /etc/dhcp/dhclient.conf;
-sed -i 's/fugue.com home.vix.com/%{domain}/g' /etc/dhcp/dhclient.conf;
-sed -i 's/domain-name,//g' /etc/dhcp/dhclient.conf
-dhclient -r eth0 && dhclient eth0;
-
-ntpdate %{initial_ntp}

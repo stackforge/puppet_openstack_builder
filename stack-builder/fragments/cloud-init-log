@@ -1,2 +1,0 @@
-chmod a+r /var/log/cloud-init-output.log
-ln -s /var/log/cloud-init-output.log /var/www/cloud-init-output.log

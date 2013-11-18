@@ -1,7 +1,0 @@
-echo '#!/bin/bash' > /usr/bin/gitproxy
-echo '_proxy=%{apt_proxy_host}'  >> /usr/bin/gitproxy
-echo '_proxyport=%{apt_proxy_port}' >> /usr/bin/gitproxy
-echo 'exec socat STDIO PROXY:$_proxy:$1:$2,proxyport=$_proxyport' >> /usr/bin/gitproxy
-chmod a+x /usr/bin/gitproxy
-git config --system core.gitproxy gitproxy
-

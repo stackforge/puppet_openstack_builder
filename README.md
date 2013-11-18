@@ -84,44 +84,11 @@ and run through the 'Deploy Your First VM' section of this document:
 
 ## Spinning up virtual machines with Openstack
 
-(Experimental)
+The data model in this repository can be consumed by the scenariobuilder tool. To install it, use pip:
 
-The python scripts under stack-builder can be used to instantiate scenarios on an openstack cluster. To do this, clone this repository, add stackbuilder/bin to your PATH, and add stackbuilder to your PYTHONPATH. It is not necessary to install the modules or librarian to your local machine when running in this manner, but the openstack clients and the python yaml library are needed.
+    pip install scenariobuilder
 
-    curl -O https://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.10.1.tar.gz
-    tar xvfz virtualenv-1.10.1.tar.gz
-    cd virtualenv-1.10.1
-    python virtualenv.py test
-    cd test
-    source bin/activate
-    pip install python-novaclient==2.14.1
-    pip install python-quantumclient==2.2.3
-    pip install python-keystoneclient==0.3.2
-    pip install PyYaml
-    git clone "https://github.com/CiscoSystems/openstack-installer"
-    cd openstack-installer
-    export PATH=`pwd`/stack-builder/bin:$PATH
-    export PYTHONPATH=`pwd`/stack-builder:$PYTHONPATH
-
-The scripts are currently limited by a quantum bug that means admin credentials are required to launch. Using standard user credentials will result in networks that have no dhcp agent scheduled to them.
-
-    source openrc
-
-To create a basic 2 role cluster with a build, compute and control node outside of the jenkins environment, some configuration must be set either in data/heira\_data/user.yaml or by setting environment variables prefixed with "jenkins\_"
-
-    export osi_user_internal_ip='%{ipaddress_eth1}'
-    export osi_user_tunnel_ip='%{ipaddress_eth1}'
-    export osi_conf_initial_ntp=ntp.esl.cisco.com
-    export osi_conf_installer_repo=CiscoSystems
-    export osi_conf_installer_branch=master
-    export osi_conf_build_server_domain_name=domain.name
-    export osi_conf_operatingsystem=Ubuntu
-
-    sb make
-    
-    e824830b269544d39a632d89e0a1902c
-
-More information about this tool can be found under the stack-builder directory.
+The 'sb' tool can then be used with Openstack credentials to instantiate the data model in VMs on an Openstack cloud. For more information see: https://github.com/CiscoSystems/scenariobuilder
 
 # Basic install against already provisioned nodes (Ubuntu 12.04.3 LTS):
 

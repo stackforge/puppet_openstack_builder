@@ -1,4 +1,0 @@
-# Install build server
-puppet apply manifests/site.pp
-
-puppet plugin download --server build-server.domain.name

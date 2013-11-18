@@ -60,6 +60,8 @@ nodes:
       external:
     flavor: 'm1.medium'
     image:  'precise-x86_64'
+    wait:
+      - build-server
     fragments:
       - 'bash-top'
       - 'fqdn-fix'
@@ -84,6 +86,9 @@ nodes:
     memory:       2512
     ip_number:    21
     vagrant_name: compute_basevm
+    wait:
+      - build-server
+      - control-server
     fragments:
       - 'bash-top'
       - 'fqdn-fix'

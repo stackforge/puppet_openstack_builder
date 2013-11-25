@@ -106,7 +106,7 @@ for persistent block volumes to be deployed against.
 
 Log in to your all_in_one node, and bootstrap it into production:
 
-    bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/install.sh)
+    bash <(curl -fsS https://raw.github.com/stackforge/puppet\_openstack\_builder/master/install-scripts/install.sh)
 
 You can over-ride the default parameters, such as ethernet interface names, or hostname, and default ip address if you choose:
 
@@ -135,7 +135,7 @@ echo "compute_node_name: compute" >> /etc/puppet/data/role_mappings.yaml
 
 3) Configure the system to point ot the all_in_one node for puppet deployment and set up the right version of puppet on the node:
 
-    export build_server_ip=X.X.X.X ; export master=false ; bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/install.sh)
+    export build_server_ip=X.X.X.X ; export master=false ; bash <(curl -fsS https://raw.github.com/stackforge/puppet\_openstack\_builder/master/install-scripts/install.sh)
 
 After which you may still have to run puppet in "agent" mode to actually deploy the openstack elements:
 

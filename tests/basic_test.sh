@@ -46,13 +46,13 @@ fi
 
 # check out a specific branch that we want to test
 if [ -n "${project_name:-}" ]; then
-  if [ ! "${project_name:-}" = 'openstack-installer' ]; then
+  if [ ! "${project_name:-}" = 'puppet_openstack_builder' ]; then
     pushd "modules/$project_name"
   fi
   if [ -n "${checkout_branch_command:-}" ]; then
     eval "${checkout_branch_command}"
   fi
-  if [ ! "${project_name:-}" = 'openstack-installer' ]; then
+  if [ ! "${project_name:-}" = 'puppet_openstack_builder' ]; then
     popd
   fi
 fi

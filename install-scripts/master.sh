@@ -27,13 +27,13 @@ export puppet_run_mode="apply"
 # scenarios will map to /etc/puppet/data/scenarios/*.yaml
 export scenario="${scenario:-all_in_one}"
 
-sed -e "s/scenario: .*/scenario: ${scenario}/" -i /root/openstack-installer/data/config.yaml
+sed -e "s/scenario: .*/scenario: ${scenario}/" -i /root/puppet_openstack_builder/data/config.yaml
 
 if [ "${scenario}" == "all_in_one" ] ; then
-  echo `hostname`: all_in_one >> /root/openstack-installer/data/role_mappings.yaml
+  echo `hostname`: all_in_one >> /root/puppet_openstack_builder/data/role_mappings.yaml
   export FACTER_build_server_ip=${build_server_ip}
   export FACTER_build_server=${build_server}
-  cat > /root/openstack-installer/data/hiera_data/user.yaml<<EOF
+  cat > /root/puppet_openstack_builder/data/hiera_data/user.yaml<<EOF
 domain_name: "${domain_name}"
 ntp_servers:
   - ${ntp_server}
@@ -61,11 +61,11 @@ neutron::agents::ovs::local_ip: "%{ipaddress}"
 EOF
 fi
 
-bash <(curl -fsS https://raw.github.com/CiscoSystems/openstack-installer/master/install-scripts/setup.sh)
+bash <(curl -fsS https://raw.github.com/stackforge/puppet_openstack_builder/master/install-scripts/setup.sh)
 
-cp -R /root/openstack-installer/modules /etc/puppet/
-cp -R /root/openstack-installer/data /etc/puppet/
-cp -R /root/openstack-installer/manifests /etc/puppet/
+cp -R /root/puppet_openstack_builder/modules /etc/puppet/
+cp -R /root/puppet_openstack_builder/data /etc/puppet/
+cp -R /root/puppet_openstack_builder/manifests /etc/puppet/
 
 
 puppet apply /etc/puppet/manifests/site.pp --certname ${build_server} --debug

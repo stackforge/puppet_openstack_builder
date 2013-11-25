@@ -89,12 +89,12 @@ correct interface.
 
 ## Setup
 
-Applying [setup.pp](https://github.com/CiscoSystems/openstack-installer/blob/master/manifests/setup.pp)
+Applying [setup.pp](https://github.com/stackforge/puppet_openstack_builder/blob/master/manifests/setup.pp)
 will configure your nodes to use the data model. It does the following:
 
 1. Installs a version of Puppet greater than 3.0.
-2. [Sets the node\_terminus as scenario.](https://github.com/CiscoSystems/openstack-installer/blob/master/manifests/setup.pp#L97)
-3. [Configures hiera](https://github.com/CiscoSystems/openstack-installer/blob/master/manifests/setup.pp#L63)
+2. [Sets the node\_terminus as scenario.](https://github.com/stackforge/puppet_openstack_builder/blob/master/manifests/setup.pp#L97)
+3. [Configures hiera](https://github.com/stackforge/puppet_openstack_builder/blob/master/manifests/setup.pp#L63)
 
 ## Getting Started as a User
 

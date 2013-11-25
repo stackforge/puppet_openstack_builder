@@ -1,10 +1,10 @@
 #!/bin/bash
 
-cd /root/openstack-installer/install-scripts
+cd /root/puppet_openstack_builder/install-scripts
 chmod 775 master.sh
 chmod 775 setup.sh
 
-/root/openstack-installer/install-scripts/setup.sh
+/root/puppet_openstack_builder/install-scripts/setup.sh
 
-/root/openstack-installer/install-scripts/master.sh
+/root/puppet_openstack_builder/install-scripts/master.sh
 

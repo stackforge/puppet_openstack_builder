@@ -27,13 +27,13 @@ else
   echo "127.0.1.1 $(hostname).$domain $(hostname)" >> /etc/hosts
 fi;
 
-# Install openstack-installer
+# Install puppet_openstack_builder
 cd /root/
-if ! [ -d openstack-installer ]; then
-  git clone https://github.com/CiscoSystems/openstack-installer.git /root/openstack-installer
+if ! [ -d puppet_openstack_builder ]; then
+  git clone https://github.com/stackforge/puppet_openstack_builder.git /root/puppet_openstack_builder
 fi
 
-cd openstack-installer
+cd puppet_openstack_builder
 gem install librarian-puppet-simple --no-ri --no-rdoc
 export git_protocol='https'
 librarian-puppet install --verbose

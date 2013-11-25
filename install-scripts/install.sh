@@ -31,10 +31,10 @@ else
   echo "127.0.1.1 $(hostname).$domain $(hostname)" >> /etc/hosts
 fi;
 
-# Install openstack-installer
+# Install puppet_openstack_builder
 cd /root/
-if ! [ -d openstack-installer ]; then
-  git clone https://github.com/CiscoSystems/openstack-installer.git /root/openstack-installer
+if ! [ -d puppet_openstack_builder ]; then
+  git clone https://github.com/stackforge/puppet_openstack_builder.git /root/puppet_openstack_builder
 fi
 
 
@@ -58,11 +58,11 @@ if ${master}; then
   # scenarios will map to /etc/puppet/data/scenarios/*.yaml
   export scenario="${scenario:-all_in_one}"
 
-  sed -e "s/scenario: .*/scenario: ${scenario}/" -i /root/openstack-installer/data/config.yaml
+  sed -e "s/scenario: .*/scenario: ${scenario}/" -i /root/puppet_openstack_builder/data/config.yaml
 
   if [ "${scenario}" == "all_in_one" ] ; then
-    echo `hostname`: all_in_one >> /root/openstack-installer/data/role_mappings.yaml
-    cat > /root/openstack-installer/data/hiera_data/user.yaml<<EOF
+    echo `hostname`: all_in_one >> /root/puppet_openstack_builder/data/role_mappings.yaml
+    cat > /root/puppet_openstack_builder/data/hiera_data/user.yaml<<EOF
 domain_name: "${domain}"
 ntp_servers:
   - ${ntp_server}
@@ -90,14 +90,14 @@ neutron::agents::ovs::local_ip: "%{ipaddress}"
 EOF
   fi
 
-  cd openstack-installer
+  cd puppet_openstack_builder
   gem install librarian-puppet-simple --no-ri --no-rdoc
   export git_protocol='https'
   librarian-puppet install --verbose
 
-  cp -R /root/openstack-installer/modules /etc/puppet/
-  cp -R /root/openstack-installer/data /etc/puppet/
-  cp -R /root/openstack-installer/manifests /etc/puppet/
+  cp -R /root/puppet_openstack_builder/modules /etc/puppet/
+  cp -R /root/puppet_openstack_builder/data /etc/puppet/
+  cp -R /root/puppet_openstack_builder/manifests /etc/puppet/
 
   export FACTER_build_server=${build_server}
 

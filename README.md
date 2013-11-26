@@ -157,4 +157,10 @@ Defaults for end user data should be located in one of the following files:
     /etc/puppet/data/hiera_data/user.common.yaml
     /etc/puppet/data/hiera_data/user.<scenario>.yaml
 
+### Using a vendor modification
+
+You can specify a vendor, which will change both the apt repository and the git repository the data defining the deployment is drawn from. Currently the only option is cisco, which can be set by:
+
+    export vendor=cisco
+
 ###Additional information on the data model being leveraged is available in the data directory of this repository.

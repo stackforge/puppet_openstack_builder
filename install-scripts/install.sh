@@ -8,11 +8,18 @@ set -x
 set -e
 set -e
 
+# Vendors can optionally include customisations
+# leaving this blank will use the community packages
+# and stackforge repositories
+export vendor_name="${vendor:-}"
 
 # Master node or client (i.e., install puppet master or not)
 # defaults to true
 export master="${master:-true}"
 
+if [ -n "${vendor_name}" ]; then
+  source ./$vendor_name.install.sh
+fi
 
 apt-get update
 apt-get install -y git apt rubygems puppet
@@ -31,10 +38,13 @@ else
   echo "127.0.1.1 $(hostname).$domain $(hostname)" >> /etc/hosts
 fi;
 
+export vendor_repo="${vendor_repo:-stackforge}"
+export vendor_branch="${vendor_branch:-master}"
+
 # Install puppet_openstack_builder
 cd /root/
 if ! [ -d puppet_openstack_builder ]; then
-  git clone https://github.com/stackforge/puppet_openstack_builder.git /root/puppet_openstack_builder
+  git clone -b $vendor_branch https://github.com/$vendor_repo/puppet_openstack_builder.git /root/puppet_openstack_builder
 fi
 
 

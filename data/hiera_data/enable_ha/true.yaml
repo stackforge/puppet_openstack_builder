@@ -1,7 +1,6 @@
 #
 # This following data is HA specific, but should be exposed to the end user
 # I guess this means that it should be added to the data_mappings
-galera::server::cluster_name: controller_cluster
 
 keystone::token_driver: keystone.token.backends.sql.Token
 keystone::token_format: UUID
@@ -16,14 +15,13 @@ coe::base::supplemental_repo: http://openstack-repo.cisco.com/openstack/cisco_su
 coe::base::package_repo: cisco_repo
 
 # this will need to overridden per node based on if it is active of passive
-galera::server::galera_master_ip: false
+galera::server::master_ip: false
 # this should be overridden per node and can be
 # master or back-up
 openstack-ha::load-balancer::controller_state: MASTER
 openstack-ha::load-balancer::swift_proxy_state: MASTER
 
-
-gelera::server::galera_cluster_name: controller_cluster
+galera::server::cluster_name: controller_cluster
 galera::server::wsrep_sst_username: wsrep_user
 galera::server::wsrep_sst_method: rsync
 galera::monitor::monitor_username: monitor_user

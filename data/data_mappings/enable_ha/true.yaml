@@ -56,6 +56,8 @@ bind_address:
   - quantum::plugins::ovs::sql_connection
   - quantum::plugins::linuxbridge::sql_connection
   - neutron::server::sql_connection
+"mysql://heat:%{heat_db_password}@%{controller_internal_address}/heat":
+  - heat::sql_connection
 "http://%{controller_public_address}:5000/v2.0/":
   - glance::backend::swift::swift_store_auth_address
   - glance::api::auth_url

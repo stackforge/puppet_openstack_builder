@@ -2,7 +2,7 @@ nodes:
   build-server:
     vagrant_name: build-server
     memory: 2500
-    ip_num: 100
+    ip_number: 100
     puppet_type: apply
     post_config:
       - 'puppet plugin download --server build-server.domain.name'

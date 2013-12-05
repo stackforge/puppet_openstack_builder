@@ -1,6 +1,5 @@
 modules
 module/*
-vendor
 .tmp
 .vagrant
 *.log*

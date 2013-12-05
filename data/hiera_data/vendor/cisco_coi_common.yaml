@@ -1,0 +1,14 @@
+# Cisco COI parameters overriding common.yaml baseline
+#
+
+# Use the Cisco COI package repos
+coe::base::openstack_release: havana
+coe::base::openstack_repo_location: 'http://openstack-repo.cisco.com/openstack'
+coe::base::package_repo: cisco_repo
+coe::base::supplemental_repo: 'http://openstack-repo.cisco.com/openstack/cisco_supplemental'
+
+# Use the latest Puppet packages from the Cisco COI repos
+puppet::master::version: latest
+puppet::agent::version: latest
+coi::profiles::puppet::master::puppetlabs_repo: false
+

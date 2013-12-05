@@ -1,0 +1,5 @@
+# Cisco COI parameters overriding Red Hat specific settings
+#
+
+puppet::master::version: latest
+puppet::agent::version: latest

@@ -1,5 +1,15 @@
+# Supplemental script to set settings specific to the Cisco COI install
+#
+
+# These 5 are needed to use the Cisco COI repos
 export vendor_repo=CiscoSystems
 export vendor_branch=coi-development
+export FACTER_vendor=cisco
+export FACTER_vendorrepo=coi
+export FACTER_vendorpuppet=vendor
+
+# Set this to deb to install puppet modules from packages, or to git
+# to install puppet modules using librarian and git
 export install_type=deb
 
 # Add Cisco repo

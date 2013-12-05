@@ -4,7 +4,6 @@
 # box based installations.
 #
 
-
 # setup up puppetlabs repos and install Puppet 3.2
 #
 # it makes my life easier if I can assume Puppet 3.2
@@ -12,15 +11,29 @@
 # this is not required for bare-metal b/c we can assume
 # that Puppet will be installed on the bare-metal nodes
 # with the correct version
-include puppet::repo::puppetlabs
+
+# do we use vendor-supplied puppet, or puppetlabs?
+if $vendorpuppet != 'vendor' {
+  include puppet::repo::puppetlabs
+}
 
 case $::osfamily {
   'Redhat': {
-    $puppet_version = '3.2.3-1.el6'
+      if $vendorpuppet == 'vendor' {
+          $puppet_version = 'latest'
+      }
+      else {
+          $puppet_version = '3.2.3-1.el6'
+      }
     $pkg_list       = ['git', 'curl', 'httpd']
   }
   'Debian': {
-    $puppet_version = '3.2.3-1puppetlabs1'
+      if $vendorpuppet == 'vendor' {
+          $puppet_version = 'latest'
+      }
+      else {
+          $puppet_version = '3.2.3-1puppetlabs1'
+      }
     $pkg_list       = ['git', 'curl', 'vim', 'cobbler']
     package { 'puppet-common':
       ensure => $puppet_version,
@@ -68,38 +81,7 @@ if $::puppet_run_mode != 'agent' {
 
   # set up our hiera-store!
   file { "${settings::confdir}/hiera.yaml":
-    content =>
-'
----
-:backends:
-  - data_mapper
-:hierarchy:
-  - "hostname/%{hostname}"
-  - "client/%{clientcert}"
-  - user
-  - jenkins
-  - user.%{scenario}
-  - user.common
-  - "osfamily/%{osfamily}"
-  - "enable_ha/%{enable_ha}"
-  - "install_tempest/%{install_tempest}"
-  - "cinder_backend/%{cinder_backend}"
-  - "glance_backend/%{glance_backend}"
-  - "rpc_type/%{rpc_type}"
-  - "db_type/%{db_type}"
-  - "tenant_network_type/%{tenant_network_type}"
-  - "network_type/%{network_type}"
-  - "network_plugin/%{network_plugin}"
-  - "password_management/%{password_management}"
-  - "scenario/%{scenario}"
-  - grizzly_hack
-  - common
-:yaml:
-   :datadir: /etc/puppet/data/hiera_data
-:data_mapper:
-   # this should be contained in a module
-   :datadir: /etc/puppet/data/data_mappings
-'
+    content => template('hiera.erb'),
   }
 
   # add the correct node terminus

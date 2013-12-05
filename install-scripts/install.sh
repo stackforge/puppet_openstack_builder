@@ -120,6 +120,7 @@ EOF
 
   cp -R /root/puppet_openstack_builder/data /etc/puppet/
   cp -R /root/puppet_openstack_builder/manifests /etc/puppet/
+  cp -R /root/puppet_openstack_builder/templates /etc/puppet/
 
   export FACTER_build_server=${build_server}
 
@@ -129,8 +130,7 @@ export FACTER_build_server_domain_name=${domain}
 export FACTER_build_server_ip=${build_server_ip}
 export FACTER_puppet_run_mode="${puppet_run_mode:-agent}"
 
-#puppet apply manifests/setup.pp --modulepath modules --certname setup_cert
-puppet apply manifests/setup.pp --modulepath modules --certname `hostname -f`
+puppet apply -v -d /etc/puppet/manifests/setup.pp --modulepath /etc/puppet/modules --templatedir /etc/puppet/templates --certname `hostname -f`
 
 if  $master ; then
   puppet apply /etc/puppet/manifests/site.pp --certname ${build_server} --debug

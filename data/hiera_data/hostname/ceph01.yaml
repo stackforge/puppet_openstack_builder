@@ -1,0 +1,4 @@
+# example for using disks on a certain server for Ceph OSDs
+cephdeploy::osdwrapper::disks:
+  - sdb
+  - sdc

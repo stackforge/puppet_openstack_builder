@@ -1,5 +1,5 @@
-cinder::volume::rbd::rbd_pool: 'rbd'
+cinder::volume::rbd::rbd_pool: 'volumes'
 cinder::volume::rbd::glance_api_version: '2'
-cinder::volume::rbd::rbd_user: 'nouser'
-cinder::volume::rbd::rbd_secret_uuid: false
+cinder::volume::rbd::rbd_user: 'admin'
+cinder::volume::rbd::rbd_secret_uuid: 'e80afa94-a64c-486c-9e34-d55e85f26406'
 ceph_deploy_user: ceph

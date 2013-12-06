@@ -8,6 +8,10 @@ set -x
 set -e
 set -e
 
+# Install type to use to get the puppet modules
+# Options: git(default) or deb
+export install_type= "${install_type:-git}"
+
 # Vendors can optionally include customisations
 # leaving this blank will use the community packages
 # and stackforge repositories
@@ -99,13 +103,21 @@ quantum::agents::ovs::local_ip: "%{ipaddress}"
 neutron::agents::ovs::local_ip: "%{ipaddress}"
 EOF
   fi
-
   cd puppet_openstack_builder
-  gem install librarian-puppet-simple --no-ri --no-rdoc
-  export git_protocol='https'
-  librarian-puppet install --verbose
 
-  cp -R /root/puppet_openstack_builder/modules /etc/puppet/
+  if [ "${install_type}" == "deb" ] ; then
+    # install puppet module packages
+    apt-get update
+    awk '{ printf "puppet-%s ", $0 }' modules.list  | xargs apt-get install
+  else
+    # using librarian puppet to fetch git modules based on Puppetfile
+    gem install librarian-puppet-simple --no-ri --no-rdoc
+    export git_protocol='https'
+    librarian-puppet install --verbose
+
+    cp -R /root/puppet_openstack_builder/modules /etc/puppet/
+  fi
+
   cp -R /root/puppet_openstack_builder/data /etc/puppet/
   cp -R /root/puppet_openstack_builder/manifests /etc/puppet/
 

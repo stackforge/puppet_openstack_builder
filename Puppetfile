@@ -65,7 +65,7 @@ base_url = "#{git_protocol}://github.com"
 mod 'bodepd/scenario_node_terminus',
   :git => 'https://github.com/bodepd/scenario_node_terminus'
 mod 'CiscoSystems/coi',
-  :git => "#{base_url}/CiscoSystems/puppet-COI",
+  :git => "#{base_url}/CiscoSystems/puppet-coi",
   :ref => cisco_branch_name
 mod 'puppetlabs/postgresql',
   :git => "#{base_url}/puppetlabs/puppetlabs-postgresql",

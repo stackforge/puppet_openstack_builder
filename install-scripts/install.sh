@@ -130,7 +130,7 @@ export FACTER_build_server_domain_name=${domain}
 export FACTER_build_server_ip=${build_server_ip}
 export FACTER_puppet_run_mode="${puppet_run_mode:-agent}"
 
-puppet apply -v -d /etc/puppet/manifests/setup.pp --modulepath /etc/puppet/modules --templatedir /etc/puppet/templates --certname `hostname -f`
+puppet apply -v -d /etc/puppet/manifests/setup.pp --modulepath /etc/puppet/modules:/usr/share/puppet/modules --templatedir /etc/puppet/templates --certname `hostname -f`
 
 if  $master ; then
   puppet apply /etc/puppet/manifests/site.pp --certname ${build_server} --debug

@@ -15,6 +15,7 @@ galera
 glance
 graphite
 haproxy
+heat
 horizon
 inifile
 keepalived

@@ -40,6 +40,8 @@ metadata_shared_secret: metadata_shared_secret
 horizon_secret_key: horizon_secret_key
 ceilometer_metering_secret: ceilometer_metering_secret
 ceilometer_db_password: ceilometer
+heat_db_password: heat
+heat_service_password: heat_pass
 # for single password config
 secret_key: secret
 password: password123

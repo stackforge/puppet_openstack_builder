@@ -64,6 +64,7 @@ rpc_password:
   - neutron::qpid_password
   - ceilometer::rabbit_password
   - ceilometer::qpid_password
+  - heat::rabbit_password
 metadata_shared_secret:
   - quantum::agents::metadata::shared_secret
   - neutron::agents::metadata::shared_secret
@@ -79,3 +80,9 @@ ceilometer_service_password:
   - ceilometer::keystone::auth::password
   - ceilometer::api::keystone_password
   - ceilometer::agent::auth::auth_password
+heat_db_password:
+  - heat::db::mysql::password
+heat_service_password:
+  - heat::keystone::auth::password
+  - heat::keystone::auth_cfn::password
+  - heat::keystone_password

@@ -64,3 +64,7 @@ password:
   - ceilometer::agent::auth::auth_password
   - ceilometer::qpid_password
   - ceilometer::rabbit_password
+  - heat::db::mysql::password
+  - heat::keystone::auth::password
+  - heat::keystone::auth_cfn::password
+  - heat::rabbit_password

@@ -10,6 +10,15 @@ set -u
 set -x
 set -e
 
+# Vendors can optionally include customisations
+# leaving this blank will use the community packages
+# and stackforge repositories
+export vendor_name="${vendor:-}"
+
+if [ -n "${vendor_name}" ]; then
+  source ./$vendor_name.install.sh
+fi
+
 apt-get update
 apt-get install -y git apt rubygems puppet
 
@@ -27,19 +36,3 @@ else
   echo "127.0.1.1 $(hostname).$domain $(hostname)" >> /etc/hosts
 fi;
 
-# Install puppet_openstack_builder
-cd /root/
-if ! [ -d puppet_openstack_builder ]; then
-  git clone https://github.com/stackforge/puppet_openstack_builder.git /root/puppet_openstack_builder
-fi
-
-cd puppet_openstack_builder
-gem install librarian-puppet-simple --no-ri --no-rdoc
-export git_protocol='https'
-librarian-puppet install --verbose
-
-export FACTER_build_server_domain_name=$domain
-export FACTER_build_server_ip=$build_server_ip
-export FACTER_puppet_run_mode="${puppet_run_mode:-agent}"
-
-puppet apply manifests/setup.pp --modulepath modules --certname setup_cert

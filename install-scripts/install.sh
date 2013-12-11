@@ -132,7 +132,16 @@ export FACTER_puppet_run_mode="${puppet_run_mode:-agent}"
 
 puppet apply -v -d /etc/puppet/manifests/setup.pp --modulepath /etc/puppet/modules:/usr/share/puppet/modules --templatedir /etc/puppet/templates --certname `hostname -f`
 
-if  $master ; then
+# make sure puppet master is running..
+puppet master –td —no-daemonize
+
+puppet plugin download --server `hostname -f`; service apache2 restart
+
+if  [ "${scenario}" == "all_in_one" ] ; then
+  # this is an AIO install, apply our pre-canned configuration/
   puppet apply /etc/puppet/manifests/site.pp --certname ${build_server} --debug
-  puppet plugin download --server `hostname -f`; service apache2 restart
+else
+  # Any other scenario will require user to update configuration accordingly
+  echo "Basic setup complete; please update your user configuration according to your needs to deploy openstack and run the following commands:
+  $ puppet apply /etc/puppet/manifests/site.pp"
 fi

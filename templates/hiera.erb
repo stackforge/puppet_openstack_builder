@@ -7,7 +7,9 @@
   - "client/%{clientcert}"
   - user
   - jenkins
+<%- if @vendor %>  - vendor/<%= @vendor %>_<%= @vendorrepo %>_user.%{scenario}<% end %>
   - user.%{scenario}
+<%- if @vendor %>  - vendor/<%= @vendor %>_<%= @vendorrepo %>_user.common<% end %>
   - user.common
 <%- if @vendor %>  - "vendor/osfamily/<%= @vendor %>_<%= @vendorrepo %>_%{osfamily}"<% end %>
   - "osfamily/%{osfamily}"

@@ -168,7 +168,7 @@ mod 'duritong/sysctl',
 cisco_module_prefix = "#{base_url}/CiscoSystems/puppet-"
 
 [
-  'ceph',
+  'cephdeploy',
   'coe',
   'cobbler',
   'concat',

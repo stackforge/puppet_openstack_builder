@@ -54,6 +54,7 @@ glance::backend::swift::swift_store_key: secret_key
 glance::backend::swift::swift_store_auth_address: '127.0.0.1'
 
 # ceph config
+ceph_cluster_name: 'ceph'
 ceph_monitor_fsid: 'e80afa94-a64c-486c-9e34-d55e85f26406'
 ceph_monitor_secret: 'AQAJzNxR+PNRIRAA7yUp9hJJdWZ3PVz242Xjiw=='
 cinder_rbd_user: 'admin'

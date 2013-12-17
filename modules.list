@@ -5,7 +5,7 @@ augeas
 boolean
 catalog-diff
 ceilometer
-ceph
+cephdeploy
 cinder
 cobbler
 coe

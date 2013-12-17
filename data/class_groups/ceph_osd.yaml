@@ -1,3 +1,2 @@
 classes:
-  - cephdeploy
   - cephdeploy::osdwrapper

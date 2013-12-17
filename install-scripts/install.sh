@@ -121,6 +121,7 @@ EOF
   cp -R /root/puppet_openstack_builder/data /etc/puppet/
   cp -R /root/puppet_openstack_builder/manifests /etc/puppet/
   cp -R /root/puppet_openstack_builder/templates /etc/puppet/
+  cp -R /root/puppet_openstack_builder/scripts /etc/puppet/
 
   export FACTER_build_server=${build_server}
 

@@ -1,6 +1,6 @@
 ---
 # vagrant config
-apt_cache:  '192.168.242.99' # Apt cache server, set to 'false' to disable
+apt_cache:  '192.168.242.99' # comment out this line to disable apt cache
 apt_mirror: 'us.archive.ubuntu.com'
 domain:     'domain.name'
 verbose:    false

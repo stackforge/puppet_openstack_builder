@@ -165,5 +165,6 @@ swift_local_net_ip:
 build_node_name:
   - coe::base::build_node_name
   - collectd::graphitehost
+  - graphite::graphitehost
 public_interface:
   - collectd::management_interface

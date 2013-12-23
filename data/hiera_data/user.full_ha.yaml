@@ -3,9 +3,9 @@
 #
 
 ntp_servers:
-  - compute04.dmz-pod2.lab
+  - build-server.dmz-pod2.lab
 
-build_node_name: compute04.dmz-pod2.lab
+build_node_name: build-server.dmz-pod2.lab
 domain_name: dmz-pod2.lab
 
 coe::base::controller_hostname: control

@@ -6,7 +6,7 @@
 # Usage: 
 # git clone https://github.com/stackforge/puppet_openstack_builder
 # cd puppet_openstack_builder
-# sudo scripts/build_doc.sh
+# sudo bash contrib/doc/build_doc.sh
 #
 apt-get install -y git rubygems ruby
 

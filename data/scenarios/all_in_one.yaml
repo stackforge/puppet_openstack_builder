@@ -7,6 +7,8 @@ roles:
       - coe::base
       - naginator::compute_target
       - cinder::setup_test_volume
+      - openstack::swift::proxy
+      - openstack::swift::storage-node
     class_groups:
       - build
       - controller

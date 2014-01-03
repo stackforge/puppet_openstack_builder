@@ -1,0 +1,4 @@
+
+openstack::swift::proxy::memcached: false
+openstack::swift::storage-node::swift_zone: 1
+openstack::swift::storage-node::ring_server: '127.0.0.1'

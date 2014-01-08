@@ -6,7 +6,11 @@
 set -u
 set -x
 set -e
-set -e
+
+if [ "$(id -u)" != "0" ]; then
+    echo "This script must be run as root or with sudo"
+    exit 1
+fi
 
 # Install type to use to get the puppet modules
 # Options: git(default) or deb
@@ -26,7 +30,7 @@ if [ -n "${vendor_name}" ]; then
 fi
 
 apt-get update
-apt-get install -y git apt rubygems puppet
+apt-get install -y git rubygems puppet
 
 # use the domain name if one exists
 if [ "`hostname -d`" != '' ]; then
@@ -46,9 +50,9 @@ export vendor_repo="${vendor_repo:-stackforge}"
 export vendor_branch="${vendor_branch:-master}"
 
 # Install puppet_openstack_builder
-cd /root/
+cd ~
 if ! [ -d puppet_openstack_builder ]; then
-  git clone -b $vendor_branch https://github.com/$vendor_repo/puppet_openstack_builder.git /root/puppet_openstack_builder
+  git clone -b $vendor_branch https://github.com/$vendor_repo/puppet_openstack_builder.git ~/puppet_openstack_builder
 fi
 
 
@@ -72,11 +76,11 @@ if ${master}; then
   # scenarios will map to /etc/puppet/data/scenarios/*.yaml
   export scenario="${scenario:-all_in_one}"
 
-  sed -e "s/scenario: .*/scenario: ${scenario}/" -i /root/puppet_openstack_builder/data/config.yaml
+  sed -e "s/scenario: .*/scenario: ${scenario}/" -i ~/puppet_openstack_builder/data/config.yaml
 
   if [ "${scenario}" == "all_in_one" ] ; then
-    echo `hostname`: all_in_one >> /root/puppet_openstack_builder/data/role_mappings.yaml
-    cat > /root/puppet_openstack_builder/data/hiera_data/user.yaml<<EOF
+    echo `hostname`: all_in_one >> ~/puppet_openstack_builder/data/role_mappings.yaml
+    cat > ~/puppet_openstack_builder/data/hiera_data/user.yaml<<EOF
 domain_name: "${domain}"
 ntp_servers:
   - ${ntp_server}
@@ -115,13 +119,13 @@ EOF
     export git_protocol='https'
     librarian-puppet install --verbose
 
-    cp -R /root/puppet_openstack_builder/modules /etc/puppet/
+    cp -R ~/puppet_openstack_builder/modules /etc/puppet/
   fi
 
-  cp -R /root/puppet_openstack_builder/data /etc/puppet/
-  cp -R /root/puppet_openstack_builder/manifests /etc/puppet/
-  cp -R /root/puppet_openstack_builder/templates /etc/puppet/
-  cp -R /root/puppet_openstack_builder/scripts /etc/puppet/
+  cp -R ~/puppet_openstack_builder/data /etc/puppet/
+  cp -R ~/puppet_openstack_builder/manifests /etc/puppet/
+  cp -R ~/puppet_openstack_builder/templates /etc/puppet/
+  cp -R ~/puppet_openstack_builder/scripts /etc/puppet/
 
   export FACTER_build_server=${build_server}
 

@@ -10,6 +10,7 @@ controller_admin_address: 192.168.242.10
 swift_internal_address: 192.168.242.41
 swift_public_address: 192.168.242.41
 swift_admin_address: 192.168.242.41
+cobbler_node_ip: 192.168.242.10
 
 # this is not done yet
 internal_ip: "%{ipaddress_eth3}"
@@ -18,6 +19,18 @@ internal_ip: "%{ipaddress_eth3}"
 external_interface: eth2
 public_interface: eth1
 private_interface: eth1
+
+# Cobbler config
+node_subnet: '192.168.242.0'
+node_netmask: '255.255.255.0'
+node_gateway: '192.168.242.1'
+admin_user: localadmin
+password_crypted: $6$UfgWxrIv$k4KfzAEMqMg.fppmSOTd0usI4j6gfjs0962.JXsoJRWa5wMz8yQk4SfInn4.WZ3L/MCt5u.62tHDGB36EhiKF1
+autostart_puppet: true
+ucsm_port: 443
+install_drive: /dev/sda
+#ipv6_ra: 1
+#interface_bonding = 'true'
 
 nova::compute::vncserver_proxyclient_address: "%{ipaddress_eth3}"
 

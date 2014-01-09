@@ -1,5 +1,6 @@
 # COI parameters
 puppet::master::version: '3.2.3-1puppetlabs1'
+puppet_master_address: "%{fqdn}"
 
 enabled_services:
   - glance

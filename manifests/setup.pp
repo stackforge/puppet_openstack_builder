@@ -49,7 +49,7 @@ package { 'puppet':
 if $::build_server_ip {
   host { "$::hostname":
     ip => $::build_server_ip,
-    host_aliases => "$::hostname".${::build_server_domain_name}"
+    host_aliases => "$::hostname.${::build_server_domain_name}"
   }
 }
 

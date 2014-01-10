@@ -1,6 +1,7 @@
 domain_name: domain.name
 ntp_servers:
   - time-server.domain.name
+time_zone: UTC
 
 # node addresses
 build_node_name: build-server

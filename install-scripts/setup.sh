@@ -20,7 +20,7 @@ if [ -n "${vendor_name}" ]; then
 fi
 
 apt-get update
-apt-get install -y git apt rubygems puppet
+apt-get install -y git rubygems puppet
 
 # use the domain name if one exists
 if [ "`hostname -d`" != '' ]; then

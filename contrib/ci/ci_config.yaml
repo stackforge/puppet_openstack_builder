@@ -1,0 +1,27 @@
+# This is a sample set of config options that can be used with the
+# heat templates. The options are documented in data/config.yaml.
+# To use these options, copy this file to the data directory
+domain: 'domain.name'
+verbose: 'false'
+operatingsystem: ubuntu
+scenario: 2_role
+initial_ntp: 192.168.26.186
+installer_repo: stackforge
+installer_branch: master
+openstack_version: havana
+git_protocol: git
+apt_mirror_ip: 192.168.26.170
+apt_proxy_host: 192.168.26.170
+apt_proxy_port: 8000
+
+# These can be used to checkout a different version of a particular
+# module. This example will clone puppet-keystone from the github account
+# belonging to michaeltchapman and use the havana branch. This can be useful
+# for testing patches to other modules.
+
+#custom_module: keystone
+#custom_branch: havana
+#custom_repo: michaeltchapman
+
+
+

@@ -43,3 +43,12 @@ scenario: 2_role
 
 # [*apt_proxy_port*]
 # (optional) Sets the port for the apt_proxy_host if used
+
+# [*custom_module*]
+# (optional) The name of a module to take from a different source
+
+# [*custom_branch*]
+# (optional) The branch to use for the custom module
+
+# [*custom_repo*]
+# (optional) The github account the custom module is hosted under

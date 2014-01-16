@@ -101,7 +101,7 @@ private_interface: ${default_interface}
 
 internal_ip: "%{ipaddress}"
 swift_local_net_ip: "%{ipaddress}"
-nova::compute::vncserver_proxyclient_address: "0.0.0.0"
+nova::compute::vncserver_proxyclient_address: "${build_server_ip}"
 
 quantum::agents::ovs::local_ip: "%{ipaddress}"
 neutron::agents::ovs::local_ip: "%{ipaddress}"

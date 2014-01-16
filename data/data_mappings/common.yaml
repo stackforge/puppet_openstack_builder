@@ -63,6 +63,8 @@ controller_internal_address:
   - cinder::rabbit_host
   - nova::rabbit_host
   - nova::qpid_hostname
+  - heat::qpid_hostname
+  - heat::rabbit_host
   - quantum::rabbit_host
   - quantum::qpid_hostname
   - neutron::qpid_hostname
@@ -80,6 +82,8 @@ controller_internal_address:
   - cinder::keystone::auth::internal_address
   - glance::keystone::auth::internal_address
   - nova::keystone::auth::internal_address
+  - heat::keystone::auth::internal_address
+  - heat::keystone::auth_cfn::internal_address
   - cinder::api::keystone_auth_host
   - keystone::endpoint::internal_address
   - glance::api::auth_host
@@ -99,6 +103,7 @@ controller_internal_address:
   - swift::keystone::auth::internal_address
   - ceilometer::keystone::auth::internal_address
   - ceilometer::api::keystone_host
+  - heat::keystone_host
   - coe::base::controller_node_internal
   - coe::base::controller_hostname
   - heat::db::mysql::host
@@ -108,6 +113,8 @@ controller_public_address:
   - cinder::keystone::auth::public_address
   - glance::keystone::auth::public_address
   - nova::keystone::auth::public_address
+  - heat::keystone::auth::public_address
+  - heat::keystone::auth_cfn::public_address
   - keystone::endpoint::public_address
   - quantum::keystone::auth::public_address
   - neutron::keystone::auth::public_address
@@ -118,6 +125,8 @@ controller_admin_address:
   - cinder::keystone::auth::admin_address
   - glance::keystone::auth::admin_address
   - nova::keystone::auth::admin_address
+  - heat::keystone::auth::admin_address
+  - heat::keystone::auth_cfn::admin_address
   - keystone::endpoint::admin_address
   - quantum::keystone::auth::admin_address
   - neutron::keystone::auth::admin_address
@@ -161,6 +170,12 @@ swift_local_net_ip:
   - ceilometer::agent::auth::auth_url
 "%{controller_internal_address}:9292":
   - nova::glance_api_servers
+"http://%{controller_internal_address}:8000"
+  - heat::engine::heat_metadata_server_url
+"http://%{controller_internal_address}:8000/v1/waitcondition"
+  - heat::engine::heat_waitcondition_server_url
+"http://%{controller_internal_address}:8003"
+  - heat::engine::heat_watch_server_url
 # cisco specific data
 build_node_name:
   - coe::base::build_node_name

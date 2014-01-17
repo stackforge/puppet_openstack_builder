@@ -170,11 +170,11 @@ swift_local_net_ip:
   - ceilometer::agent::auth::auth_url
 "%{controller_internal_address}:9292":
   - nova::glance_api_servers
-"http://%{controller_internal_address}:8000"
+"http://%{controller_internal_address}:8000":
   - heat::engine::heat_metadata_server_url
-"http://%{controller_internal_address}:8000/v1/waitcondition"
+"http://%{controller_internal_address}:8000/v1/waitcondition":
   - heat::engine::heat_waitcondition_server_url
-"http://%{controller_internal_address}:8003"
+"http://%{controller_internal_address}:8003":
   - heat::engine::heat_watch_server_url
 # cisco specific data
 build_node_name:

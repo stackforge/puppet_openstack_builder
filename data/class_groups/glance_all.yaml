@@ -3,3 +3,4 @@ classes:
   - glance::api
   - glance::registry
   - "glance::backend::%{glance_backend}"
+  - glance::cache::pruner

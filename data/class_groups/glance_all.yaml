@@ -4,3 +4,4 @@ classes:
   - glance::registry
   - "glance::backend::%{glance_backend}"
   - glance::cache::pruner
+  - glance::cache::cleaner

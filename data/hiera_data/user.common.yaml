@@ -56,6 +56,7 @@ ceilometer_metering_secret: ceilometer_metering_secret
 ceilometer_db_password: ceilometer
 heat_db_password: heat
 heat_service_password: heat_pass
+heat::engine::auth_encryption_key: 'encryption_key'
 # for single password config
 secret_key: secret
 password: password123

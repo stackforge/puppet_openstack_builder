@@ -67,8 +67,8 @@ if ${master}; then
   # Our default mode also assumes at least one other interface for OpenStack network
   export external_interface="${external_interface:-eth1}"
 
-  # For good puppet hygene, we'll want NTP setup.  Let's borrow one from Cisco
-  export ntp_server="${ntp_server:-ntp.esl.cisco.com}"
+  # For good puppet hygene, we'll want NTP setup.  Let's use the NTP pool by default
+  export ntp_server="${ntp_server:-pool.ntp.org}"
 
   # Since this is the master script, we'll run in apply mode
   export puppet_run_mode="apply"

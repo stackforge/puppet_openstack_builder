@@ -53,5 +53,5 @@ UcXHbA==
 
 # Fix puppet, clobbering any existing puppet version to ensure
 # we are using the puppet 3.2 we target
-dpkg --purge puppet puppet-common
+apt-get remove --purge --yes puppet puppet-common
 rm -rf /etc/puppet/puppet.conf /var/lib/puppet

@@ -1,0 +1,31 @@
+# These are user config options that are needed to work with the heat
+# templates. Copy this file to data/hiera_data if you wish to create
+# a heat template that will launch the data model. You can make other
+# additions to this file changing other aspects of the install, but
+# if you change any of the options below, the cluster may not
+# build properly. This has only been tested with the 2_role scenario.
+
+# Heat will use one pre-existing network with external routing
+# (eth0) to deploy using puppet and create two internal networks
+# to serve internal traffic (eth1) and a pretend external
+# interface (eth2)
+internal_ip: "%{ipaddress_eth1}"
+nova::compute::vncserver_proxyclient_address: "%{ipaddress_eth0}"
+swift_local_net_ip: "%{ipaddress_eth1}"
+
+# The following is a hack to avoid cyclic dependencies in heat.
+# The nodes will have /etc/hosts entries for the nodes that they
+# depend on, but the first node at the top of the tree is the
+# build server, which needs to contain the controller IP when
+# deploying normally. To avoid this, we set all normal instances
+# of the controller_ip to be the hostname, which compute and control
+# nodes will have in /etc/hosts, and set the bind address for
+# mysql and postgres to be open. There is also an unused host
+# resource in the coi::base module which we give dummy values.
+postgresql::config::listen_addresses: "%{ipaddress_eth0}"
+mysql::config::bind_address: "0.0.0.0"
+controller_public_address: control-server.domain.name
+controller_internal_address: control-server.domain.name
+controller_admin_address: control-server.domain.name
+coe::base::controller_node_internal: 192.168.1.1
+coe::base::controller_hostname: derp

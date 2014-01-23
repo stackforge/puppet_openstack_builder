@@ -1,0 +1,137 @@
+heat_template_version: 2013-05-23
+
+description: >
+  HOT template to create a stack that instantiates the currently selected scenario
+
+parameters:
+  image:
+    type: string
+    default: precise
+    description: The image to use for all nodes
+  key_name:
+    type: string
+    default: test2
+    description: The key name to use for all nodes
+  ci_network_id:
+    type: string
+    description: The shared build network to use
+  ci_subnet_id:
+    type: string
+    description: The shared build network to use
+  internal_network_name:
+    type: string
+    description: The name of the internal network
+    default: testint
+  external_network_name:
+    type: string
+    description: The name of the internal network
+    default: testext
+
+resources:
+  build-server_ci:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_param: ci_network_id }
+      fixed_ips:
+        - subnet_id: { get_param: ci_subnet_id  }
+
+  control-server_ci:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_param: ci_network_id }
+      fixed_ips:
+        - subnet_id: { get_param: ci_subnet_id  }
+
+  compute-server02_ci:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_param: ci_network_id }
+      fixed_ips:
+        - subnet_id: { get_param: ci_subnet_id  }
+
+  internal_net:
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: internal_network_name }
+
+  control-server_int:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_resource: internal_net  }
+      fixed_ips:
+        - subnet_id: { get_resource: internal_subnet  }
+
+  compute-server02_int:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_resource: internal_net  }
+      fixed_ips:
+        - subnet_id: { get_resource: internal_subnet  }
+
+  internal_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      network_id: { get_resource: internal_net }
+      cidr: 10.0.1.0/24
+      gateway_ip: null
+
+  external_net:
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: external_network_name }
+
+  external_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      network_id: { get_resource: external_net }
+      cidr: 10.0.2.0/24
+      gateway_ip: null
+
+  control-server_ext:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_resource: external_net  }
+      fixed_ips:
+        - subnet_id: { get_resource: external_subnet  }
+
+  build-server:
+    type: OS::Nova::Server
+    properties:
+      name: build-server
+      image: { get_param: image}
+      flavor: m1.medium
+      key_name: { get_param: key_name}
+      networks:
+        - port: { get_resource: build-server_ci}
+      metadata:
+        scenario: 2_role
+        #controller_public_address: { "Fn::Select": [ "ip_address", { "Fn::Select": [ 0, { "Fn:GetAtt": [control-server_ci, fixed_ips ]} ]} ]}
+
+  control-server:
+    type: OS::Nova::Server
+    properties:
+      name: control-server
+      image: { get_param: image}
+      flavor: m1.medium
+      key_name: { get_param: key_name}
+      networks:
+        - port: { get_resource: control-server_ci}
+        - port: { get_resource: control-server_int}
+        - port: { get_resource: control-server_ext}
+      metadata:
+        scenario: 2_role
+        wait_nodes: build-server
+
+  compute-server02:
+    type: OS::Nova::Server
+    properties:
+      name: compute-server02
+      image: { get_param: image}
+      flavor: m1.medium
+      key_name: { get_param: key_name}
+      networks:
+        - port: { get_resource: compute-server02_ci}
+        - port: { get_resource: compute-server02_int}
+      metadata:
+        scenario: 2_role
+        wait_nodes: 'build-server control-server'

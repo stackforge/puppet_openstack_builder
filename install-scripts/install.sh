@@ -137,6 +137,8 @@ export FACTER_puppet_run_mode="${puppet_run_mode:-agent}"
 
 puppet apply -v -d /etc/puppet/manifests/setup.pp --modulepath /etc/puppet/modules:/usr/share/puppet/modules --templatedir /etc/puppet/templates --certname `hostname -f`
 
+chown -R puppet:puppet /var/lib/puppet
+
 puppet plugin download --server `hostname -f`; service apache2 restart
 
 if  [ "${scenario}" == "all_in_one" ] ; then

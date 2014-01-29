@@ -32,6 +32,8 @@ swift_local_net_ip: "%{ipaddress_eth0_222}"
 
 nova::compute::vncserver_proxyclient_address: "%{ipaddress_eth0}"
 
+horizon::keystone_url: 'http://192.168.220.40:5000/v2.0/'
+
 # user data for individual passwords
 cinder_db_password: cinder_pass
 glance_db_password: glance_pass

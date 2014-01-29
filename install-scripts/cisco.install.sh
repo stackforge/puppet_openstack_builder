@@ -51,7 +51,14 @@ UcXHbA==
 =v6jg
 -----END PGP PUBLIC KEY BLOCK-----" | apt-key add -
 
+apt-get update
+
 # Fix puppet, clobbering any existing puppet version to ensure
 # we are using the puppet 3.2 we target
 apt-get remove --purge --yes puppet puppet-common
 rm -rf /etc/puppet/puppet.conf /var/lib/puppet
+
+# run dist-upgrade to ensure vendor repo packages which replace
+# default repo packages get installed
+apt-get dist-upgrade -y
+

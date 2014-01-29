@@ -27,9 +27,10 @@ export master="${master:-true}"
 
 if [ -n "${vendor_name}" ]; then
   source ./$vendor_name.install.sh
+else
+  apt-get update
 fi
 
-apt-get update
 apt-get install -y git rubygems puppet
 
 # use the domain name if one exists

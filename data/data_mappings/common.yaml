@@ -105,7 +105,6 @@ controller_internal_address:
   - ceilometer::api::keystone_host
   - heat::keystone_host
   - coe::base::controller_node_internal
-  - coe::base::controller_hostname
   - heat::db::mysql::host
 controller_public_address:
   - nova::vncproxy::host

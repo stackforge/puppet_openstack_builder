@@ -1,65 +1,186 @@
-# COI parameters
+# The version of the puppetmaster package to be installed
+# initially on the build node.  Note that this may be overridden
+# later by package updates (such as an apt-get upgrade).  Can be
+# set to 'present' to use whatever is the latest version in your
+# package repository.
 puppet::master::version: '3.2.3-1puppetlabs1'
+
+# The fully qualified domain name of the Puppet Master node.
 puppet_master_address: "%{fqdn}"
 
+# Services to be enabled.
 enabled_services:
   - glance
   - cinder
   - keystone
   - nova
-  # should I be able to interpolate this?
+  # 'neutron', 'quantum', or "%{network_service} to use
+  # the value configured in global_hiera_params/common.yaml
   - "%{network_service}"
   - swift
 
+# Hosts to be allowed access to the backend database used to
+# persist data for OpenStack services (e.g. MySQL or similar).
 allowed_hosts: "%"
 
-# openstack parameters
+### Common OpenStack Parameters
+# The email address of the administrator user.
 admin_email: root@localhost
+
+# The userid to be assigned for the RPC backend service
+# (e.g. RabbitMQ, Qpid, etc).
 rpc_user: openstack_rabbit_user
+
+# Most OpenStack services can be configured with 'verbose'
+# and/or 'debug' in their config files in order to increase
+# logging verbosity.  Set these to 'true' to set the corresponding
+# values in OpenStack services.
 verbose: false
 debug: false
+
+# The scheduler driver to be used for Cinder.
 cinder::scheduler::scheduler_driver: 'cinder.scheduler.simple.SimpleScheduler'
+
+# The libvirt VIF driver to be used for Quantum and Neutron.
+# Both are present here in order to account for the name change
+# that occurred in Havana.  Only one will actually be used
+# depending on the network service selected in
+# global_hiera_params/common.yaml.
 nova::compute::quantum::libvirt_vif_driver: nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver
 nova::compute::neutron::libvirt_vif_driver: nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver
+
+# The services and admin tenant names.
 service_tenant: services
 admin_tenant: admin
+
+# Many manifests that install OpenStack packages can either ensure
+# that a package is 'present' (e.g. installed) or that it is 'latest'
+# (e.g. the puppet agent will check for a newer version on each
+# catalog run and install a newer version if one is available in your
+# package repository).  Using 'latest' could potentially be disruptive
+# to your cloud, so use with caution.
 package_ensure: present
+
+# The libvirt driver to use for Nova.  This is set to Qemu by
+# default to allow OpenStack to be deployed in nested virt setups
+# (common in CI or automated testing setups), but is frequently
+# overridden by a higher-level yaml file such as user.$scenario.yaml.
 nova::compute::libvirt::libvirt_type: qemu
+
+# The IP address on which vncserver should listen.  Setting to
+# 0.0.0.0 allows it to listen on all interfaces.
 nova::compute::libvirt::vncserver_listen: 0.0.0.0
+
+# Normally Nova uses the metadata service to pass configuration data
+# to instances.  However the metadata services depends on network
+# connectivity and can be problematic in some scenarios.  An alternative
+# is to use the force_config_drive setting in nova.conf, which tells
+# Nova to always create a config drive and force injection to take place
+# for each instance launched.
 nova::compute::force_config_drive: true
 
-# information for package repos
+### Package repository setup
+# These directives set up the package repository to be used when
+# installing OpenStack software.  These settings may be overridden
+# in data/hiera_data/vendor/* files if using a specific vendor's
+# repositories.
+
+# The package repository to be used. Valid values include 'cloud_archive'
+# (use the Ubuntu Cloud Archive) and 'cisco_repo' (use the Cisco Systems
+# OpenStack repository).
 coe::base::package_repo: cloud_archive
+
+# The base version of OpenStack to be installed (e.g. 'havana').
 openstack_release: havana
+
+# The name of the pocket to use for both
+# the supplemental and main repos.  This setting may not be useful for
+# all vendor repositories, so setting it to false or an empty string
+# is usually safe.  Setting this to an empty string
+# will generally point you to the stable pocket.  For the Cisco Systems
+# repository you can can specify the -proposed pocket ('-proposed') to
+# use unreleased development code or a snapshot ('/snapshots/h.0') to
+# use code from prior Cisco releases.
 pocket: false
+
+# The 'openstack_repo_location' parameter should be the complete
+# URL of the repository you want to use to fetch OpenStack
+# packages (e.g. http://openstack-repo.cisco.com/openstack/cisco).
+# This setting is not used by all vendors.
 openstack_repo_location: false
+
+# The 'supplemental_repo' parameter should be the complete URL
+# of the repository you want to use for supplemental packages
+# (e.g. http://openstack-repo.cisco.com/openstack/cisco_supplemental).
+# This setting is not used by all vendors.
 supplemental_repo: false
 
 
-# used for testing
+# If you wish to run a basic functionality test after the cloud is set
+# up, you can set the type of image to be booted.  Use 'cirros' to
+# use a Cirros image, or any other value to use an Ubuntu Precise image.
 openstack::test_file::image_type: cirros
+
+# Whether or not to install the ceilometer client library.
+# This is often overridden in higher-layer yaml files.
 openstack::client::ceilometer: false
 
+# The ISCSI IP address given to initiators when using the iSCSI driver
+# for Cinder.  This should generally match the public IP address.
 cinder::volume::iscsi::iscsi_ip_address: 0.0.0.0
-# swift info
+
+# How to set the swift_store_user directive in swift.conf.
+# This should be an account name and a username separated by
+# a colon.
 glance::backend::swift::swift_store_user: services:swift
+
+# Whether or not to have swift create a container when it
+# receives a PUT request.
 glance::backend::swift::swift_store_create_container_on_put: true
 
+# The type of backend storage to use for swift.  This can either be
+# 'loopback' (use a loopback device which is useful if you don't have
+# dedicated storage disks for swift) or 'disk' (a more performant
+# option if you do have dedicated storage disks).  This is set to
+# loopback by default since this value works on almost any setup,
+# but will commonly be overridden in higher-level yaml files for
+# production usage.
 openstack::swift::storage-node::storage_type: loopback
+
+# The disks or loopback devices to be used for Swift storage.
+# If you are using dedicated disks, this will be a list of disk names
+# (such as 'sdb').  If you are using loopback devices, this will
+# be a list of filenames which will be created in /srv/loopback-device
+# (you can specify an alternate location using
+# openstack::storage::loopback::base_dir).
 openstack::swift::storage-node::storage_devices:
   - 1
   - 2
   - 3
 
+# The Apache MPM module to use on the build node.  Options may vary
+# by platform, but frequently-used settings include 'prefork' and 'mpm'.
 apache::mpm_module: prefork
 
-# Fix odd behaviors
+# Enable or disable Django debugging for Horizon.
 horizon::django_debug: true
 
-# Tempest configuration
+### Tempest provisioning setup
+# These parameters are used by Tempest to set up a bare OpenStack
+# deployment and are only useful in all_in_one deployments.
+
+# The URL of the identity service (keystone).
 openstack::provision::identity_uri: 'http://127.0.0.1:5000/v2.0/'
+
+# The admin tenant name and password to set up.
 openstack::provision::admin_tenant_name: openstack
 openstack::provision::admin_password: Cisco123
+
+# Whether or not instance resizing is available.
 openstack::provision::resize_available: false
+
+# Whether or not the compute change_password feature is enabled.
 openstack::provision::change_password_available: false
+
+# The name to give to the public network created if using Neutron.
 openstack::provision::public_network_name: nova

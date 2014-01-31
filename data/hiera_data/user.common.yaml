@@ -1,42 +1,137 @@
-domain_name: domain.name
-coe::base::controller_hostname: control-server
+########### NTP Configuration ############
+# Change this to the location of a time server or servers in your
+# organization accessible to the build server.  The build server will
+# synchronize with this time server, and will in turn function as the time
+# server for your OpenStack nodes.
 ntp_servers:
-  - time-server.domain.name
+  - 1.pool.ntp.org
+
+# The time zone that clocks should be set to.  See /usr/share/zoneinfo
+# for valid values, such as "UTC" and "US/Eastern".
 time_zone: UTC
 
-# node addresses
-build_node_name: build-server
-controller_internal_address: 192.168.242.10
-controller_public_address: 192.168.242.10
-controller_admin_address: 192.168.242.10
-swift_internal_address: 192.168.242.41
-swift_public_address: 192.168.242.41
-swift_admin_address: 192.168.242.41
-cobbler_node_ip: 192.168.242.10
+######### Node Addresses ##############
+# Change the following to the host name you have given your build node.
+# This name should be in all lower case letters due to a Puppet limitation
+# (refer to http://projects.puppetlabs.com/issues/1168).
+build_node_name: build-server.domain.com
 
-# this is not done yet
+# Change the following to the host name you have given to your control
+# node.  This name should be in all lower case letters due to a Puppet
+# limitation (refer to http://projects.puppetlabs.com/issues/1168).
+coe::base::controller_hostname: control-server
+
+# This domain name will be the name your build and compute nodes use for the
+# local DNS.  It doesn't have to be the name of your corporate DNS - a local
+# DNS server on the build node will serve addresses in this domain - but if
+# it is, you can also add entries for the nodes in your corporate DNS
+# environment they will be usable *if* the above addresses are routeable
+# from elsewhere in your network.
+domain_name: domain.name
+
+# The IP address to be used to connect to Horizon and external
+# services on the control node.  In the compressed_ha or full_ha scenarios,
+# this will be an address to be configured as a VIP on the HAProxy
+# load balancers, not the address of the control node itself.
+controller_public_address: 192.168.242.10
+
+# The IP address used for internal communication with the control node.
+# In the compressed_ha or full_ha scenarios, this will be an address
+# to be configured as a VIP on the HAProxy load balancers, not the address
+# of the control node itself.
+controller_internal_address: 192.168.242.10
+
+# The IP address used for management functions (such as monitoring)
+# on the control node.  In the compressed_ha or full_ha scenarios, this will
+# be an address to be configured as a VIP on the HAProxy
+# load balancers, not the address of the control node itself.
+controller_admin_address: 192.168.242.10
+
+# Control node interfaces.
+# internal_ip be used for the ovs local_ip setting for GRE tunnels.
+
+# This sets the IP for the private(internal) interface of controller nodes
+# (which is predefined already in $controller_node_internal, and the internal
+# interface for compute nodes.  It is generally also the IP address
+# used in Cobbler node definitions.
 internal_ip: "%{ipaddress_eth3}"
-# interfaces
-# TODO are all of these even used?
+
+# The external_interface is used to provide a Layer2 path for
+# the l3_agent external router interface.  It is expected that
+# this interface be attached to an upstream device that provides
+# a L3 router interface, with the default router configuration
+# assuming that the first non "network" address in the external
+# network IP subnet will be used as the default forwarding path
+# if no more specific host routes are added.
 external_interface: eth2
+
+# The public_interface will have an IP address reachable by
+# all other nodes in the openstack cluster.  This address will
+# be used for API Access, for the Horizon UI, and as an endpoint
+# for the default GRE tunnel mechanism used in the OVS network
+# configuration.
 public_interface: eth1
+
+# The interface used for VM networking connectivity.  This will usually
+# be set to the same interface as public_interface.
 private_interface: eth1
 
-# Cobbler config
+### Cobbler config
+# The IP address of the node on which Cobbler will be installed and
+# on which it will listen.
+cobbler_node_ip: 192.168.242.10
+
+# The subnet address of the subnet on which Cobbler should serve DHCP
+# addresses.
 node_subnet: '192.168.242.0'
+
+# The netmask of the subnet on which Cobbler should serve DHCP addresses.
 node_netmask: '255.255.255.0'
+
+# The default gateway that should be provided to DHCP clients that acquire
+# an address from Cobbler.
 node_gateway: '192.168.242.1'
+
+# The admin username and crypted password used to authenticate to Cobbler.
 admin_user: localadmin
 password_crypted: $6$UfgWxrIv$k4KfzAEMqMg.fppmSOTd0usI4j6gfjs0962.JXsoJRWa5wMz8yQk4SfInn4.WZ3L/MCt5u.62tHDGB36EhiKF1
+
+# Cobbler can instruct nodes being provisioned to start a Puppet agent
+# immediately upon bootup.  This is generally desirable as it allows
+# the node to immediately begin configuring itself upon bootup without
+# further human intervention.  However, it may be useful for debugging
+# purposes to prevent Puppet from starting automatically upon bootup.
+# If you want Puppet to run automatically on bootup, set this to true.
+# Otherwise, set it to false.
 autostart_puppet: true
+
+# If you are using Cisco UCS servers managed by UCSM, set the port on
+# which Cobbler should connect to UCSM in order to power nodes off and on.
+# If set to 443, the connection will use SSL, which is generally
+# desirable and is usually enabled on UCS systems.
 ucsm_port: 443
+
+# The name of the hard drive on which Cobbler should install the operating
+# system.
 install_drive: /dev/sda
+
+# Set to 1 to enable ipv6 route advertisement.  Otherwise, comment out
+# this line or set it to 0.
 #ipv6_ra: 1
+
+# Uncomment this line and set it to true if you want to use bonded
+# ethernet interfaces.
 #interface_bonding = 'true'
 
+# The IP address on which vncserver proxyclient should listen.
+# This should generally be an address that is accessible via
+# horizon.  You can set it to an actual IP address (e.g. "192.168.1.1"),
+# or use facter to get the IP address assigned to a particular interface.
 nova::compute::vncserver_proxyclient_address: "%{ipaddress_eth3}"
 
-# user data for individual passwords
+### The following are passwords and usernames used for
+### individual services.  You may wish to change the passwords below
+### in order to better secure your installation.
 cinder_db_password: cinder_pass
 glance_db_password: glance_pass
 keystone_db_password: key_pass
@@ -58,31 +153,141 @@ ceilometer_db_password: ceilometer
 heat_db_password: heat
 heat_service_password: heat_pass
 heat::engine::auth_encryption_key: 'encryption_key'
-# for single password config
+
+# Set this parameter to use a single secret for the Horizon secret
+# key, neutron agents, Nova API metadata proxies, swift hashes,etc.
+# This prevents you from needing to specify individual secrets above,
+# but has some security implications in that all services are using
+# the same secret (creating more vulnerable services if it should be
+# compromised).
 secret_key: secret
+
+# Set this parameter to use a single password for all the services above.
+# This prevents you from needing to specify individual passwords above,
+# but has some security implications in that all services are using
+# the same password (creating more vulnerable services if it should be
+# compromised).
 password: password123
 
-# swift config
+### Swift configuration
+# The IP address on which local Swift traffic will be passed
+# (e.g. replication traffic and other intra-cluster data).
 swift_local_net_ip: "%{ipaddress_eth3}"
+
+# The username used to authenticate to the Swift cluster.
 swift_service_password: swift_pass
+
+# The password hash used to authenticate to the Swift cluster.
 swift_hash: super_secret_swift_hash
+
+# The IP address used by Swift on the control node to communicate with
+# other members of the Swift cluster.  In the compressed_ha or full_ha
+# scenarios, this will be the address to be configured as a VIP on
+# the HAProxy load balancers, not the address of an individual Swift node.
+swift_internal_address: "%{ipaddress_eth3}"
+
+# The IP address which external entities will use to connect to Swift,
+# including clients wishing to upload or retrieve objects.  In the
+# compressed_ha or full_ha scenarios, this will be the address to
+# be configured as a VIP on the HAProxy load balancers, not the address
+# of an individual Swift node.
+swift_public_address: "%{ipaddress_eth3}"
+
+# The IP address over which administrative traffic for the Swift
+# cluster will flow.  In the compressed_ha or full_ha
+# scenarios, this will be the address to be configured as a VIP on
+# the HAProxy load balancers, not the address of an individual Swift node.
+swift_admin_address: "%{ipaddress_eth3}"
+
+# The interface on which Swift will run data storage traffic.
+# This should generally be a different interface than is used for
+# management traffic to avoid congestion.
+swift_storage_interface: eth0.222
+
+# The IP address to be configured on the Swift storage interface.
+swift_local_net_ip: "%{ipaddress_eth0_222}"
+
+# The netmask to be configured on the Swift storage interface.
+swift_storage_netmask: 255.255.255.0
+
+# The IP address of the Swift proxy server.
+swift_proxy_net_ip: "%{ipaddress_eth0}"
+
+### The following three parameters are only used if you are configuring
+### Swift to serve as a backend for the Glance image service.
+
+# Enable Glance to use Ceph RBD as it's backend storage by uncommenting
+# the line below.  It can also be set to "file" or "swift".
+#glance_backend: rbd
+
+# The key used by Glance to connect to Swift.
 glance::backend::swift::swift_store_key: secret_key
+
+# The IP address to which Glance should connect in order to talk
+# to the Swift cluster.
 glance::backend::swift::swift_store_auth_address: '127.0.0.1'
 
-# ceph config
+### Ceph configuration
+# The name of the Ceph cluster to be deployed.
 ceph_cluster_name: 'ceph'
+
+# The FSID of the Ceph monitor node.  This should take the form
+# of a UUID.
 ceph_monitor_fsid: 'e80afa94-a64c-486c-9e34-d55e85f26406'
+
+# The shared secret used to connect to the Ceph monitors.  This
+# should be a crypted password.
 ceph_monitor_secret: 'AQAJzNxR+PNRIRAA7yUp9hJJdWZ3PVz242Xjiw=='
-cinder_rbd_user: 'admin'
-cinder_rbd_pool: 'volumes'
-glance_ceph_pool: 'images'
-cinder_rbd_secret_uuid: 'e80afa94-a64c-486c-9e34-d55e85f26406'
-mon_initial_members: 'ceph-mon01' #be sure to use the short hostname eg. hostname -s
-ceph_primary_mon: 'ceph-mon01' #be sure to use the short hostname eg. hostname -s
+
+# The short hostname (e.g. 'ceph-mon01', not 'ceph-mon01.domain.com') of
+# the initial members of the Ceph monitor set.
+mon_initial_members: 'ceph-mon01'
+
+# The short hostname (e.g. 'ceph-mon01', no 'ceph-mon01.domain.com') of
+# the primary monitor node.
+ceph_primary_mon: 'ceph-mon01'
+
+# The IP address used to connect to the primary monitor node.
 ceph_monitor_address: '10.0.0.1'
+
+# Ceph will be deployed using the cephdeploy tool.  This tool requires
+# a username and password to authenticate.
 ceph_deploy_user: 'cephdeploy'
 ceph_deploy_password: '9jfd29k9kd9'
+
+# The name of the network interface used to connect to Ceph nodes.
+# This interface will be used to pass traffic between Ceph nodes.
 ceph_cluster_interface: 'eth1'
+
+# The subnet on which Ceph intra-cluster traffic will be passed.
 ceph_cluster_network: '10.0.0.0/24'
+
+# The interface on which entities that want to import data into or
+# extract data from the cluster will connect.
 ceph_public_interface: 'eth1'
+
+# The subnet on which external entities will connect to the Ceph cluster.
 ceph_public_network: '10.0.0.0/24'
+
+### The following four parameters are used only if you are configuring
+### Ceph to be a backend for the Cinder volume service.
+
+# Enable Cinder to use Ceph RBD as it's backend storage by uncommenting
+# the line below.  It can also be set to 'iscsi'.
+#cinder_backend: rbd
+
+# The username Cinder should use to connect to the cluster.
+cinder_rbd_user: 'admin'
+
+# The name of the pool used to store Cinder volumes.`
+cinder_rbd_pool: 'volumes'
+
+# The UUID of the shared virsh secret used by Cinder to
+# authenticate to the Ceph cluster.
+cinder_rbd_secret_uuid: 'e80afa94-a64c-486c-9e34-d55e85f26406'
+
+### The following parameter is used only if you are deploying Ceph
+### as a backend for the Glance image service.
+
+# The name of the pool used to store glance images.
+glance_ceph_pool: 'images'

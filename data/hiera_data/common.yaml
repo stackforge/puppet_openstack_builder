@@ -71,6 +71,10 @@ nova::compute::libvirt::libvirt_type: qemu
 # 0.0.0.0 allows it to listen on all interfaces.
 nova::compute::libvirt::vncserver_listen: 0.0.0.0
 
+# enable nova to do live migration
+# vncserver_listen also must be set to 0.0.0.0
+nova::compute::libvirt::migration_support: true
+
 # Normally Nova uses the metadata service to pass configuration data
 # to instances.  However the metadata services depends on network
 # connectivity and can be problematic in some scenarios.  An alternative

@@ -170,10 +170,6 @@ secret_key: secret
 password: password123
 
 ### Swift configuration
-# The IP address on which local Swift traffic will be passed
-# (e.g. replication traffic and other intra-cluster data).
-swift_local_net_ip: "%{ipaddress_eth3}"
-
 # The username used to authenticate to the Swift cluster.
 swift_service_password: swift_pass
 
@@ -210,7 +206,9 @@ swift_local_net_ip: "%{ipaddress_eth0_222}"
 # The netmask to be configured on the Swift storage interface.
 swift_storage_netmask: 255.255.255.0
 
-# The IP address of the Swift proxy server.
+# The IP address of the Swift proxy server. This is the address which
+# is used for management, and is often on a separate network from
+# swift_local_net_ip.
 swift_proxy_net_ip: "%{ipaddress_eth0}"
 
 ### The following three parameters are only used if you are configuring

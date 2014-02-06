@@ -6,3 +6,5 @@ classes:
   - ceilometer::collector
   - ceilometer::agent::central
   - ceilometer::api
+  - ceilometer::alarm::notifier
+  - ceilometer::alarm::evaluator

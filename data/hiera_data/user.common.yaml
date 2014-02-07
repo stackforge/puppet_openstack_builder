@@ -11,10 +11,10 @@ ntp_servers:
 time_zone: UTC
 
 ######### Node Addresses ##############
-# Change the following to the host name you have given your build node.
+# Change the following to the short host name you have given your build node.
 # This name should be in all lower case letters due to a Puppet limitation
 # (refer to http://projects.puppetlabs.com/issues/1168).
-build_node_name: build-server.domain.com
+build_node_name: build-server
 
 # Change the following to the host name you have given to your control
 # node.  This name should be in all lower case letters due to a Puppet

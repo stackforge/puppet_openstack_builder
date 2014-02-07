@@ -6,8 +6,8 @@
 
 set -e
 
-# All in one defaults to the local host name for pupet master
-export build_server="${build_server:-`hostname`}"
+# All in one defaults to the local host name for puppet master
+export build_server="${build_server:-`hostname -s`}"
 # It'd be good to konw our domain name as well
 export domain_name=`hostname -d`
 # We need to know the IP address as well, so either tell me

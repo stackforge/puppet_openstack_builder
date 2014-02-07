@@ -5,7 +5,7 @@
 ntp_servers:
   - build-server.dmz-pod2.lab
 
-build_node_name: build-server.dmz-pod2.lab
+build_node_name: build-server
 domain_name: dmz-pod2.lab
 
 coe::base::controller_hostname: control

@@ -1,0 +1,103 @@
+#
+# the two node
+#
+roles:
+  build:
+    classes:
+      - openstacklib::repo
+      - openstacklib::hosts
+      - openstacklib::puppet::master
+      - edeploy
+      - dnsmasq
+      - openstacklib::firewall::edeploy
+      - openstacklib::firewall::puppet
+# Control and compute are for a standard single region deployment
+  control:
+    classes:
+      - galera
+      - mysql::bindings
+      - "nova::%{rpc_type}"
+      - openstacklib::openstack::databases
+      - openstacklib::openstack::endpoints
+      - openstacklib::openstack::provider
+      - openstacklib::repo
+      - openstacklib::hosts
+      - openstacklib::compat
+      - neutron::server
+      - keystone
+      - keystone::roles::admin
+    class_groups:
+      - network_controller
+      - glance_all
+      - cinder_controller
+      - nova_controller
+      - horizon
+      - heat_all
+      - firewall_control
+      - loadbalance_control
+      - test_file
+
+  compute:
+    class_groups:
+      - nova_compute
+      - cinder_volume
+      - ceilometer_compute
+    classes:
+      - openstacklib::repo
+      - openstacklib::hosts
+      - mysql::bindings
+
+# This role is used by multi-region installations
+# to share horizon, keystone and glance
+  regcon:
+    class_groups:
+      - horizon
+    classes:
+      - "galera"
+      - "mysql::bindings"
+      - "openstacklib::openstack::databases"
+      - "openstacklib::openstack::regions"
+      - "openstacklib::repo"
+      - "openstacklib::hosts"
+      - "openstacklib::compat"
+      - "keystone"
+      - "keystone::roles::admin"
+      - "glance"
+      - "glance::api"
+      - "glance::registry"
+      - "glance::backend::%{glance_backend}"
+      - "glance::cache::pruner"
+      - "glance::cache::cleaner"
+      - "openstacklib::loadbalance::haproxy"
+      - "openstacklib::loadbalance::haproxy::keystone"
+      - "openstacklib::loadbalance::haproxy::glance"
+      - "openstacklib::loadbalance::haproxy::dashboard"
+      - "openstacklib::loadbalance::haproxy::mysql"
+      - "openstacklib::firewall"
+      - "openstacklib::firewall::keystone"
+      - "openstacklib::firewall::glance"
+      - "openstacklib::firewall::dashboard"
+      - "openstacklib::firewall::keepalived"
+      - "galera::firewall"
+
+# This is a child region controller that uses the top region for keystone
+# and glance, but has its own cinder, nova, heat and neutron
+  regsub:
+    class_groups:
+      - "network_controller"
+      - "cinder_controller"
+      - "nova_controller"
+      - "heat_all"
+      - "firewall_control"
+      - "loadbalance_control"
+      - "test_file"
+    classes:
+      - "galera"
+      - "mysql::bindings"
+      - "nova::%{rpc_type}"
+      - "openstacklib::openstack::databases"
+      - "openstacklib::repo"
+      - "openstacklib::hosts"
+      - "openstacklib::compat"
+      - "openstacklib::openstack::provider"
+      - "neutron::server"

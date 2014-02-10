@@ -1,0 +1,207 @@
+# eth0: vagrant network in testing
+# eth1: deploy network
+# eth2: public api network
+# eth3: private service network + GRE
+# eth4: external data network
+
+# The IP address to be used to connect to Horizon and external
+# services on the control node.  In the compressed_ha or full_ha scenarios,
+# this will be an address to be configured as a VIP on the HAProxy
+# load balancers, not the address of the control node itself.
+controller_public_address: 10.2.3.5
+
+# The IP address used for internal communication with the control node.
+# In the compressed_ha or full_ha scenarios, this will be an address
+# to be configured as a VIP on the HAProxy load balancers, not the address
+# of the control node itself.
+controller_internal_address: 10.3.3.5
+
+# This is the address of the admin endpoints for Openstack
+# services. In most cases, the admin address is the same as
+# the public one.
+controller_admin_address: 10.3.3.5
+
+# Interface that will be stolen by the l3 router on
+# the contorl node. The IP will be unreachable so don't
+# set this to anything you were using
+external_interface: eth4
+
+# Gre tunnel address for each node
+internal_ip: "%{ipaddress_eth3}"
+
+# This is the interface that each node will be binding
+# various services on.
+deploy_bind_ip: "%{ipaddress_eth1}"
+public_bind_ip: "%{ipaddress_eth2}"
+private_bind_ip: "%{ipaddress_eth3}"
+
+# The public VIP, where all API services are exposed to users.
+public_vip: 10.2.3.5
+
+# The private VIP, where services are exposed to openstack services.
+private_vip: 10.3.3.5
+
+# List of IP addresses for controllers on the public network
+control_servers_public: [ '10.2.3.10', '10.2.3.11', '10.2.3.12']
+
+# List of IP addresses for controllers on the private network
+control_servers_private: [ '10.3.3.10', '10.3.3.11', '10.3.3.12']
+
+# A hash of hostnames to private network IPs. Used for rabbitmq hosts
+# resolution
+openstacklib::hosts::cluster_hash:
+  control1.private: '10.3.3.10'
+  control2.private: '10.3.3.11'
+  control3.private: '10.3.3.12'
+
+# List of controller hostnames. Used for rabbitmq hosts list
+cluster_names: [ 'control1.private', 'control2.private', 'control3.private' ]
+
+# Allowed hosts for mysql users
+allowed_hosts: 10.3.3.%
+
+#Galera status checking
+galera::status::status_allow: "%{hiera('allowed_hosts')}"
+galera::status::status_password: clustercheck
+galera::status::status_host: "%{hiera('private_vip')}"
+
+# Edeploy is a tool from eNovance for provisioning servers based on
+# chroots created on the build node.
+edeploy::serv: '%{ipaddress_eth1}'
+edeploy::hserv: '%{ipaddress_eth1}'
+edeploy::rserv: '%{ipaddress_eth1}'
+edeploy::hserv_port: 8082
+edeploy::http_install_port: 8082
+edeploy::install_apache: false
+edeploy::giturl: 'https://github.com/michaeltchapman/edeploy.git'
+edeploy::rsync_exports:
+  'install':
+    'path': '/var/lib/debootstrap/install'
+    'comment': 'The Install Path'
+  'metadata':
+    'path': '/var/lib/edeploy/metadata'
+    'comment': 'The Metadata Path'
+
+# Dnsmasq is used by edeploy to provide dhcp on the deploy
+# network.
+dnsmasq::domain_needed: false
+dnsmasq::interface: 'eth1'
+dnsmasq::dhcp_range: ['192.168.242.3, 192.168.242.50']
+dnsmasq::dhcp_boot: ['pxelinux.0']
+
+apache::default_vhost: false
+#apache::ip: "%{ipaddress_eth2}"
+horizon::wsgi::apache::bind_address: "%{ipaddress_eth2}"
+
+# Use these to set an apt proxy if running on a Debian-like
+apt::proxy_host: 192.168.0.18
+apt::proxy_port: 8000
+
+# We are using the new version of puppetlabs-mysql, which
+# requires this parameter for compatibility.
+mysql_module: '2.2'
+
+# Install the python mysql bindings on all hosts
+# that include mysql::bindings
+mysql::bindings::python_enable: true
+
+# This node will be used to bootstrap the cluster on initial deployment
+# or if there is a total failure of the control cluster
+galera::galera_master: 'control1.domain.name'
+
+# This can be either percona or mariadb, depending on preference
+galera::vendor_type: 'mariadb'
+
+# epel is included by openstack::repo::rdo, so we
+# don't need it from other modules
+devtools::manage_epel: false
+galera::repo::epel_needed: false
+
+# We are using the new rabbitmq module, which removes
+# the rabbitmq::server class in favor of ::rabbitmq
+nova::rabbitmq::rabbitmq_class: '::rabbitmq'
+
+# We don't want to get Rabbit from the upstream, instead
+# preferring the RDO/UCA version.
+rabbitmq::manage_repos: false
+rabbitmq::package_source: false
+
+# Change this to apt on debians
+rabbitmq::package_provider: yum
+
+# The rabbit module expects the upstream rabbit package, which
+# includes plugins that the distro packages do not.
+rabbitmq::admin_enable: false
+
+# Rabbit clustering configuration
+rabbitmq::config_cluster: true
+rabbitmq::config_mirrored_queues: true
+rabbitmq::cluster_node_type: 'disc'
+rabbitmq::wipe_db_on_cookie_change: true
+
+# This is the port range for rabbit clustering
+rabbitmq::config_kernel_variables:
+  inet_dist_listen_min: 9100
+  inet_dist_listen_max: 9105
+
+# Openstack version to install
+openstack_release: havana
+openstack::repo::uca::release: 'havana'
+openstack::repo::rdo::release: 'havana'
+
+# Proxy configuration of either apt or yum
+openstacklib::repo::apt_proxy_host: '192.168.0.18'
+openstacklib::repo::apt_proxy_port: '8000'
+openstacklib::repo::yum_http_proxy: 'http://192.168.0.18:8000'
+openstacklib::repo::yum_epel_mirror: 'http://mirror.aarnet.edu.au'
+openstacklib::repo::yum_base_mirror: 'http://mirror.aarnet.edu.au'
+
+openstacklib::hosts::build_server_ip: '192.168.242.100'
+openstacklib::hosts::build_server_name: 'build-server'
+openstacklib::hosts::domain: 'domain.name'
+openstacklib::hosts::mgmt_ip: "%{ipaddress_eth1}"
+
+# Loadbalancer configuration
+openstacklib::loadbalance::haproxy::vip_secret: 'vip_password'
+openstacklib::loadbalance::haproxy::public_iface: 'eth2'
+openstacklib::loadbalance::haproxy::private_iface: 'eth3'
+openstacklib::loadbalance::haproxy::cluster_master: 'control1.domain.name'
+
+# CIDRs for the three networks.
+deploy_control_firewall_source: '192.168.242.0/24'
+public_control_firewall_source: '10.2.3.0/24'
+private_control_firewall_source: '10.3.3.0/24'
+
+# Store reports in puppetdb
+puppet::master::reports: 'store,puppetdb'
+
+# This purges config files to remove entries not set by puppet.
+# This is essential on RDO where qpid is the default
+glance::api::purge_config: true
+
+# PKI will cause issues when using load balancing because each
+# keystone will be a different CA, so use uuid.
+keystone::token_provider: 'keystone.token.providers.uuid.Provider'
+
+# Validate keystone connection via VIP before
+# evaluating custom types
+keystone::validate_service: true
+
+# Haproxy is installed via puppetlabs-haproxy, so we don't need to install it
+# via lbaas agent
+neutron::agents::lbaas::manage_haproxy_package: false
+
+neutron::agents::vpnaas::enabled: false
+neutron::agents::lbaas::enabled: false
+neutron::agents::fwaas::enabled: false
+
+neutron::agents::metadata::shared_secret: "%{hiera('metadata_shared_secret')}"
+
+# Multi-region mappings. See contrib/aptira/puppet/user.regcon.yaml for a sample
+# on setting multiple regions
+openstacklib::openstack::regions::nova_user_pw: "%{hiera('nova_service_password')}"
+openstacklib::openstack::regions::neutron_user_pw:  "%{hiera('network_service_password')}"
+openstacklib::openstack::regions::glance_user_pw:  "%{hiera('glance_service_password')}"
+openstacklib::openstack::regions::heat_user_pw:  "%{hiera('heat_service_password')}"
+openstacklib::openstack::regions::cinder_user_pw: "%{hiera('cinder_service_password')}"
+openstacklib::openstack::regions::ceilometer_user_pw: "%{hiera('ceilometer_service_password')}"

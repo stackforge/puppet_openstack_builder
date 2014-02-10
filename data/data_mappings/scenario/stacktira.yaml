@@ -1,0 +1,187 @@
+cluster_names:
+  - quantum::rabbit_hosts
+  - neutron::rabbit_hosts
+  - nova::rabbit_hosts
+  - cinder::rabbit_hosts
+  - rabbitmq::cluster_nodes
+  - openstacklib::loadbalance::haproxy::cluster_names
+  - openstacklib::loadbalance::haproxy::ceilometer::cluster_names
+  - openstacklib::loadbalance::haproxy::cinder::cluster_names
+  - openstacklib::loadbalance::haproxy::dashboard::cluster_names
+  - openstacklib::loadbalance::haproxy::glance::cluster_names
+  - openstacklib::loadbalance::haproxy::heat::cluster_names
+  - openstacklib::loadbalance::haproxy::keystone::cluster_names
+  - openstacklib::loadbalance::haproxy::mysql::cluster_names
+  - openstacklib::loadbalance::haproxy::neutron::cluster_names
+  - openstacklib::loadbalance::haproxy::nova::cluster_names
+  - openstacklib::loadbalance::haproxy::rabbitmq::cluster_names
+
+mysql_module:
+  - ceilometer::db::mysql_module
+  - ceilometer::db::mysql::mysql_module
+  - cinder::db::mysql::mysql_module
+  - glance::db::mysql::mysql_module
+  - glance::api::mysql_module
+  - glance::registry::mysql_module
+  - heat::db::mysql::mysql_module
+  - heat::mysql_module
+  - keystone::db::mysql::mysql_module
+  - keystone::mysql_module
+  - neutron::db::mysql::mysql_module
+  - neutron::server::mysql_module
+  - nova::mysql_module
+  - nova::db::mysql::mysql_module
+
+control_servers_private:
+  - galera::galera_servers
+  - openstacklib::loadbalance::haproxy::mysql::cluster_addresses
+  - openstacklib::loadbalance::haproxy::rabbitmq::cluster_addresses
+
+control_servers_public:
+  - openstacklib::loadbalance::haproxy::cluster_addresses
+  - openstacklib::loadbalance::haproxy::ceilometer::cluster_addresses
+  - openstacklib::loadbalance::haproxy::cinder::cluster_addresses
+  - openstacklib::loadbalance::haproxy::dashboard::cluster_addresses
+  - openstacklib::loadbalance::haproxy::glance::cluster_addresses
+  - openstacklib::loadbalance::haproxy::heat::cluster_addresses
+  - openstacklib::loadbalance::haproxy::keystone::cluster_addresses
+  - openstacklib::loadbalance::haproxy::neutron::cluster_addresses
+  - openstacklib::loadbalance::haproxy::nova::cluster_addresses
+
+domain_name:
+  - openstacklib::hosts::domain
+
+deploy_control_firewall_source:
+  - openstacklib::firewall::edeploy::source
+  - openstacklib::firewall::puppet::source
+
+deploy_control_firewall_source:
+  - openstacklib::firewall::edeploy::source
+  - openstacklib::firewall::puppet::source
+
+public_control_firewall_source:
+  - openstacklib::firewall::cinder::source
+  - openstacklib::firewall::ceilometer::source
+  - openstacklib::firewall::dashboard::source
+  - openstacklib::firewall::glance::source
+  - openstacklib::firewall::heat::source
+  - openstacklib::firewall::keystone::source
+  - openstacklib::firewall::nova::source
+  - openstacklib::firewall::neutron::source
+
+private_control_firewall_source:
+  - openstacklib::firewall::rabbitmq::source
+  - galera::firewall::source
+  - openstacklib::firewall::cinder::internal_source
+  - openstacklib::firewall::ceilometer::internal_source
+  - openstacklib::firewall::dashboard::internal_source
+  - openstacklib::firewall::glance::internal_source
+  - openstacklib::firewall::heat::internal_source
+  - openstacklib::firewall::keystone::internal_source
+  - openstacklib::firewall::nova::internal_source
+  - openstacklib::firewall::neutron::internal_source
+
+public_bind_ip:
+  - cinder::api::bind_host
+  - glance::api::bind_host
+  - glance::registry::bind_host
+  - heat::api_cfn::bind_host
+  - heat::api_cloudwatch::bind_host
+  - heat::api::bind_host
+  - keystone::public_bind_host
+  - neutron::bind_host
+  - nova::api::api_bind_address
+  - nova::api::metadata_listen
+  - nova::objectstore::bind_address
+  - nova::vncproxy::host
+  - horizon::wsgi::apache::bind_address
+  - horizon::bind_address
+
+private_bind_ip:
+  - galera::bind_address
+  - galera::local_ip
+  - rabbitmq::node_ip_address
+  - keystone::admin_bind_host
+
+public_vip:
+  - glance::api::registry_host
+  - openstacklib::loadbalance::haproxy::cluster_public_vip
+  - openstacklib::loadbalance::haproxy::ceilometer::vip
+  - openstacklib::loadbalance::haproxy::cinder::vip
+  - openstacklib::loadbalance::haproxy::dashboard::vip
+  - openstacklib::loadbalance::haproxy::glance::vip
+  - openstacklib::loadbalance::haproxy::heat::vip
+  - openstacklib::loadbalance::haproxy::keystone::vip
+  - openstacklib::loadbalance::haproxy::nova::vip
+  - openstacklib::loadbalance::haproxy::neutron::vip
+
+private_vip:
+  - openstacklib::loadbalance::haproxy::cluster_private_vip
+  - openstacklib::loadbalance::haproxy::mysql::vip
+  - openstacklib::loadbalance::haproxy::rabbitmq::vip
+  - openstacklib::loadbalance::haproxy::keystone::internal_vip
+  - openstacklib::loadbalance::haproxy::ceilometer::internal_vip
+  - openstacklib::loadbalance::haproxy::cinder::internal_vip
+  - openstacklib::loadbalance::haproxy::dashboard::internal_vip
+  - openstacklib::loadbalance::haproxy::glance::internal_vip
+  - openstacklib::loadbalance::haproxy::heat::internal_vip
+  - openstacklib::loadbalance::haproxy::keystone::internal_vip
+  - openstacklib::loadbalance::haproxy::nova::internal_vip
+  - openstacklib::loadbalance::haproxy::neutron::internal_vip
+  - glance::notify::rabbitmq::rabbit_host
+  - cinder::qpid_hostname
+  - cinder::rabbit_host
+  - nova::rabbit_host
+  - nova::qpid_hostname
+  - heat::qpid_hostname
+  - heat::rabbit_host
+  - quantum::rabbit_host
+  - quantum::qpid_hostname
+  - neutron::qpid_hostname
+  - neutron::rabbit_host
+  - ceilometer::db::mysql::host
+  - ceilometer::rabbit_host
+  - ceilometer::qpid_hostname
+  - cinder::db::mysql::host
+  - glance::db::mysql::host
+  - keystone::db::mysql::host
+  - nova::db::mysql::host
+  - quantum::db::mysql::host
+  - neutron::db::mysql::host
+  - cinder::keystone::auth::internal_address
+  - glance::keystone::auth::internal_address
+  - nova::keystone::auth::internal_address
+  - heat::keystone::auth::internal_address
+  - heat::keystone::auth_cfn::internal_address
+  - cinder::api::keystone_auth_host
+  - keystone::endpoint::internal_address
+  - glance::api::auth_host
+  - glance::registry::auth_host
+  - horizon::keystone_host
+  - nova::api::auth_host
+  - quantum::server::auth_host
+  - neutron::server::auth_host
+  - quantum::keystone::auth::internal_address
+  - neutron::keystone::auth::internal_address
+  - openstack::auth_file::controller_node
+  - quantum::agents::metadata::metadata_ip
+  - neutron::agents::metadata::metadata_ip
+  - openstack::swift::proxy::keystone_host
+  - swift::keystone::auth::internal_address
+  - ceilometer::keystone::auth::internal_address
+  - ceilometer::api::keystone_host
+  - heat::keystone_host
+  - heat::db::mysql::host
+  - cinder::keystone::auth::admin_address
+  - glance::keystone::auth::admin_address
+  - nova::keystone::auth::admin_address
+  - heat::keystone::auth::admin_address
+  - heat::keystone::auth_cfn::admin_address
+  - keystone::endpoint::admin_address
+  - quantum::keystone::auth::admin_address
+  - neutron::keystone::auth::admin_address
+  - swift::keystone::auth::admin_address
+  - ceilometer::keystone::auth::admin_address
+
+openstack_release:
+  - openstacklib::compat::openstack_release

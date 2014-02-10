@@ -1,0 +1,12 @@
+classes:
+  - openstacklib::firewall
+  - openstacklib::firewall::nova
+  - openstacklib::firewall::keystone
+  - openstacklib::firewall::glance
+  - openstacklib::firewall::heat
+  - openstacklib::firewall::neutron
+  - openstacklib::firewall::cinder
+  - openstacklib::firewall::rabbitmq
+  - openstacklib::firewall::dashboard
+  - openstacklib::firewall::keepalived
+  - galera::firewall

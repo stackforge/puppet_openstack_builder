@@ -180,6 +180,8 @@ build_node_name:
   - coe::base::build_node_name
   - collectd::graphitehost
   - graphite::graphitehost
+domain_name:
+  - coe::base::domain_name
 public_interface:
   - collectd::management_interface
 pocket:

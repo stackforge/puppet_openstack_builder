@@ -39,6 +39,9 @@ case $::osfamily {
       ensure => $puppet_version,
     }
   }
+  default: {
+    fail("Unsupported osfamily: ${::osfamily} operatingsystem: ${::operatingsystem}, module ${module_name} only supports osfamily RedHat and Debian")
+  }
 }
 
 package { 'puppet':
@@ -95,10 +98,10 @@ if $::puppet_run_mode != 'agent' {
   }
 }
 
-# lay down a file that can be used for subsequent runs to puppet. Often, the
+# Lay down a file that can be used for subsequent runs to puppet. Often, the
 # only thing that you want to do after the initial provisioning of a box is
-# to run puppet again. This command lays down a script that can be simply used for
-# subsequent runs
+# to run puppet again. This command lays down a script that can be simply used
+# for subsequent runs.
 file { '/root/run_puppet.sh':
   content =>
   "#!/bin/bash

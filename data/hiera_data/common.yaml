@@ -188,3 +188,7 @@ openstack::provision::change_password_available: false
 
 # The name to give to the public network created if using Neutron.
 openstack::provision::public_network_name: nova
+
+# Syslog
+use_syslog: false
+log_facility: LOG_USER

@@ -196,3 +196,21 @@ openstack_repo_location:
 supplemental_repo:
   - coe::base::supplemental_repo
   - coi::profiles::cobbler_server::supplemental_repo
+use_syslog:
+  - ceilometer::use_syslog
+  - cinder::use_syslog
+  - glance::registry::use_syslog
+  - glance::api::use_syslog
+  - heat::use_syslog
+  - keystone::use_syslog
+  - neutron::use_syslog
+  - nova::use_syslog
+log_facility:
+  - ceilometer::log_facility
+  - cinder::log_facility
+  - glance::registry::log_facility
+  - glance::api::log_facility
+  - heat::log_facility
+  - keystone::log_facility
+  - neutron::log_facility
+  - nova::log_facility

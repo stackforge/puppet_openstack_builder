@@ -10,6 +10,7 @@ debug:
   - quatum::agents::metadata::debug
   - ceilometer::debug
   - heat::debug
+  - nova::debug
 verbose:
   - cinder::verbose
   - glance::api::verbose
@@ -19,6 +20,7 @@ verbose:
   - neutron::verbose
   - ceilometer::verbose
   - heat::verbose
+  - nova::verbose
 admin_email:
   - keystone::roles::admin::email
   - ceilometer::keystone::auth::email

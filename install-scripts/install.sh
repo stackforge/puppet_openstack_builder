@@ -80,7 +80,7 @@ if ${master}; then
   sed -e "s/scenario: .*/scenario: ${scenario}/" -i ~/puppet_openstack_builder/data/config.yaml
 
   if [ "${scenario}" == "all_in_one" ] ; then
-    echo `hostname`: all_in_one >> ~/puppet_openstack_builder/data/role_mappings.yaml
+    echo `hostname -s`: all_in_one >> ~/puppet_openstack_builder/data/role_mappings.yaml
     cat > ~/puppet_openstack_builder/data/hiera_data/user.yaml<<EOF
 domain_name: "${domain}"
 ntp_servers:

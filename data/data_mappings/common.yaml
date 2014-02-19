@@ -148,11 +148,11 @@ swift_local_net_ip:
 "%{db_type}://keystone:%{keystone_db_password}@%{controller_internal_address}/keystone":
   - keystone::sql_connection
 "%{db_type}://nova:%{nova_db_password}@%{controller_internal_address}/nova":
-  - nova::sql_connection
+  - nova::database_connection
 "%{db_type}://%{network_service}:%{network_db_password}@%{controller_internal_address}/%{network_service}":
   - quantum::plugins::ovs::sql_connection
   - quantum::plugins::linuxbridge::sql_connection
-  - neutron::server::sql_connection
+  - neutron::server::database_connection
 #"%{ceilometer_db_type}://ceilometer:%{ceilometer_db_password}@%{controller_internal_address}/ceilometer":
 # NOTE: Workaround for connection issues with mongo
 "%{ceilometer_db_type}://localhost:27017/ceilometer":

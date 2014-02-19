@@ -4,10 +4,10 @@ sql_idle_timeout:
   - keystone::idle_timeout
   - glance::registry::sql_idle_timeout
   - glance::api::sql_idle_timeout
-  - nova::sql_idle_timeout
+  - nova::database_idle_timeout
   - cinder::sql_idle_timeout
   - quantum::plugins::ovs::sql_idle_timeout
-  - neutron::server::sql_idle_timeout
+  - neutron::server::database_idle_timeout
 rabbit_hosts:
   - quantum::rabbit_hosts
   - neutron::rabbit_hosts
@@ -51,11 +51,11 @@ bind_address:
 "mysql://keystone:%{keystone_db_password}@%{controller_internal_address}/keystone":
   - keystone::sql_connection
 "mysql://nova:%{nova_db_password}@%{controller_internal_address}/nova":
-  - nova::sql_connection
+  - nova::database_connection
 "mysql://%{network_service}:%{network_db_password}@%{controller_internal_address}/%{network_service}?charset=utf8":
   - quantum::plugins::ovs::sql_connection
   - quantum::plugins::linuxbridge::sql_connection
-  - neutron::server::sql_connection
+  - neutron::server::database_connection
 "mysql://heat:%{heat_db_password}@%{controller_internal_address}/heat":
   - heat::sql_connection
 "http://%{controller_public_address}:5000/v2.0/":

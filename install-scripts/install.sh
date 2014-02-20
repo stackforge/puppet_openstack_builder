@@ -127,10 +127,11 @@ EOF
   cp -R ~/puppet_openstack_builder/data /etc/puppet/
   cp -R ~/puppet_openstack_builder/manifests /etc/puppet/
   cp -R ~/puppet_openstack_builder/templates /etc/puppet/
-  cp -R ~/puppet_openstack_builder/scripts /etc/puppet/
+  if [ -d ~/puppet_openstack_builder/scripts ] ; then
+    cp -R ~/puppet_openstack_builder/scripts /etc/puppet/
+  fi
 
   export FACTER_build_server=${build_server}
-
 fi
 
 export FACTER_build_server_domain_name=${domain}

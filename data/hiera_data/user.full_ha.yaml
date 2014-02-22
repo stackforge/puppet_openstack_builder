@@ -42,6 +42,10 @@ openstack-ha::load-balancer::controller_ipaddresses:
   - 192.168.220.41
   - 192.168.220.42
   - 192.168.220.43
+# controller_vrid sets the VRID of the VRRP router used for HA of OpenStack
+# control services. Change this if the default value conflicts with
+# existing VRRP groups in your environment.
+openstack-ha::load-balancer::controller_vrid: '50'
 # swift_proxy_names sets the short hostnames (not FQDN) of the Swift
 # proxy nodes.
 openstack-ha::load-balancer::swift_proxy_names:
@@ -52,6 +56,10 @@ openstack-ha::load-balancer::swift_proxy_names:
 openstack-ha::load-balancer::swift_proxy_ipaddresses:
   - 192.168.220.61
   - 192.168.220.62
+# swift_vrid sets the VRID of the VRRP router used for HA of Swift
+# services. Change this if the default value conflicts with existing
+# VRRP groups in your environment.
+openstack-ha::load-balancer::swift_vrid: '51'
 # memcached_servers lists the real IP addresses and ports of the
 # memcached services on the controller nodes.
 nova::memcached_servers:

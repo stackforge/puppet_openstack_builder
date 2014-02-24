@@ -122,6 +122,16 @@ controller_public_address:
   - swift::keystone::auth::public_address
   - ceilometer::keystone::auth::public_address
   - openstack::swift::proxy::swift_proxy_net_ip
+controller_public_protocol:
+  - ceilometer::keystone::auth::public_protocol
+  - cinder::keystone::auth::public_protocol
+  - glance::keystone::auth::public_protocol
+  - heat::keystone::auth::public_protocol
+  - heat::keystone::auth_cfn::public_protocol
+  - keystone::endpoint::public_protocol
+  - neutron::keystone::auth::public_protocol
+  - nova::keystone::auth::public_protocol
+  - swift::keystone::auth::public_protocol
 controller_admin_address:
   - cinder::keystone::auth::admin_address
   - glance::keystone::auth::admin_address

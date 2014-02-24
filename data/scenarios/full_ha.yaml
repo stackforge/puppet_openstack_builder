@@ -13,6 +13,7 @@ roles:
       - naginator::control_target
       - coe::base
       - coe::network::interface
+      - mongodb::replset
     class_groups:
       - controller
       - provider_network_controller

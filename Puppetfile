@@ -29,7 +29,7 @@ end
 
 if ENV['repos_to_use']  == 'downstream'
   # this assumes downstream which is the Cisco branches
-  branch_name               = "origin/#{openstack_version}"
+  branch_name               = "#{openstack_version}"
   cisco_branch_name         = branch_name
   openstack_module_branch   = branch_name
   openstack_module_account  = 'CiscoSystems'
@@ -39,7 +39,7 @@ if ENV['repos_to_use']  == 'downstream'
   rabbitmq_branch = branch_name
 else
   if openstack_version == 'grizzly'
-    openstack_module_branch   = 'origin/stable/grizzly'
+    openstack_module_branch   = 'stable/grizzly'
   elsif openstack_version == 'havana'
     openstack_module_branch   = 'master'
   else
@@ -47,12 +47,12 @@ else
   end
   # use the upstream modules where they exist
   branch_name               = 'master'
-  cisco_branch_name         = "origin/#{openstack_version}"
+  cisco_branch_name         = "#{openstack_version}"
   openstack_module_account  = 'stackforge'
   puppetlabs_module_prefix  = 'puppetlabs/puppetlabs-'
-  apache_branch   = 'origin/0.x'
-  mysql_branch    = 'origin/0.x'
-  rabbitmq_branch = 'origin/2.x'
+  apache_branch   = '0.x'
+  mysql_branch    = '0.x'
+  rabbitmq_branch = '2.x'
 end
 
 base_url = "#{git_protocol}://github.com"

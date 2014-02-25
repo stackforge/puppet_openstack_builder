@@ -42,6 +42,9 @@ bind_address:
   - galera::monitor::monitor_hostname
   - quantum::bind_host
   - neutron::bind_host
+  - heat::api::bind_host
+  - heat::api_cfn::bind_host
+  - heat::api_cloudwatch::bind_host
   - openstack::swift::proxy::swift_proxy_net_ip
 "mysql://cinder:%{cinder_db_password}@%{controller_internal_address}/cinder?charset=utf8":
   - cinder::sql_connection

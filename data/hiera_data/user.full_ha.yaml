@@ -77,6 +77,14 @@ rabbit_hosts:
   - control01:5672
   - control02:5672
   - control03:5672
+# The short hostnames and port numbers of the hosts on which
+# mongodb is running
+mongodb::replset::sets:
+  rsmain:
+    members:
+      - control01:27017
+      - control02:27017
+      - control03:27017
 # bind_address specifies the IP address on each control node to which
 # the OpenStack APIs should bind.
 bind_address: "%{ipaddress_eth0}"

@@ -210,6 +210,10 @@ swift_local_net_ip:
   - heat::engine::heat_waitcondition_server_url
 "http://%{controller_internal_address}:8003":
   - heat::engine::heat_watch_server_url
+"%{controller_public_protocol}://%{controller_public_address}:5000/v2.0/":
+  - keystone::public_endpoint
+"%{controller_public_protocol}://%{controller_admin_address}:35357/v2.0/":
+  - keystone::admin_endpoint
 # cisco specific data
 build_node_name:
   - coe::base::build_node_name
@@ -307,3 +311,16 @@ region:
   - ceilometer::keystone::auth::region
 neutron_sync_db:
   - neutron::server::sync_db
+# SSL support
+enable_ssl:
+  - keystone::enable_ssl
+ssl_certfile:
+  - keystone::ssl_certfile
+ssl_keyfile:
+  - keystone::ssl_keyfile
+ssl_ca_certs:
+  - keystone::ssl_ca_certs
+ssl_ca_key:
+  - keystone::ssl_ca_key
+ssl_cert_subject:
+  - keystone::ssl_cert_subject

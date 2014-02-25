@@ -329,3 +329,30 @@ horizon_neutron_options:
 # connection information is only located in the neutron.conf file
 # rather than also being present in the Neturon plugin's conf file.
 neutron_sync_db: false
+
+## The following parameters are used to enable SSL endpoint support
+# in keystone.
+
+# Enable ssl in keystone config
+enable_ssl: false
+
+### NOTE: If enable_ssl is true, Replace the following lines
+### with valid SSL certs. To generate you own self signed certs
+### refer to the instructions from the following url
+### https://help.ubuntu.com/12.04/serverguide/certificates-and-security.html
+### After generating your certs, make sure the certs are copied
+### to /etc/keystone/ssl/ on your control nodes and rerun puppet agent.
+# SSL client certificate
+ssl_certfile: '/etc/keystone/ssl/certs/keystone.pem'
+
+# SSL certificate key
+ssl_keyfile:  '/etc/keystone/ssl/private/keystonekey.pem'
+
+# SSL CA Cert
+ssl_ca_certs: '/etc/keystone/ssl/certs/ca.pem'
+
+# SSL CA Key
+ssl_ca_key: '/etc/keystone/ssl/private/cakey.pem'
+
+# SSL cert subject
+ssl_cert_subject: '/C=US/ST=Unset/L=Unset/O=Unset/CN=localhost'

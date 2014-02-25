@@ -195,3 +195,6 @@ openstack::provision::public_network_name: nova
 # Syslog
 use_syslog: false
 log_facility: LOG_USER
+
+# Enable nova services.
+enable_nova: true

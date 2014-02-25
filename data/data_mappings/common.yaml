@@ -216,3 +216,15 @@ log_facility:
   - keystone::log_facility
   - neutron::log_facility
   - nova::log_facility
+enable_nova:
+  - nova::cert::enabled
+  - nova::api::enabled
+  - nova::compute::enabled
+  - nova::conductor::enabled
+  - nova::consoleauth::enabled
+  - nova::network::enabled
+  - nova::objectstore::enabled
+  - nova::qpid::enabled
+  - nova::scheduler::enabled
+  - nova::vncproxy::enabled
+  - nova::volume::enabled

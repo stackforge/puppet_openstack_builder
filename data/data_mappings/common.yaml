@@ -169,6 +169,8 @@ swift_local_net_ip:
   - neutron::agents::metadata::auth_url
   - ceilometer::agent::compute::auth_url
   - ceilometer::agent::auth::auth_url
+"http://%{controller_internal_address}:5000/v2.0/ec2tokens":
+  - heat::keystone_ec2_uri
 "%{controller_internal_address}:9292":
   - nova::glance_api_servers
 "http://%{controller_internal_address}:8000":

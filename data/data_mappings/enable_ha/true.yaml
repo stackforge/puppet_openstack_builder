@@ -13,6 +13,7 @@ rabbit_hosts:
   - neutron::rabbit_hosts
   - nova::rabbit_hosts
   - cinder::rabbit_hosts
+  - heat::rabbit_hosts
 localhost:
   - ceilometer::db::mysql::host
   - cinder::db::mysql::host

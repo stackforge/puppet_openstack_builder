@@ -289,3 +289,26 @@ cinder_rbd_secret_uuid: 'e80afa94-a64c-486c-9e34-d55e85f26406'
 
 # The name of the pool used to store glance images.
 glance_ceph_pool: 'images'
+
+### The following parameters relate to Neutron L4-L7 services.
+
+# A boolean specifying whether to enable the Neutron Load Balancing
+# as a Service agent.
+enable_lbaas: true
+
+# A boolean specifying whether to enable the Neutron Firewall as
+# a Service feature.
+enable_fwaas: true
+
+# An array of Neutron service plugins to enable.
+service_plugins:
+  - 'neutron.services.loadbalancer.plugin.LoadBalancerPlugin'
+  - 'neutron.services.firewall.fwaas_plugin.FirewallPlugin'
+
+# A hash of Neutron services to enable GUI support for in Horizon.
+# enable_lb: Enables Neutron LBaaS agent support.
+# enable_firewall: Enables Neutron FWaaS support.
+# enable_vpn: Enables Neutron VPNaaS support
+horizon_neutron_options:
+  'enable_lb': true
+  'enable_firewall': true

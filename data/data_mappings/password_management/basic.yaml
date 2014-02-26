@@ -1,4 +1,3 @@
-#
 # manages all credentials using a single password.
 # It allows for fewer parameters, but has some
 # security implications.
@@ -23,6 +22,8 @@ password:
   - quantum::qpid_password
   - neutron::rabbit_password
   - neutron::qpid_password
+  - glance::notify::rabbitmq::rabbit_password
+  - glance::notify::qpid::qpid_password
   - cinder::db::mysql::password
   - cinder::db::postgresql::password
   - glance::db::mysql::password

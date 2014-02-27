@@ -35,6 +35,10 @@ domain_name: domain.name
 # load balancers, not the address of the control node itself.
 controller_public_address: 192.168.242.10
 
+# The protocol used to access API services on the control node.
+# Can be 'http' or 'https'.
+controller_public_protocol: 'http'
+
 # The IP address used for internal communication with the control node.
 # In the compressed_ha or full_ha scenarios, this will be an address
 # to be configured as a VIP on the HAProxy load balancers, not the address

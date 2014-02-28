@@ -2,5 +2,7 @@ classes:
   - "%{network_service}"
   - "%{network_service}::agents::metadata"
   - "%{network_service}::agents::l3"
+  - "%{network_service}::agents::lbaas"
   - "%{network_service}::agents::dhcp"
   - "%{network_service}::agents::%{network_plugin}"
+  - "%{network_service}::services::fwaas"

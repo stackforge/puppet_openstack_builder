@@ -6,6 +6,7 @@ debug:
   - keystone::debug
   - quantum::debug
   - neutron::debug
+  - neutron::agents::lbaas::debug
   - quatum::agents::dhcp::debug
   - quatum::agents::metadata::debug
   - ceilometer::debug
@@ -260,3 +261,11 @@ enable_nova:
   - nova::scheduler::enabled
   - nova::vncproxy::enabled
   - nova::volume::enabled
+enable_lbaas:
+  - neutron::agents::lbaas::enabled
+enable_fwaas:
+  - neutron::services::fwaas::enabled
+service_plugins:
+  - neutron::service_plugins
+horizon_neutron_options:
+  - horizon::neutron_options

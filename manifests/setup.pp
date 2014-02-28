@@ -96,6 +96,15 @@ if $::puppet_run_mode != 'agent' {
     value   => 'scenario',
     require => Package['puppet'],
   }
+
+  ini_setting {'puppetmastername':
+    ensure  => present,
+    path    => '/etc/puppet/puppet.conf',
+    section => 'agent',
+    setting => 'server',
+    value   => "${::hostname}.${::build_server_domain_name}",
+    require => Package['puppet'],
+  }
 }
 
 # Lay down a file that can be used for subsequent runs to puppet. Often, the

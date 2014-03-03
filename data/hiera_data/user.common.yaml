@@ -304,10 +304,15 @@ enable_lbaas: true
 # a Service feature.
 enable_fwaas: true
 
+# A boolean specifying whether to enable the Neutron VPN as a
+# Service feature.
+enable_vpnaas: true
+
 # An array of Neutron service plugins to enable.
 service_plugins:
   - 'neutron.services.loadbalancer.plugin.LoadBalancerPlugin'
   - 'neutron.services.firewall.fwaas_plugin.FirewallPlugin'
+  - 'neutron.services.vpn.plugin.VPNDriverPlugin'
 
 # A hash of Neutron services to enable GUI support for in Horizon.
 # enable_lb: Enables Neutron LBaaS agent support.
@@ -316,3 +321,4 @@ service_plugins:
 horizon_neutron_options:
   'enable_lb': true
   'enable_firewall': true
+  'enable_vpn': true

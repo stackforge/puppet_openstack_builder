@@ -78,6 +78,13 @@ nova::compute::libvirt::vncserver_listen: 0.0.0.0
 # vncserver_listen also must be set to 0.0.0.0
 nova::compute::libvirt::migration_support: true
 
+# Set the libvirt CPU mode.  Setting 'false' here will use
+# 'host-model' on Qemu/KVM and 'None' on other hypervisors.
+# For most users the defaults are fine, but you may wish to
+# change the setting if you're using nested virtualization or
+# wish to expose different CPU settings.
+nova::compute::libvirt::libvirt_cpu_mode: false
+
 # Normally Nova uses the metadata service to pass configuration data
 # to instances.  However the metadata services depends on network
 # connectivity and can be problematic in some scenarios.  An alternative

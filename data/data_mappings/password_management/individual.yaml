@@ -51,6 +51,7 @@ swift_service_password:
 swift_hash:
   - openstack::swift::proxy::swift_hash_suffix
   - openstack::swift::storage-node::swift_hash_suffix
+  - swift::swift_hash_suffix
 rpc_password:
   - cinder::rabbit_password
   - cinder::qpid_password

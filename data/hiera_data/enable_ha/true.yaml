@@ -42,4 +42,4 @@ nova::compute::libvirt::libvirt_type: kvm
 # mongo replica set name
 mongodb::replset: 'rsmain'
 # mongodb bind addresses
-mongodb::bind_ip: ['127.0.0.1', "%{ipaddress_eth0}"]
+mongodb::bind_ip: ['127.0.0.1', "%{ipaddress}"]

@@ -70,6 +70,15 @@ package_ensure: present
 # overridden by a higher-level yaml file such as user.$scenario.yaml.
 nova::compute::libvirt::libvirt_type: qemu
 
+# The disk_cachemodes setting in nova.conf can be useful for
+# improving the performance of instance launches and tuning
+# I/O.  By default it's set to an empty list and therefore
+# isn't propagated to nova.conf.  If you wish to set cachemodes,
+# uncomment the lines below and adjust accordingly.
+#nova::compute::libvirt::libvirt_disk_cachemodes:
+#  - 'file=writethrough'
+#  - 'block=none'
+
 # The IP address on which vncserver should listen.  Setting to
 # 0.0.0.0 allows it to listen on all interfaces.
 nova::compute::libvirt::vncserver_listen: 0.0.0.0

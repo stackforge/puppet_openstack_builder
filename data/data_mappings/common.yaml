@@ -263,6 +263,8 @@ enable_nova:
   - nova::volume::enabled
 enable_lbaas:
   - neutron::agents::lbaas::enabled
+enable_vpnaas:
+  - neutron::agents::vpnaas::enabled
 enable_fwaas:
   - neutron::services::fwaas::enabled
 service_plugins:

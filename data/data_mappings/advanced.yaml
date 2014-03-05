@@ -19,6 +19,7 @@ package_ensure:
   - ceilometer::package_ensure
   - heat::package_ensure
   - ntp::package_ensure
+  - neutron::agents::vpnaas::package_ensure
 region:
   - cinder::keystone::auth::region
   - glance:keystone::auth::region

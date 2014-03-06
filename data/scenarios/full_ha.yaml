@@ -24,7 +24,18 @@ roles:
       - coe::network::interface
       - mongodb::replset
     class_groups:
-      - controller
+      - glance_all
+      - keystone_all
+      - cinder_controller
+      - nova_controller
+      - horizon
+      - ceilometer_controller
+      - heat_all
+      - "%{db_type}_database"
+      - "nova::%{rpc_type}"
+      - "%{network_service}"
+      - "%{network_service}::plugins::%{network_plugin}"
+      - "%{network_service}::server"
       - provider_network_controller
       - test_file
   load_balancer:
@@ -37,7 +48,9 @@ roles:
       - coe::network::interface
       - cinder::setup_test_volume
     class_groups:
-      - compute
+      - nova_compute
+      - cinder_volume
+      - ceilometer_compute
       - ceph_osd
   compute_without_osd:
     classes:

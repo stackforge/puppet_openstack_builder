@@ -12,7 +12,18 @@ roles:
     classes:
       - coe::base
     class_groups:
-      - controller
+      - glance_all
+      - keystone_all
+      - cinder_controller
+      - nova_controller
+      - horizon
+      - ceilometer_controller
+      - heat_all
+      - "%{db_type}_database"
+      - "nova::%{rpc_type}"
+      - "%{network_service}"
+      - "%{network_service}::plugins::%{network_plugin}"
+      - "%{network_service}::server"
       - network_controller
       - test_file
   swift_proxy:

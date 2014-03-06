@@ -356,3 +356,20 @@ ssl_ca_key: '/etc/keystone/ssl/private/cakey.pem'
 
 # SSL cert subject
 ssl_cert_subject: '/C=US/ST=Unset/L=Unset/O=Unset/CN=localhost'
+
+## NFS Live migration options ##
+# If on a debian-based distro, you must also set the nova uid/gid
+# when using live migration. This is not needed for RHEL distros
+# as they predefine the uid/gid.
+
+# migration_support: enable NFS mount handling.
+# nfs_mount_path:  the path where nova instances are stored.
+# nfs_mount_device: the full path to your NFS resource.
+# nfs_fs_type: the mount type.
+# nfs_mount_options: options, as they would appear in fstab
+# Example config:
+#  coe::compute::migration::migration_support: true
+#  coe::compute::migration::nfs_mount_path: '/var/lib/nova/instances'
+#  coe::compute::migration::nfs_mount_device: 'nfs.domain.com:/myinstances'
+#  coe::compute::migration::nfs_fs_type: 'nfs'
+#  coe::compute::migration::nfs_mount_options: 'auto'

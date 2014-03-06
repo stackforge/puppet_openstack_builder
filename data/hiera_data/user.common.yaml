@@ -156,7 +156,7 @@ ceilometer_metering_secret: ceilometer_metering_secret
 ceilometer_db_password: ceilometer
 heat_db_password: heat
 heat_service_password: heat_pass
-heat::engine::auth_encryption_key: 'encryption_key'
+heat::engine::auth_encryption_key: 'notgood but just long enough i think'
 
 # Set this parameter to use a single secret for the Horizon secret
 # key, neutron agents, Nova API metadata proxies, swift hashes,etc.

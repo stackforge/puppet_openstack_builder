@@ -56,6 +56,8 @@ openstack-ha::load-balancer::swift_proxy_names:
 openstack-ha::load-balancer::swift_proxy_ipaddresses:
   - 192.168.220.61
   - 192.168.220.62
+# swift_proxy_net_ip lists the VIP used in front of swift_proxy_ipaddresses
+openstack::swift::proxy::swift_proxy_net_ip: 192.168.220.60
 # swift_vrid sets the VRID of the VRRP router used for HA of Swift
 # services. Change this if the default value conflicts with existing
 # VRRP groups in your environment.

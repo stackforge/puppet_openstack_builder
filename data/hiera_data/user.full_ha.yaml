@@ -91,9 +91,14 @@ mongodb::replset::sets:
 # the OpenStack APIs should bind.
 bind_address: "%{ipaddress_eth0}"
 
-# iscsi_ip_address specifies the IP address on each control node to
-# which the Cinder iSCSI services should bind.
-cinder::volume::iscsi::iscsi_ip_address: "%{ipaddress_eth0}"
+# If you wish to use Cinder iSCSI, then uncomment and configure this
+# line. Full HA defaults to using ceph, which does not need this param.
+# Ceph settings are configured in user.common.yaml
+# cinder::volume::iscsi::iscsi_ip_address: "%{ipaddress_eth0}"
+
+# cinder_backend configures cinder with specific volume driver(s).
+# in full_ha, Ceph is the source for block storage
+cinder_backend: rbd
 
 # full_ha uses the OpenStack provider networking model. In this model,
 # network_vlan_ranges specifies the VLAN tag range being provided to OVS.

@@ -214,3 +214,10 @@ log_facility: LOG_USER
 
 # Enable nova services.
 enable_nova: true
+
+# Package status
+ensure_package: installed
+
+# Endpoint region
+region: RegionOne
+

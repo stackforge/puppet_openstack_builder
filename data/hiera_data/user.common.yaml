@@ -125,7 +125,7 @@ install_drive: /dev/sda
 
 # Uncomment this line and set it to true if you want to use bonded
 # ethernet interfaces.
-#interface_bonding = 'true'
+#interface_bonding: true
 
 # The IP address on which vncserver proxyclient should listen.
 # This should generally be an address that is accessible via

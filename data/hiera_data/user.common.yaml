@@ -322,3 +322,10 @@ horizon_neutron_options:
   'enable_lb': true
   'enable_firewall': true
   'enable_vpn': true
+
+# A boolean stating whether to run a "neutron-db-manage" on the
+# nodes running neutron-server after installing packages.  In most
+# cases this is not necessary and may cause problems if the database
+# connection information is only located in the neutron.conf file
+# rather than also being present in the Neturon plugin's conf file.
+neutron_sync_db: false

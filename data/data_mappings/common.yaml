@@ -305,3 +305,5 @@ region:
   - quantum::agents::metadata::auth_region
   - neutron::agents::metadata::auth_region
   - ceilometer::keystone::auth::region
+neutron_sync_db:
+  - neutron::server::sync_db

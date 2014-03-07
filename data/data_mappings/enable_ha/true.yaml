@@ -8,6 +8,7 @@ sql_idle_timeout:
   - cinder::sql_idle_timeout
   - quantum::plugins::ovs::sql_idle_timeout
   - neutron::server::database_idle_timeout
+  - heat::database_idle_timeout
 rabbit_hosts:
   - quantum::rabbit_hosts
   - neutron::rabbit_hosts

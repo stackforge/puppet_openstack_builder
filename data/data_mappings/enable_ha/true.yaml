@@ -75,8 +75,10 @@ swift_internal_address:
   - openstack-ha::load-balancer::swift_proxy_virtual_ip
 swift_public_address:
   - swift::keystone::auth::public_address
+swift_storage_interface:
+  - openstack-ha::load-balancer::swift_proxy_interface
 private_interface:
-  - openstack-ha::load-balancer::keepalived_interface
+  - openstack-ha::load-balancer::controller_interface
 controller_names:
   - nova::rabbitmq::cluster_disk_nodes
   - openstack-ha::load-balancer::controller_names

@@ -1,6 +1,6 @@
-ceph_deploy_password:
-  - cephdeploy::pass
-  - cephdeploy::baseconfig::pass
-ceph_deploy_user:
-  - cephdeploy::user
-  - cephdeploy::baseconfig::user
+ceph_openstack_user:
+  - glance::backend::rbd::rbd_store_user
+ceph_configuration_file:
+  - glance::backend::rbd::rbd_store_ceph_conf
+glance_ceph_pool:
+  - glance::backend::rbd::rbd_store_pool

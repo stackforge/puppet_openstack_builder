@@ -229,9 +229,15 @@ glance::backend::swift::swift_store_key: secret_key
 # to the Swift cluster.
 glance::backend::swift::swift_store_auth_address: '127.0.0.1'
 
+# The volume name when using iSCSI for cinder
+cinder_volumes_name: 'cinder-volumes'
+
 ### Ceph configuration
 # The name of the Ceph cluster to be deployed.
 ceph_cluster_name: 'ceph'
+
+### Ceph configuration file
+ceph_configuration_file: '/etc/ceph/ceph.conf'
 
 # The FSID of the Ceph monitor node.  This should take the form
 # of a UUID.
@@ -251,6 +257,9 @@ ceph_primary_mon: 'ceph-mon01'
 
 # The IP address used to connect to the primary monitor node.
 ceph_monitor_address: '10.0.0.1'
+
+# The rbd account OpenStack will use to communicate with ceph.
+ceph_openstack_user: 'admin'
 
 # Ceph will be deployed using the cephdeploy tool.  This tool requires
 # a username and password to authenticate.
@@ -278,15 +287,8 @@ ceph_public_network: '10.0.0.0/24'
 # the line below.  It can also be set to 'iscsi'.
 #cinder_backend: rbd
 
-# The username Cinder should use to connect to the cluster.
-cinder_rbd_user: 'admin'
-
 # The name of the pool used to store Cinder volumes.`
 cinder_rbd_pool: 'volumes'
-
-# The UUID of the shared virsh secret used by Cinder to
-# authenticate to the Ceph cluster.
-cinder_rbd_secret_uuid: 'e80afa94-a64c-486c-9e34-d55e85f26406'
 
 ### The following parameter is used only if you are deploying Ceph
 ### as a backend for the Glance image service.

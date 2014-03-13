@@ -10,7 +10,7 @@ enabled: true
 #
 # always use the cisco repos when HA is enabled
 #
-coe::base::openstack_repo_location:  http://openstack-repo.cisco.com/openstack
+coe::base::openstack_repo_location:  http://openstack-repo.cisco.com/openstack/cisco
 coe::base::supplemental_repo: http://openstack-repo.cisco.com/openstack/cisco_supplemental
 coe::base::package_repo: cisco_repo
 

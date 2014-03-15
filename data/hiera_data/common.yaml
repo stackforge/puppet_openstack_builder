@@ -114,7 +114,7 @@ nova::compute::force_config_drive: true
 coe::base::package_repo: cloud_archive
 
 # The base version of OpenStack to be installed (e.g. 'havana').
-openstack_release: havana
+openstack_release: icehouse
 
 # The name of the pocket to use for both
 # the supplemental and main repos.  This setting may not be useful for

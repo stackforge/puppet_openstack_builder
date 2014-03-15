@@ -13,10 +13,10 @@ export FACTER_vendorpuppet=vendor
 export install_type=deb
 
 # Add Cisco repo
-cat > /etc/apt/sources.list.d/cisco-openstack-mirror_havana.list<<EOF
-# cisco-openstack-mirror_havana
-deb http://openstack-repo.cisco.com/openstack/cisco havana-proposed main
-deb-src http://openstack-repo.cisco.com/openstack/cisco havana-proposed main
+cat > /etc/apt/sources.list.d/cisco-openstack-mirror_icehouse.list<<EOF
+# cisco-openstack-mirror_icehouse
+deb http://openstack-repo.cisco.com/openstack/cisco icehouse-proposed main
+deb-src http://openstack-repo.cisco.com/openstack/cisco icehouse-proposed main
 EOF
 
 echo "-----BEGIN PGP PUBLIC KEY BLOCK-----

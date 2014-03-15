@@ -3,7 +3,7 @@
 # this file also accepts a few environment variables
 #
 git_protocol=ENV['git_protocol'] || 'git'
-openstack_version=ENV['openstack_version'] || 'havana'
+openstack_version=ENV['openstack_version'] || 'icehouse'
 
 #
 # this modulefile has been configured to use two sets of repos.
@@ -17,8 +17,8 @@ openstack_version=ENV['openstack_version'] || 'havana'
 # work yet
 #
 
-unless ['grizzly', 'havana'].include?(openstack_version)
-  abort("Only grizzly and havana are currently supported")
+unless ['grizzly', 'havana', 'icehouse'].include?(openstack_version)
+  abort("Only grizzly, havana, and icehouse are currently supported")
 end
 
 if openstack_version == 'grizzly'
@@ -41,9 +41,11 @@ else
   if openstack_version == 'grizzly'
     openstack_module_branch   = 'stable/grizzly'
   elsif openstack_version == 'havana'
-    openstack_module_branch   = 'master'
+    openstack_module_branch   = 'stable/havana'
+  elsif openstack_version == 'icehouse'
+    openstack_module_branch   = 'stable/icehouse'
   else
-    abort('only grizzly and havana are supported atm')
+    abort('only grizzly, havana, and icehouse are supported')
   end
   # use the upstream modules where they exist
   branch_name               = 'master'

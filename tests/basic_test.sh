@@ -82,9 +82,9 @@ if [ -n "${openstack_package_repo:-}" ]; then
   fi
 fi
 
-if [ $openstack_version = 'havana' ];then
+if [ $openstack_version != 'grizzly' ];then
   echo 'network_service: neutron' >> data/global_hiera_params/jenkins.yaml
-elif [ $openstack_version = 'grizzly' ]; then
+else
   echo 'network_service: quantum' >> data/global_hiera_params/jenkins.yaml
 fi
 

@@ -364,6 +364,13 @@ ssl_cert_subject: '/C=US/ST=Unset/L=Unset/O=Unset/CN=localhost'
 # when using live migration. This is not needed for RHEL distros
 # as they predefine the uid/gid.
 
+# You can also manage the nova user's uid and gid. You will have to enable
+# this in order to use NFS or Ceph live migrations. This option should NOT
+# be used on RedHat platforms, as they already predefine the uid/gid for the
+# nova user.
+# nova::nova_user_id: '499'
+# nova::nova_group_id: '499'
+
 # migration_support: enable NFS mount handling.
 # nfs_mount_path:  the path where nova instances are stored.
 # nfs_mount_device: the full path to your NFS resource.

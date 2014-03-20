@@ -31,7 +31,7 @@ else
   apt-get update
 fi
 
-apt-get install -y git rubygems puppet
+apt-get install -y git puppet
 
 # use the domain name if one exists
 if [ "`hostname -d`" != '' ]; then

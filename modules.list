@@ -27,7 +27,6 @@ keystone
 memcached
 mongodb
 mysql
-naginator
 network
 neutron
 nova

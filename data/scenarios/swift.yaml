@@ -10,7 +10,6 @@ roles:
       - build
   controller:
     classes:
-      - naginator::control_target
       - coe::base
     class_groups:
       - controller

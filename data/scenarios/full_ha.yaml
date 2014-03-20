@@ -10,7 +10,6 @@ roles:
       - build
   controller:
     classes:
-      - naginator::control_target
       - coe::base
       - coe::network::interface
       - mongodb::replset
@@ -21,7 +20,6 @@ roles:
       - ceph_mon
   controller_without_mon:
     classes:
-      - naginator::control_target
       - coe::base
       - coe::network::interface
       - mongodb::replset
@@ -37,7 +35,6 @@ roles:
     classes:
       - coe::base
       - coe::network::interface
-      - naginator::compute_target
       - cinder::setup_test_volume
     class_groups:
       - compute
@@ -46,7 +43,6 @@ roles:
     classes:
       - coe::base
       - coe::network::interface
-      - naginator::compute_target
       - cinder::setup_test_volume
     class_groups:
       - compute

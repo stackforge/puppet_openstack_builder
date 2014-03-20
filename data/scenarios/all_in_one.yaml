@@ -5,7 +5,6 @@ roles:
   all_in_one:
     classes:
       - coe::base
-      - naginator::compute_target
       - cinder::setup_test_volume
       - openstack::swift::proxy
       - openstack::swift::storage-node
@@ -18,7 +17,6 @@ roles:
   compute:
     classes:
       - coe::base
-      - naginator::compute_target
       - cinder::setup_test_volume
     class_groups:
       - compute

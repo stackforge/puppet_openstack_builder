@@ -13,7 +13,6 @@ roles:
       - build
   controller:
     classes:
-      - naginator::control_target
       - coe::base
     class_groups:
       - controller
@@ -22,7 +21,6 @@ roles:
   compute:
     classes:
       - coe::base
-      - naginator::compute_target
       - cinder::setup_test_volume
     class_groups:
       - compute

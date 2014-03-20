@@ -1,6 +1,5 @@
 classes:
   - apache
-  - naginator
   - collectd
   # - coi::profiles::cobbler_server
   - coi::profiles::cache_server

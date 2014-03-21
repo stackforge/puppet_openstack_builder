@@ -25,7 +25,8 @@
 #   proposed pocket ('-proposed') or a snapshot ('/snapshots/h.0').
 coe::base::package_repo: cisco_repo
 openstack_repo_location: 'http://openstack-repo.cisco.com/openstack/cisco'
-supplemental_repo: 'http://openstack-repo.cisco.com/openstack/cisco_supplemental'
+# supplemental_repo is not needed for icehouse+trusty
+supplemental_repo: false
 puppet_repo_location: 'http://openstack-repo.cisco.com/openstack/puppet'
 puppet_repo: 'cisco_repo'
 pocket: ''

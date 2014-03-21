@@ -37,7 +37,7 @@ localhost: 127.0.0.1
 
 nova::api::enabled_apis: 'ec2,osapi_compute'
 
-nova::compute::libvirt::libvirt_type: kvm
+nova::compute::libvirt::libvirt_virt_type: kvm
 
 # mongo replica set name
 mongodb::replset: 'rsmain'

@@ -53,7 +53,7 @@ else
   openstack_module_account  = 'stackforge'
   puppetlabs_module_prefix  = 'puppetlabs/puppetlabs-'
   apache_branch   = '0.x'
-  mysql_branch    = '0.x'
+  mysql_branch    = '2.2.x'
   rabbitmq_branch = '2.x'
 end
 

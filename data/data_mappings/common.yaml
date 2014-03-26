@@ -184,9 +184,9 @@ swift_local_net_ip:
   - quantum::plugins::ovs::sql_connection
   - quantum::plugins::linuxbridge::sql_connection
   - neutron::server::database_connection
-#"%{ceilometer_db_type}://ceilometer:%{ceilometer_db_password}@%{controller_internal_address}/ceilometer":
+"%{ceilometer_db_type}://ceilometer:%{ceilometer_db_password}@%{controller_internal_address}/ceilometer":
 # NOTE: Workaround for connection issues with mongo
-"%{ceilometer_db_type}://localhost:27017/ceilometer":
+#"%{ceilometer_db_type}://localhost:27017/ceilometer":
   - ceilometer::db::database_connection
 "%{db_type}://heat:%{heat_db_password}@%{controller_internal_address}/heat":
   - heat::sql_connection

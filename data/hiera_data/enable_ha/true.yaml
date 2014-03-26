@@ -40,7 +40,9 @@ nova::api::enabled_apis: 'ec2,osapi_compute'
 
 nova::compute::libvirt::libvirt_virt_type: kvm
 
+# NOTE: Uncomment the following with appropriate values if using mongo
+# as backend for ceilometer
 # mongo replica set name
-mongodb::replset: 'rsmain'
+#mongodb::replset: 'rsmain'
 # mongodb bind addresses
-mongodb::bind_ip: ['127.0.0.1', "%{ipaddress}"]
+#mongodb::bind_ip: ['127.0.0.1', "%{ipaddress}"]

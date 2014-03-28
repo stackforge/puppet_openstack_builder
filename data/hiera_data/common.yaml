@@ -68,7 +68,7 @@ package_ensure: present
 # default to allow OpenStack to be deployed in nested virt setups
 # (common in CI or automated testing setups), but is frequently
 # overridden by a higher-level yaml file such as user.$scenario.yaml.
-nova::compute::libvirt::libvirt_type: qemu
+nova::compute::libvirt::libvirt_virt_type: qemu
 
 # The disk_cachemodes setting in nova.conf can be useful for
 # improving the performance of instance launches and tuning

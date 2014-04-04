@@ -3,6 +3,10 @@
 # this script converts the node
 # it runs on into a puppetmaster/build-server
 #
+# log the output (stdout and stderr) to a log file
+# this will help if something goes wrong in the intial
+# installation step
+exec 1> /var/log/puppet_openstack_builder_install.log 2>&1
 set -u
 set -x
 set -e

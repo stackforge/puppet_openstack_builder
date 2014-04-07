@@ -1,0 +1,208 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+require 'yaml'
+require 'fileutils'
+
+# Four networks:
+# 0 - VM host NAT
+# 1 - COE build/deploy
+# 2 - COE openstack internal
+# 3 - COE openstack external (public)
+
+def parse_vagrant_config(
+  config_file=File.expand_path(File.join(File.dirname(__FILE__), 'data', 'config.yaml'))
+)
+  config = {
+    'gui_mode'        => false,
+    'operatingsystem' => 'redhat',
+    'verbose'         => false,
+    'update_repos'    => true,
+    'scenario'        => 'stacktira'
+  }
+  if File.exists?(config_file)
+    overrides = YAML.load_file(config_file)
+    config.merge!(overrides)
+  end
+  config
+end
+
+#
+# process the node group that is used to determine the
+# nodes that should be provisioned. The group of nodes
+# can be set with the node_group param from config.yaml
+# and maps to its corresponding file in the nodes directory.
+#
+def process_nodes(config)
+
+  v_config = parse_vagrant_config
+
+  node_group      = v_config['scenario']
+  node_group_file = File.expand_path(File.join(File.dirname(__FILE__), 'data', 'nodes', "#{node_group}.yaml"))
+
+  abort('node_group much be specific in config') unless node_group
+  abort('file must exist for node group') unless File.exists?(node_group_file)
+
+  (YAML.load_file(node_group_file)['nodes'] || {}).each do |name, options|
+    config.vm.define(options['vagrant_name'] || name) do |config|
+      configure_openstack_node(
+        config,
+        name,
+        options['memory'],
+        options['image_name'] || v_config['operatingsystem'],
+        options['ip_number'],
+        options['puppet_type'] || 'agent',
+        v_config,
+        options['environment'],
+        options['role'],
+        options['network'],
+        options['post_config']
+      )
+    end
+  end
+end
+
+# get the correct box based on the specidied type
+# currently, this just retrieves a single box for precise64
+def get_box(config, box_type)
+  if box_type == 'precise64' || box_type == 'ubuntu'
+    config.vm.box     = 'precise64'
+    config.vm.box_url = 'http://files.vagrantup.com/precise64.box'
+  elsif box_type == 'centos' || box_type == 'redhat'
+    config.vm.box     = 'centos64'
+    config.vm.box_url = 'http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-x86_64-v20130427.box'
+  else
+    abort("Box type: #{box_type} is no good.")
+  end
+end
+
+#
+# setup networks for openstack. Currently, this just sets up
+# 4 virtual interfaces as follows:
+#
+#   * eth1 => 192.168.242.0/24
+#     this is the network that the openstack services use to communicate with each other
+#   * eth2 => 10.2.3.0/24
+#   * eth3 => 10.2.3.0/24
+#
+# == Parameters
+#   config - vm config object
+#   number - the lowest octal in a /24 network
+#   options - additional options
+#     eth1_mac - mac address to set for eth1 (used for PXE booting)
+#
+def setup_networks(config, number, network)
+  config.vm.network "private_network", :ip => "192.168.242.#{number}"
+  config.vm.network "private_network", ip: "#{network}.2.3.#{number}"
+  config.vm.network "private_network", ip: "#{network}.3.3.#{number}"
+  # set eth3 in promiscuos mode
+  config.vm.provider "virtualbox" do |vconfig|
+    vconfig.customize ["modifyvm", :id, "--nicpromisc3", "allow-all"]
+  # set the boot priority to use eth1
+    vconfig.customize(['modifyvm', :id ,'--nicbootprio2','1'])
+  end
+end
+
+#
+# setup the hostname of our box
+#
+def setup_hostname(config, hostname)
+  config.vm.provider "virtualbox" do |vconfig|
+    vconfig.customize ['modifyvm', :id, '--name', hostname]
+  end
+  config.vm.host_name = hostname
+end
+
+#
+# methods that performs all openstack config
+#
+def configure_openstack_node(
+  config,
+  node_name,
+  memory,
+  box_name,
+  net_id,
+  puppet_type,
+  v_config,
+  environment = false,
+  role = false,
+  network = false,
+  post_config = false
+)
+  cert_name = node_name
+  get_box(config, box_name)
+  setup_hostname(config, node_name)
+  config.vm.provider "virtualbox" do |vconfig|
+    vconfig.customize ["modifyvm", :id, "--memory", memory]
+  end
+
+  network ||= '10'
+  setup_networks(config, net_id, network)
+
+  config.vm.synced_folder "./modules", "/etc/puppet/modules"
+  config.vm.synced_folder "./", "/root/stacktira"
+
+  options = ''
+  if v_config['proxy']
+    options += " -p " + v_config['proxy']
+  end
+
+  if role
+    options += " -o " + role
+  end
+
+  if environment
+    options += " -e " + environment
+  end
+
+  config.vm.provision :shell do |shell|
+    shell.inline  = '/root/stacktira/contrib/aptira/installer/bootstrap.sh' + options
+  end
+
+  config.vm.provision :shell do |shell|
+    shell.inline  = 'puppet apply /etc/puppet/manifests/site.pp'
+  end
+
+  if post_config
+    Array(post_config).each do |shell_command|
+      config.vm.provision :shell do |shell|
+        shell.inline  = shell_command
+      end
+    end
+  end
+
+end
+
+Vagrant.configure("2") do |config|
+  process_nodes(config)
+end
+
+Vagrant.configure("2") do |config|
+  # A 'blank' node that will pxeboot on the first private network
+  # use this to test deployment tools like cobbler
+  config.vm.define "target" do |target|
+    target.vm.box = "blank"
+    # This IP won't actually come up - you'll need to run a dhcp
+    # server on another node
+    target.vm.network "private_network", ip: "192.168.242.55"
+    target.vm.provider "virtualbox" do |vconfig|
+      vconfig.customize ['modifyvm', :id ,'--nicbootprio2','1']
+      vconfig.customize ['modifyvm', :id ,'--memory','1024']
+      vconfig.gui = true
+    end
+  end
+
+  # a node with no mounts, that will test a web install
+  # hostname is also not set to force --certname usage
+  config.vm.define "rawbox" do |target|
+    target.vm.box = "centos64"
+    setup_networks(target, 150, '10')
+    config.vm.provision :shell do |shell|
+      shell.inline  = '\curl -sSL https://raw.github.com/michaeltchapman/puppet_openstack_builder/stacktira/contrib/aptira/installer/bootstrap.sh | bash'
+    end
+
+    config.vm.provision :shell do |shell|
+      shell.inline  = 'puppet apply /etc/puppet/manifests/site.pp --certname control1'
+    end
+  end
+end

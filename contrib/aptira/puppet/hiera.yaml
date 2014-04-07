@@ -1,0 +1,30 @@
+
+---
+:backends:
+  - yaml
+:yaml:
+   :datadir: /etc/puppet/data/hiera_data
+:hierarchy:
+  - "hostname/%{hostname}"
+  - "client/%{clientcert}"
+  - "user.%{role}"
+  - "user.%{environment}"
+  - user
+  - "user.%{scenario}"
+  - user.common
+  - "osfamily/%{osfamily}"
+  - "cinder_backend/%{cinder_backend}"
+  - "glance_backend/%{glance_backend}"
+  - "rpc_type/%{rpc_type}"
+  - "db_type/%{db_type}"
+  - "tenant_network_type/%{tenant_network_type}"
+  - "network_type/%{network_type}"
+  - "network_plugin/%{network_plugin}"
+  - "password_management/%{password_management}"
+  - "contrib/networking/%{networking}"
+  - "contrib/storage/%{storage}"
+  - "contrib/monitoring/%{monitoring}"
+  - "scenario/%{scenario}"
+  - "scenario/%{scenario}/%{role}"
+  - common
+  - class_groups

@@ -23,3 +23,8 @@ swift-proxy02: swift_proxy
 swift-storage01: swift_storage
 swift-storage02: swift_storage
 swift-storage03: swift_storage
+
+#Stacktira roles
+build.+: build
+compute.+: compute
+control.+: control

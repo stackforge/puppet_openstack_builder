@@ -287,9 +287,11 @@ fi
 # name
 ipaddress=$(facter ipaddress_$network)
 fqdn=$(facter hostname).$(hiera domain_name)
+facter_fqdn=$(facter fqdn)
 # If it doesn't match what puppet will be setting for fqdn, just redo
 # to the point where we can see the master and have fqdn
-if ! grep -q "$ipaddress\s$fqdn" /etc/hosts ; then
+if [ "${facter_fqdn}" != "${fqdn}" ] ; then
+  if ! grep -q "$ipaddress\s$fqdn" /etc/hosts ; then
     echo 'configuring /etc/hosts for fqdn'
     if [ -f /etc/redhat-release ] ; then
         echo "$ipaddress $fqdn $(hostname)" > /etc/hosts
@@ -302,6 +304,7 @@ if ! grep -q "$ipaddress\s$fqdn" /etc/hosts ; then
         echo "::1     localhost       localhost.localdomain localhost6 localhost6.localdomain6" >> /etc/hosts
         echo "$(hiera build_server_ip) $(hiera build_server_name) $(hiera build_server_name).$(hiera domain_name)" >> /etc/hosts
     fi
+  fi
 fi
 
 # install ntpdate if necessary

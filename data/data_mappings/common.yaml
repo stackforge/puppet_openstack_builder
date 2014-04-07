@@ -281,7 +281,10 @@ service_plugins:
   - neutron::service_plugins
 horizon_neutron_options:
   - horizon::neutron_options
-
+interface_driver:
+  - neutron::agents::vpnaas::interface_driver
+external_network_bridge:
+  - neutron::agents::vpnaas::external_network_bridge
 package_ensure:
   - cinder::api::package_ensure
   - cinder::scheduler::package_ensure

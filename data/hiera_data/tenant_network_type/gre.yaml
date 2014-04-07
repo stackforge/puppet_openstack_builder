@@ -1,7 +1,7 @@
 quantum::agents::ovs::bridge_mappings:
-  - "default:br-ex"
+  - "default:%{external_network_bridge}"
 neutron::agents::ovs::bridge_mappings:
-  - "default:br-ex"
+  - "default:%{external_network_bridge}"
 quantum::agents::ovs::enable_tunneling: true
 neutron::agents::ovs::enable_tunneling: true
 quantum::plugins::ovs::tenant_network_type: gre

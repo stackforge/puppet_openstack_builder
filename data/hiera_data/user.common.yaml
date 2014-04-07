@@ -316,6 +316,12 @@ service_plugins:
   - 'neutron.services.firewall.fwaas_plugin.FirewallPlugin'
   - 'neutron.services.vpn.plugin.VPNDriverPlugin'
 
+# Set the interface driver
+interface_driver: 'neutron.agent.linux.interface.OVSInterfaceDriver'
+
+# set the external network bridge
+external_network_bridge: 'br-ex'
+
 # A hash of Neutron services to enable GUI support for in Horizon.
 # enable_lb: Enables Neutron LBaaS agent support.
 # enable_firewall: Enables Neutron FWaaS support.

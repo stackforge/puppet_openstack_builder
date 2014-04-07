@@ -44,13 +44,8 @@ debug: false
 # The scheduler driver to be used for Cinder.
 cinder::scheduler::scheduler_driver: 'cinder.scheduler.simple.SimpleScheduler'
 
-# The libvirt VIF driver to be used for Quantum and Neutron.
-# Both are present here in order to account for the name change
-# that occurred in Havana.  Only one will actually be used
-# depending on the network service selected in
-# global_hiera_params/common.yaml.
-nova::compute::quantum::libvirt_vif_driver: nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver
-nova::compute::neutron::libvirt_vif_driver: nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver
+# The libvirt VIF driver to be used for Neutron.
+nova::compute::neutron::libvirt_vif_driver: nova.virt.libvirt.vif.LibvirtGenericVIFDriver
 
 # The services and admin tenant names.
 service_tenant: services

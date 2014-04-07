@@ -11,6 +11,10 @@ roles:
   controller:
     classes:
       - coe::base
+      - "nova::%{rpc_type}"
+      - "%{network_service}"
+      - "%{network_service}::plugins::%{network_plugin}"
+      - "%{network_service}::server"
     class_groups:
       - glance_all
       - keystone_all
@@ -20,10 +24,6 @@ roles:
       - ceilometer_controller
       - heat_all
       - "%{db_type}_database"
-      - "nova::%{rpc_type}"
-      - "%{network_service}"
-      - "%{network_service}::plugins::%{network_plugin}"
-      - "%{network_service}::server"
       - network_controller
       - test_file
   swift_proxy:

@@ -8,6 +8,7 @@ roles:
       - cinder::setup_test_volume
       - openstack::swift::proxy
       - openstack::swift::storage-node
+      - "nova::%{rpc_type}"
     class_groups:
       - build
       - glance_all
@@ -18,7 +19,6 @@ roles:
       - ceilometer_controller
       - heat_all
       - "%{db_type}_database"
-      - "nova::%{rpc_type}"
       - nova_compute
       - cinder_volume
       - ceilometer_compute

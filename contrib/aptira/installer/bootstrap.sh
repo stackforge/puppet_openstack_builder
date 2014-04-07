@@ -78,14 +78,33 @@ fi
 
 cd $dest
 
-# Download the data model tarball
-if [ ! -d $dest/stacktira ] ; then
+# Download the data model tarball and reinstall
+# if needed. Unless we're running on vagrant.
+if [ ! -d /vagrant ] ; then
+  if [ ! -f $dest/stacktira.tar ] ; then
     echo 'downloading data model'
     wget $tarball_source
-    tar -xvf stacktira.tar
-    rm -rf stacktira.tar
-else
+    md5new=`md5sum stacktira.tar | cut -d ' ' -f 1`
+
+    if [ -f $dest/stacktira.tar.current ] ; then
+      md5old=`md5sum stacktira.tar.current | cut -d ' ' -f 1`
+      echo "Tarball old md5sum is $md5old"
+      echo "Tarball new md5sum is $md5new"
+    else
+      md5old=0
+    fi
+
+    if [ "${md5old}" != "${md5new}" ] ; then
+      echo "A new version of stacktira has been downloaded. Installing."
+      rm -rf stacktira
+      tar -xvf stacktira.tar &> /dev/null
+    else
+      echo "No install needed"
+    fi
+    mv stacktira.tar stacktira.tar.current -f
+  else
     echo "data model installed in $dest/stacktira"
+  fi
 fi
 
 # Ensure both puppet and ruby are
@@ -249,10 +268,15 @@ if [ ! -f /etc/puppet/hiera.yaml ] ; then
     cp $dest/stacktira/contrib/aptira/puppet/hiera.yaml /etc/puppet/hiera.yaml
 fi
 
-# Copy site data if any. This will not be overwritten by sample configs
+# Copy site data if any. Otherwise install the sample
 if [ -d $dest/stacktira/contrib/aptira/site ] ; then
-    echo "Installing user config"
-    cp -r $dest/stacktira/contrib/aptira/site/* /etc/puppet/data/hiera_data
+  echo "Installing user config"
+  cp -r $dest/stacktira/contrib/aptira/site/* /etc/puppet/data/hiera_data
+else
+  if [ ! -f /etc/puppet/data/hiera_data/user.yaml ] ; then
+    echo 'No user.yaml found: installing sample'
+    cp $dest/stacktira/contrib/aptira/puppet/user.yaml /etc/puppet/data/hiera_data/user.yaml
+  fi
 fi
 
 mkdir -p /etc/facter/facts.d

@@ -319,7 +319,9 @@ service_plugins:
 # Set the interface driver
 interface_driver: 'neutron.agent.linux.interface.OVSInterfaceDriver'
 
-# set the external network bridge
+# Set the external network bridge.
+# NOTE: If you change this, make sure to update the
+# bridge mapping in tenant_network_type/*.yaml
 external_network_bridge: 'br-ex'
 
 # A hash of Neutron services to enable GUI support for in Horizon.

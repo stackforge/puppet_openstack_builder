@@ -13,16 +13,10 @@ roles:
       - coe::base
       - coe::network::interface
       - mongodb::replset
-    class_groups:
-      - controller
-      - provider_network_controller
-      - test_file
-      - ceph_mon
-  controller_without_mon:
-    classes:
-      - coe::base
-      - coe::network::interface
-      - mongodb::replset
+      - "nova::%{rpc_type}"
+      - "%{network_service}"
+      - "%{network_service}::plugins::%{network_plugin}"
+      - "%{network_service}::server"
     class_groups:
       - glance_all
       - keystone_all
@@ -32,10 +26,27 @@ roles:
       - ceilometer_controller
       - heat_all
       - "%{db_type}_database"
+      - provider_network_controller
+      - test_file
+      - ceph_mon
+  controller_without_mon:
+    classes:
+      - coe::base
+      - coe::network::interface
+      - mongodb::replset
       - "nova::%{rpc_type}"
       - "%{network_service}"
       - "%{network_service}::plugins::%{network_plugin}"
       - "%{network_service}::server"
+    class_groups:
+      - glance_all
+      - keystone_all
+      - cinder_controller
+      - nova_controller
+      - horizon
+      - ceilometer_controller
+      - heat_all
+      - "%{db_type}_database"
       - provider_network_controller
       - test_file
   load_balancer:
@@ -58,7 +69,9 @@ roles:
       - coe::network::interface
       - cinder::setup_test_volume
     class_groups:
-      - compute
+      - nova_compute
+      - cinder_volume
+      - ceilometer_compute
   ceph_mon:
     class_groups:
       - ceph_mon

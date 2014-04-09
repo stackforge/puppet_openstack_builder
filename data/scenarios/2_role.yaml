@@ -14,6 +14,7 @@ roles:
   controller:
     classes:
       - coe::base
+      - "nova::%{rpc_type}"
     class_groups:
       - glance_all
       - keystone_all
@@ -23,7 +24,6 @@ roles:
       - ceilometer_controller
       - heat_all
       - "%{db_type}_database"
-      - "nova::%{rpc_type}"
       - network_controller
       - test_file
   compute:

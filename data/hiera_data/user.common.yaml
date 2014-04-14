@@ -51,6 +51,15 @@ controller_internal_address: 192.168.242.10
 # load balancers, not the address of the control node itself.
 controller_admin_address: 192.168.242.10
 
+# Controller public url
+controller_public_url: "http://192.168.242.10:5000"
+
+# Controller admin url
+controller_admin_url: "http://192.168.242.10:35357"
+
+# Controller admin url
+controller_internal_url: "http://192.168.242.10:35357"
+
 # Control node interfaces.
 # internal_ip be used for the ovs local_ip setting for GRE tunnels.
 

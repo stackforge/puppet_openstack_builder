@@ -21,6 +21,9 @@ enabled_services:
   # the value configured in global_hiera_params/common.yaml
   - "%{network_service}"
   - swift
+  # NOTE: if using mongodb, comment this line out so mysql is not
+  # redundantly included
+  - ceilometer
 
 # Hosts to be allowed access to the backend database used to
 # persist data for OpenStack services (e.g. MySQL or similar).

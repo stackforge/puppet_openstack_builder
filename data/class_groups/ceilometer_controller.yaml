@@ -1,5 +1,7 @@
 classes:
-  - mongodb
+# NOTE: uncomment this to include mongo
+# class definition if used as backend
+#  - mongodb
   - ceilometer
   - ceilometer::keystone::auth
   - ceilometer::db

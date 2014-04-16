@@ -32,10 +32,12 @@ allowed_hosts:
   - quantum::db::mysql::allowed_hosts
   - neutron::db::mysql::allowed_hosts
 bind_address:
+  - horizon:bind_address
   - horizon::cache_server_ip
   - cinder::api::bind_host
   - glance::registry::bind_host
   - glance::api::bind_host
+  - nova::vncproxy::host
   - nova::api::api_bind_address
   - mysql::config::bind_address
   - keystone::bind_host

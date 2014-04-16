@@ -299,9 +299,9 @@ package_ensure:
   - neutron::agents::vpnaas::package_ensure
 region:
   - cinder::keystone::auth::region
-  - glance:keystone::auth::region
-  - nova:keystone::auth::region
-  - quantum:keystone::auth::region
+  - glance::keystone::auth::region
+  - nova::keystone::auth::region
+  - quantum::keystone::auth::region
   - neutron::keystone::auth::region
   - keystone::endpoint::region
   - nova::network::quantumclient::quantum_region_name
@@ -309,6 +309,16 @@ region:
   - quantum::agents::metadata::auth_region
   - neutron::agents::metadata::auth_region
   - ceilometer::keystone::auth::region
+  - heat::keystone::auth::region
+  - heat::keystone::auth_cfn::region
+  - nova::network::neutron::neutron_region_name
+  - neutron::keystone::auth::region
+  - openstack-ha::controller::region
+  - openstack::controller::region
+  - openstack::keystone::region
+  - openstack::all::region
+  - openstack::auth_file::region_name
+  - swift::keystone::auth::region
 neutron_sync_db:
   - neutron::server::sync_db
 # SSL support

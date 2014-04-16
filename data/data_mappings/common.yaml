@@ -338,7 +338,7 @@ puppet_mysql_version:
   - cinder::db::mysql::mysql_module
   - cinder::mysql_module
   - glance::api::mysql_module
-  - glance::db::mysql_module
+  - glance::db::mysql::mysql_module
   - glance::registry::mysql_module
   - heat::db::mysql::mysql_module
   - heat::mysql_module

@@ -186,7 +186,7 @@ swift_local_net_ip:
   - neutron::server::database_connection
 "%{ceilometer_db_type}://ceilometer:%{ceilometer_db_password}@%{controller_internal_address}/ceilometer":
 # NOTE: Workaround for connection issues with mongo
-#"%{ceilometer_db_type}://localhost:27017/ceilometer":
+#"%{ceilometer_db_type}://127.0.0.1:27017/ceilometer":
   - ceilometer::db::database_connection
 "%{db_type}://heat:%{heat_db_password}@%{controller_internal_address}/heat":
   - heat::sql_connection

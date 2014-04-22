@@ -32,7 +32,7 @@ allowed_hosts:
   - quantum::db::mysql::allowed_hosts
   - neutron::db::mysql::allowed_hosts
 bind_address:
-  - horizon:bind_address
+  - horizon::bind_address
   - horizon::cache_server_ip
   - cinder::api::bind_host
   - glance::registry::bind_host

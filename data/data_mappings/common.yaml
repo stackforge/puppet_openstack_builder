@@ -107,10 +107,8 @@ controller_internal_address:
   - heat::keystone::auth::internal_address
   - heat::keystone::auth_cfn::internal_address
   - cinder::api::keystone_auth_host
-  - keystone::endpoint::internal_address
   - glance::api::auth_host
   - glance::registry::auth_host
-  - horizon::keystone_host
   - nova::api::auth_host
   - quantum::server::auth_host
   - neutron::server::auth_host
@@ -137,7 +135,6 @@ controller_public_address:
   - nova::keystone::auth::public_address
   - heat::keystone::auth::public_address
   - heat::keystone::auth_cfn::public_address
-  - keystone::endpoint::public_address
   - quantum::keystone::auth::public_address
   - neutron::keystone::auth::public_address
   - swift::keystone::auth::public_address
@@ -149,7 +146,6 @@ controller_public_protocol:
   - glance::keystone::auth::public_protocol
   - heat::keystone::auth::public_protocol
   - heat::keystone::auth_cfn::public_protocol
-  - keystone::endpoint::public_protocol
   - neutron::keystone::auth::public_protocol
   - nova::keystone::auth::public_protocol
   - swift::keystone::auth::public_protocol
@@ -159,11 +155,18 @@ controller_admin_address:
   - nova::keystone::auth::admin_address
   - heat::keystone::auth::admin_address
   - heat::keystone::auth_cfn::admin_address
-  - keystone::endpoint::admin_address
   - quantum::keystone::auth::admin_address
   - neutron::keystone::auth::admin_address
   - swift::keystone::auth::admin_address
   - ceilometer::keystone::auth::admin_address
+controller_public_url:
+  - keystone::endpoint::public_url
+controller_admin_url:
+  - keystone::endpoint::admin_url
+controller_internal_url:
+  - keystone::endpoint::internal_url
+"%{controller_internal_url}/v2.0/":
+  - horizon::keystone_url
 swift_local_net_ip:
   - openstack::swift::proxy::swift_local_net_ip
   - openstack::swift::storage-node::swift_local_net_ip

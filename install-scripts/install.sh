@@ -67,6 +67,8 @@ if ${master}; then
   # We need to know the IP address as well, so either tell me
   # or I will assume it's the address associated with eth0
   export default_interface="${default_interface:-eth0}"
+  # default protocol to use
+  export default_protocol="${default_protocol:-http}"
   # So let's grab that address
   export build_server_ip="${build_server_ip:-`ip addr show ${default_interface} | grep 'inet ' | tr '/' ' ' | awk -F' ' '{print $2}'`}"
   # Our default mode also assumes at least one other interface for OpenStack network
@@ -97,10 +99,12 @@ controller_internal_address: "${build_server_ip}"
 cobbler_node_ip: "${build_server_ip}"
 controller_public_address: "${build_server_ip}"
 controller_admin_address: "${build_server_ip}"
+controller_public_url: "${default_protocol}://${build_server_ip}:5000"
+controller_admin_url: "${default_protocol}://${build_server_ip}:35357"
+controller_internal_url: "${default_protocol}://${build_server_ip}:35357"
 swift_internal_address: "${build_server_ip}"
 swift_public_address: "${build_server_ip}"
 swift_admin_address: "${build_server_ip}"
-
 # physical interface definitions
 external_interface: ${external_interface}
 public_interface: ${default_interface}

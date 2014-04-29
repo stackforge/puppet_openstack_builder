@@ -331,6 +331,14 @@ cinder_rbd_pool: 'volumes'
 # The name of the pool used to store glance images.
 glance_ceph_pool: 'images'
 
+# Return the URL that references where the data is stored on
+# the backend storage system.  For example, if using the
+# file system store a URL of 'file:///path/to/image' will
+# be returned to the user in the 'direct_url' meta-data field.
+# This gives glance the ability to COW images, but revealing the
+# storage location may be a security risk.
+glance::api::show_image_direct_url: false
+
 ### The following parameters relate to Neutron L4-L7 services.
 
 # A boolean specifying whether to enable the Neutron Load Balancing

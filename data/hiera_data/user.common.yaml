@@ -182,6 +182,12 @@ secret_key: secret
 # compromised).
 password: password123
 
+# Manage the Horizon vhost priority. Apache defaults to '25'. Here we
+# set it to '10' so it is the default site. This allows Horizon to load
+# at both it's vhost name and at the server's IP address.
+horizon::wsgi::apache::priority: 10
+
+
 ### Swift configuration
 # The username used to authenticate to the Swift cluster.
 swift_service_password: swift_pass

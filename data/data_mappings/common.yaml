@@ -309,6 +309,7 @@ region:
   - quantum::agents::metadata::auth_region
   - neutron::agents::metadata::auth_region
   - ceilometer::keystone::auth::region
+  - ceilometer::agent::auth::auth_region
   - heat::keystone::auth::region
   - heat::keystone::auth_cfn::region
   - nova::network::neutron::neutron_region_name

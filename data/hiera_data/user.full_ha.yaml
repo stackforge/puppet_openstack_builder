@@ -79,6 +79,16 @@ rabbit_hosts:
   - control01:5672
   - control02:5672
   - control03:5672
+# galera_servers lists the IP addresses of the nodes which comprise
+# the HA MySQL database
+galera::galera_servers:
+  - 192.168.220.41
+  - 192.168.220.42
+  - 192.168.220.43
+# galera_master defines which node of the galera_servers is the 'master'
+# node for bootstrapping purposes; once the cluster is functional this
+# distinction has no meaning. This should be the FQDN for that node.
+galera::galera_master: control01.local.domain
 
 # NOTE: Uncomment the following with appropriate values if using mongo
 # as backend for ceilometer

@@ -15,19 +15,21 @@ coe::base::package_repo: cisco_repo
 # supplemental_repo is not needed for icehouse+trusty
 coe::base::supplemental_repo: false
 
-# this will need to overridden per node based on if it is active of passive
-galera::server::master_ip: false
 # this should be overridden per node and can be
 # master or back-up
 openstack-ha::load-balancer::controller_state: MASTER
 openstack-ha::load-balancer::swift_proxy_state: MASTER
 
-galera::server::cluster_name: controller_cluster
-galera::server::wsrep_sst_username: wsrep_user
-galera::server::wsrep_sst_method: rsync
-galera::monitor::monitor_username: monitor_user
-
 sql_idle_timeout: 30
+
+# Galera / Percona settings
+#
+# get packages from Ubuntu, not from Percona repos
+galera::configure_repo: false
+galera::configure_firewall: false
+# due to bug #1315528 must use either xtrabackup-v2 or mysqldump with
+# trusty. The more common rsync method will not work
+galera::wsrep_sst_method: xtrabackup-v2
 
 # tenant hard-codings
 keystone::roles::admin::admin_tenant: admin
@@ -46,3 +48,5 @@ nova::compute::libvirt::libvirt_virt_type: kvm
 #mongodb::replset: 'rsmain'
 # mongodb bind addresses
 #mongodb::bind_ip: ['127.0.0.1', "%{ipaddress}"]
+#
+#

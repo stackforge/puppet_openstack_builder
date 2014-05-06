@@ -26,6 +26,7 @@ password:
   - glance::notify::qpid::qpid_password
   - cinder::db::mysql::password
   - cinder::db::postgresql::password
+  - galera::root_password
   - glance::db::mysql::password
   - glance::db::postgresql::password
   - keystone::db::mysql::password

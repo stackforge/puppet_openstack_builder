@@ -1,6 +1,7 @@
 classes:
   - openstacklib::firewall
   - openstacklib::firewall::nova
+  - openstacklib::firewall::dhcp
   - openstacklib::firewall::keystone
   - openstacklib::firewall::glance
   - openstacklib::firewall::heat

@@ -207,6 +207,7 @@ swift_local_net_ip:
   - heat::keystone_ec2_uri
 "%{controller_internal_address}:9292":
   - nova::glance_api_servers
+  - cinder::glance::glance_api_servers
 "http://%{controller_internal_address}:8000":
   - heat::engine::heat_metadata_server_url
 "http://%{controller_internal_address}:8000/v1/waitcondition":

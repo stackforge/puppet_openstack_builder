@@ -66,12 +66,15 @@ control_servers_private: &control_servers_private  [ '10.3.3.110', '10.3.3.111',
 # A hash of hostnames to private network IPs. Used for rabbitmq hosts
 # resolution
 openstacklib::hosts::cluster_hash:
-  regsubr1.private: '10.3.3.110'
-  regsubr2.private: '10.3.3.111'
-  regsubr3.private: '10.3.3.112'
+  regsubr1private:
+    ip: '10.3.3.110'
+  regsubr2private:
+    ip: '10.3.3.111'
+  regsubr3private:
+    ip: '10.3.3.112'
 
 # List of controller hostnames. Used for rabbitmq hosts list
-cluster_names: &cluster_names  [ 'regsubr1.private', 'regsubr2.private', 'regsubr3.private' ]
+cluster_names: &cluster_names  [ 'regsubr1private', 'regsubr2private', 'regsubr3private' ]
 
 # Virtual router IDs for the VIPs in this cluster. If you are
 # running multiple VIPs on one network these need to be different

@@ -60,12 +60,20 @@ control_servers_private: &control_servers_private  [ '10.3.3.10', '10.3.3.11', '
 # A hash of hostnames to private network IPs. Used for rabbitmq hosts
 # resolution
 openstacklib::hosts::cluster_hash:
-  control1.private: '10.3.3.10'
-  control2.private: '10.3.3.11'
-  control3.private: '10.3.3.12'
+  control1private:
+    ip: '10.3.3.10'
+  control2private:
+    ip: '10.3.3.11'
+  control3private:
+    ip: '10.3.3.12'
 
 # List of controller hostnames. Used for rabbitmq hosts list
-cluster_names: &cluster_names  [ 'control1.private', 'control2.private', 'control3.private' ]
+cluster_names: &cluster_names  [ 'control1private', 'control2private', 'control3private' ]
+
+# For the case where the node hostname already resolves to something else,
+# force the nodename to be the private shortname we're using above.
+rabbitmq::environment_variables:
+  'NODENAME': "rabbit@%{hostname}private"
 
 #Libvirt type
 nova::compute::libvirt::libvirt_virt_type: qemu

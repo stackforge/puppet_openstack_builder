@@ -1,6 +1,7 @@
 classes:
   - nova
   - nova::api
+  - nova::config
   - nova::scheduler
   - nova::objectstore
   - nova::cert

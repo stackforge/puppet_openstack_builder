@@ -1,6 +1,7 @@
 classes:
   - nova
   - nova::compute
+  - nova::config
   - "nova::compute::%{compute_type}"
   - "nova::network::%{network_service}"
   - "nova::compute::%{network_service}"

@@ -1,4 +1,5 @@
 classes:
   - cinder
   - cinder::api
+  - cinder::config
   - cinder::scheduler

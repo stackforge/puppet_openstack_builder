@@ -1,6 +1,7 @@
 classes:
   - glance
   - glance::api
+  - glance::config
   - glance::registry
   - "glance::backend::%{glance_backend}"
   - glance::cache::pruner

@@ -75,12 +75,15 @@ control_servers_private: &control_servers_private  [ '10.3.3.10', '10.3.3.11', '
 # A hash of hostnames to private network IPs. Used for rabbitmq hosts
 # resolution
 openstacklib::hosts::cluster_hash:
-  regcon1.private: '10.3.3.10'
-  regcon2.private: '10.3.3.11'
-  regcon3.private: '10.3.3.12'
+  regcon1private:
+    ip: '10.3.3.10'
+  regcon2private:
+    ip: '10.3.3.11'
+  regcon3private:
+    ip: '10.3.3.12'
 
 # List of controller hostnames. Used for rabbitmq hosts list
-cluster_names: &cluster_names  [ 'regcon1.private', 'regcon2.private', 'regcon3.private' ]
+cluster_names: &cluster_names  [ 'regcon1private', 'regcon2private', 'regcon3private' ]
 
 horizon::wsgi::apache::bind_address: "%{ipaddress_eth2}"
 

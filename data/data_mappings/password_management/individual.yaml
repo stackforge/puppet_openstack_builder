@@ -32,6 +32,7 @@ glance_service_password:
 nova_service_password:
   - nova::keystone::auth::password
   - nova::api::admin_password
+  - neutron::server::notifications::nova_admin_password
 admin_token:
   - keystone::admin_token
 admin_password:

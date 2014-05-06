@@ -55,6 +55,7 @@ password:
   - neutron::keystone::auth::password
   - quantum::server::auth_password
   - neutron::server::auth_password
+  - neutron::server::notifications::nova_admin_password
   - nova::network::quantum::quantum_admin_password
   - nova::network::neutron::neutron_admin_password
   - quantum::agents::metadata::auth_password

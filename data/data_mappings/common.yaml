@@ -22,10 +22,18 @@ verbose:
   - ceilometer::verbose
   - heat::verbose
   - nova::verbose
+admin_tenant:
+  - keystone::roles::admin::admin_tenant
+  - openstack::controller::nova_admin_tenant_name
+service_tenant:
+  - keystone::roles::admin::service_tenant
+  - neutron::server::notifications::nova_admin_tenant_name
+nova_admin_username:
+  - nova::keystone::auth_name
+  - neutron::server::notifications::nova_admin_username
 admin_email:
   - keystone::roles::admin::email
   - ceilometer::keystone::auth::email
-
 # this needs to be supplied as a default
 # b/c the default to guest is kind of annoying
 # (and not entirely reasonable)
@@ -161,12 +169,15 @@ controller_admin_address:
   - ceilometer::keystone::auth::admin_address
 controller_public_url:
   - keystone::endpoint::public_url
+"%{controller_public_protocol}://%{controller_public_address}:8774/v2":
+  - neutron::server::notifications::nova_url
 controller_admin_url:
   - keystone::endpoint::admin_url
 controller_internal_url:
   - keystone::endpoint::internal_url
 "%{controller_internal_url}/v2.0/":
   - horizon::keystone_url
+  - neutron::server::notifications::nova_admin_auth_url
 swift_local_net_ip:
   - openstack::swift::proxy::swift_local_net_ip
   - openstack::swift::storage-node::swift_local_net_ip
@@ -315,6 +326,7 @@ region:
   - nova::keystone::auth::region
   - quantum::keystone::auth::region
   - neutron::keystone::auth::region
+  - neutron::server::notifications::nova_region_name
   - keystone::endpoint::region
   - nova::network::quantumclient::quantum_region_name
   - nova::network::neutronclient::neutron_region_name

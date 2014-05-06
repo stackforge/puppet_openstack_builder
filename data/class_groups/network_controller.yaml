@@ -1,6 +1,7 @@
 classes:
   - "%{network_service}"
   - "%{network_service}::server"
+  - "%{network_service}::server::notifications"
   - "%{network_service}::config"
   - "%{network_service}::agents::metadata"
   - "%{network_service}::agents::l3"

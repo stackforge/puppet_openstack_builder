@@ -50,9 +50,24 @@ cinder::scheduler::scheduler_driver: 'cinder.scheduler.simple.SimpleScheduler'
 # The libvirt VIF driver to be used for Neutron.
 nova::compute::neutron::libvirt_vif_driver: nova.virt.libvirt.vif.LibvirtGenericVIFDriver
 
+# Whether or not Neutron should send notification to Nova when port
+# status is active.
+neutron::server::notifications::notify_nova_on_port_status_changes: true
+
+# Whether or not Neutron should send notification to Nova when port
+# data (fixed_ips/floatingips) change so nova can update it's cache.
+neutron::server::notifications::notify_nova_on_port_data_changes: true
+
+# Number of seconds between sending events to nova if there are any events
+# to send.
+neutron::server::notifications::send_events_interval: 2
+
 # The services and admin tenant names.
 service_tenant: services
-admin_tenant: admin
+admin_tenant: openstack
+
+# The nova admin username
+nova_admin_username: 'nova'
 
 # Many manifests that install OpenStack packages can either ensure
 # that a package is 'present' (e.g. installed) or that it is 'latest'

@@ -1,5 +1,3 @@
-enabled:
-  - galera::server::enabled
 sql_idle_timeout:
   - keystone::idle_timeout
   - glance::registry::sql_idle_timeout
@@ -42,8 +40,6 @@ bind_address:
   - mysql::config::bind_address
   - keystone::bind_host
   - memcached::listen_ip
-  - galera::server::wsrep_bind_address
-  - galera::monitor::monitor_hostname
   - quantum::bind_host
   - neutron::bind_host
   - heat::api::bind_host

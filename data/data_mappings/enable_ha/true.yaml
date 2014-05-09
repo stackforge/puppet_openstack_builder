@@ -1,5 +1,3 @@
-enabled:
-  - galera::server::enabled
 sql_idle_timeout:
   - keystone::idle_timeout
   - glance::registry::sql_idle_timeout
@@ -32,6 +30,8 @@ allowed_hosts:
   - quantum::db::mysql::allowed_hosts
   - neutron::db::mysql::allowed_hosts
 bind_address:
+  - galera::local_ip
+  - galera::bind_address
   - horizon::bind_address
   - horizon::cache_server_ip
   - cinder::api::bind_host
@@ -42,8 +42,6 @@ bind_address:
   - mysql::config::bind_address
   - keystone::bind_host
   - memcached::listen_ip
-  - galera::server::wsrep_bind_address
-  - galera::monitor::monitor_hostname
   - quantum::bind_host
   - neutron::bind_host
   - heat::api::bind_host

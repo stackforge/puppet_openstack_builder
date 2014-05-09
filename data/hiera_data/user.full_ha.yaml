@@ -22,10 +22,6 @@ horizon::keystone_url: 'http://192.168.220.40:5000/v2.0/'
 #
 # metadata_shared_secret needs to be undefined for full_ha deployments
 metadata_shared_secret: false
-# password for the system account used to replicate data between nodes
-galera::server::wsrep_sst_password: wsrep_password
-# password for the mysql db account used by haproxy to monitor galera
-galera::monitor::monitor_password: monitor_pass
 
 #
 # HA connections

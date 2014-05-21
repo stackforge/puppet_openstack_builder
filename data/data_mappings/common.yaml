@@ -186,7 +186,7 @@ swift_local_net_ip:
 # and the key used to retrieve its password. This is an indicator that this needs to
 # be changed.
 "%{db_type}://cinder:%{cinder_db_password}@%{controller_internal_address}/cinder":
-  - cinder::sql_connection
+  - cinder::database_connection
 "%{db_type}://glance:%{glance_db_password}@%{controller_internal_address}/glance":
   - glance::api::sql_connection
   - glance::registry::sql_connection

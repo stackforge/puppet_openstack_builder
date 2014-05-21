@@ -142,6 +142,26 @@ install_drive: /dev/sda
 # or use facter to get the IP address assigned to a particular interface.
 nova::compute::vncserver_proxyclient_address: "%{ipaddress_eth3}"
 
+# If you wish to customize the list of filters that the nova
+# scheduler will use when scheduling instances, change the line
+# below to be a comma-separated list of filters.  If set to false,
+# the nova default filter list will be used.
+# Example: 'RetryFilter,AvailabilityZoneFilter,RamFilter,
+#           ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter'
+nova::scheduler::filter::scheduler_default_filters: false
+
+# The following is a set of arbitrary config entries to be
+# created in nova.conf.  You can add arbitrary entries here
+# that are not parameterized in the puppet-nova module for special
+# use cases.
+nova::config::nova_config:
+  # Allow destination machien to match source for resize
+  'DEFAULT/allow_resize_to_same_host':
+    value: 'true'
+  # Automatically confirm resizes after N seconds.  Set to 0 to disable.
+  'DEFAULT/resize_confirm_window':
+    value: '0'
+
 ### The following are passwords and usernames used for
 ### individual services.  You may wish to change the passwords below
 ### in order to better secure your installation.

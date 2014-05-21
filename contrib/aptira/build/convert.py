@@ -201,7 +201,7 @@ def find_array_mappings():
                                         print key + ' is found, maps to: ' + str(ny[key]) + ' in ' + path
                                         for m in ny[key]:
                                             if key not in lines[path.replace('/data/', '/data.new/')]:
-                                                lines[path.replace('/data/', '/data.new/')][key] = []
+                                                lines[path.replace('/data/', '/data.new/')][key] = [m]
                                             else:
                                                 lines[path.replace('/data/', '/data.new/')][key].append(m)
                                         # Inform data_mappings it can ignore these values

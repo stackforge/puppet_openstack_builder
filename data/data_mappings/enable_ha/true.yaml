@@ -82,3 +82,11 @@ private_interface:
 controller_names:
   - nova::rabbitmq::cluster_disk_nodes
   - openstack-ha::load-balancer::controller_names
+galera_master_ipaddress:
+  - openstack-ha::load-balancer::galera_master_ipaddress
+galera_backup_ipaddresses:
+  - openstack-ha::load-balancer::galera_backup_ipaddresses
+galera_master_name:
+  - openstack-ha::load-balancer::galera_master_name
+galera_backup_names:
+  - openstack-ha::load-balancer::galera_backup_names

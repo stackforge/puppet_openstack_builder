@@ -85,6 +85,28 @@ galera::galera_servers:
 # node for bootstrapping purposes; once the cluster is functional this
 # distinction has no meaning. This should be the FQDN for that node.
 galera::galera_master: control01.local.domain
+# galera is currently configured with an active-passive load balancer in
+# front of it to restrict writes to a single node. This is needed as a
+# workaround for compatibility issues with Galera and certain sql statements
+# currently used in OpenStack code. See
+# https://bugs.launchpad.net/openstack-cisco/+bug/1321734 for more details.
+#
+# galera_master_ipaddress is the IP address of the initial node in the
+# Galera which gets writes by default
+galera_master_ipaddress: 192.168.220.41
+# galera_backup_ipaddresses lists the IP addresses of the other nodes in
+# the Galera cluster. HAProxy will direct writes to them if
+# galera_master_ipaddress is not reachable
+galera_backup_ipaddresses:
+  - 192.168.220.42
+  - 192.168.220.43
+# galera_master_name is the bare hostname (not FQDN) of galera_master_ipaddress
+galera_master_name: control01
+# galera_backup_names is the bare hostname (not FQDN) of the nodes listed in
+# galera_backup_ipaddresses
+galera_backup_names:
+  - control02
+  - control03
 
 # NOTE: Uncomment the following with appropriate values if using mongo
 # as backend for ceilometer

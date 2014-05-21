@@ -84,6 +84,18 @@ fi
 # or apt install, and unable to wget, this script
 # will fail.
 
+# libyaml is needed by ruby and comes from epel
+if ! yum repolist | grep epel ; then
+    wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+    rpm -Uvh epel-release-6*
+    rm epel-release-6*
+fi
+
+# libyaml is needed by ruby and comes from epel
+if ! yum list installed | grep libyaml ; then
+    yum install -y libyaml -q
+fi
+
 ruby_version=$(ruby --version | cut -d ' ' -f 2)
 # Ruby 1.8.7 (standard on rhel 6) can give segfaults, so
 # purge and install ruby 2.0.0
@@ -92,12 +104,6 @@ if [ "${ruby_version}" != "${desired_ruby}" ] ; then
     if [ -f /etc/redhat-release ] ; then
         # Purge current ruby
         yum remove ruby puppet ruby-augeas ruby-shadow -y -q
-
-        # enable epel to get libyaml, which is required by ruby
-        wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-        rpm -Uvh epel-release-6*
-        yum install -y libyaml -q
-        rm epel-release-6*
 
         # Install ruby 2.0.0
         if [ -f $dest/stacktira/contrib/aptira/packages/ruby-2.0.0p353-1.el6.x86_64.rpm ] ; then
@@ -108,14 +114,27 @@ if [ "${ruby_version}" != "${desired_ruby}" ] ; then
             yum localinstall ruby-2.0.0p353-1.el6.x86_64.rpm -y -q
         fi
 
-        yum install augeas-devel -y -q
-
     elif [ -f /etc/debian_version ] ; then
         apt-get remove puppet ruby -y
         apt-get install ruby -y
     fi
 else
     echo "ruby version $desired_ruby already installed"
+fi
+
+# Ruby-augeas is needed for puppet, but is handled separately
+# since it requires native extensions to be compiled
+if ! gem list | grep ruby-augeas ; then
+    # comes from updates repo
+    yum install augeas-devel -y -q
+    yum install -y -q gcc
+
+    if [ -f $dest/stacktira/contrib/aptira/gemcache/ruby-augeas* ] ; then
+        gem install --force --local $dest/stacktira/contrib/aptira/gemcache/ruby-augeas*
+    else
+        gem install ruby-augeas --no-ri --no-rdoc
+    fi
+    yum remove -y -q gcc cpp
 fi
 
 # Install puppet from gem. This is not best practice, but avoids

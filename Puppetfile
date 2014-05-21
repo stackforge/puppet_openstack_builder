@@ -41,7 +41,7 @@ else
   if openstack_version == 'grizzly'
     openstack_module_branch   = 'stable/grizzly'
   elsif openstack_version == 'havana'
-    openstack_module_branch   = 'master'
+    openstack_module_branch   = 'stable/havana'
   else
     abort('only grizzly and havana are supported atm')
   end

@@ -34,6 +34,7 @@ bind_address:
   - galera::bind_address
   - horizon::bind_address
   - horizon::cache_server_ip
+  - ceilometer::api::host
   - cinder::api::bind_host
   - glance::registry::bind_host
   - glance::api::bind_host

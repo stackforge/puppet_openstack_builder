@@ -378,3 +378,20 @@ puppet_mysql_version:
   - ceilometer::db::mysql_module
   - nova::db::mysql::mysql_module
   - nova::mysql_module
+# MySQL char set and collation order
+mysql_default_charset:
+  - ceilometer::db::mysql::charset
+  - cinder::db::mysql::charset
+  - glance::db::mysql::charset
+  - heat::db::mysql::charset
+  - keystone::db::mysql::charset
+  - neutron::db::mysql::charset
+  - nova::db::mysql::charset
+mysql_default_collation:
+  - ceilometer::db::mysql::collate
+  - cinder::db::mysql::collate
+  - glance::db::mysql::collate
+  - heat::db::mysql::collate
+  - keystone::db::mysql::collate
+  - neutron::db::mysql::collate
+  - nova::db::mysql::collate

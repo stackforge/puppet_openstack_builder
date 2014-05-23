@@ -240,3 +240,7 @@ puppet_mysql_version: '2.2'
 
 # Allow rabbitmq cookie to be configured
 rabbitmq::server::wipe_db_on_cookie_change: true
+
+# Default character set and collation order for MySQL
+mysql_default_charset: utf8
+mysql_default_collation: utf8_unicode_ci

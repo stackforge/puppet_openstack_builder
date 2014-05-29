@@ -87,6 +87,7 @@ if ${master}; then
   sed -e "s/scenario: .*/scenario: ${scenario}/" -i ~/puppet_openstack_builder/data/config.yaml
 
   if [ "${scenario}" == "all_in_one" ] ; then
+    sed -i "s,bind-address: 192.168.242.10,bind-address: ${build_server_ip}," ~/puppet_openstack_builder/data/hiera_data/user.common.yaml
     echo `hostname -s`: all_in_one >> ~/puppet_openstack_builder/data/role_mappings.yaml
     cat > ~/puppet_openstack_builder/data/hiera_data/user.yaml<<EOF
 domain_name: "${domain}"

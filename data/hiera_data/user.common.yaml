@@ -410,6 +410,35 @@ ssl_ca_key: '/etc/keystone/ssl/private/cakey.pem'
 # SSL cert subject
 ssl_cert_subject: '/C=US/ST=Unset/L=Unset/O=Unset/CN=localhost'
 
+# MySQL server options
+#
+# override_options is used to pass a hash of options to be set in
+# /etc/mysql/my.cnf. The options are separated by the section of my.cnf
+# to which they belong
+#
+# Options which need to be set in the mysqld section of my.cnf include:
+#   bind-address: specifies the IP address on which the MySQL daemon listens
+#   max-connections: specifies the number of simultaneous connections permitted
+#   max_connect_errors: production deployments typically set this to 2^32-1
+#
+# In the isamchk section, key_buffer_size determines how much memory will be
+# used to buffer index blocks for MyISAM tables
+#
+# Note that any other valid MySQL config file parameters can be added as
+# needed by using this override_options mechanism. See override_options in
+# https://github.com/puppetlabs/puppetlabs-mysql/tree/2.2.x#reference for more
+# details on using this parameter with custom options.
+mysql::server::override_options:
+  mysqld:
+    bind-address: 192.168.242.10
+    max-connections: 8192
+    max_connect_errors: 4294967295
+  isamchk:
+    key_buffer_size: 64M
+# if true, restart MySQL when config options are changed. true is appropriate
+# for most installations
+mysql::server::restart: true
+
 ## NFS Live migration options ##
 # If on a debian-based distro, you must also set the nova uid/gid
 # when using live migration. This is not needed for RHEL distros

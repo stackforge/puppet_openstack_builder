@@ -237,3 +237,6 @@ region: RegionOne
 # The version of the puppetlabs-mysql module you're using.
 # Supported versions are 0.9 and 2.2.
 puppet_mysql_version: '2.2'
+
+# Allow rabbitmq cookie to be configured
+rabbitmq::server::wipe_db_on_cookie_change: true

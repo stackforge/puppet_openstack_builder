@@ -175,8 +175,9 @@ controller_admin_url:
   - keystone::endpoint::admin_url
 controller_internal_url:
   - keystone::endpoint::internal_url
-"%{controller_internal_url}/v2.0/":
+"%{controller_public_url}/v2.0/":
   - horizon::keystone_url
+"%{controller_internal_url}/v2.0/":
   - neutron::server::notifications::nova_admin_auth_url
 swift_local_net_ip:
   - openstack::swift::proxy::swift_local_net_ip

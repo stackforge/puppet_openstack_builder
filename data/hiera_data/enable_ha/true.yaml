@@ -42,6 +42,8 @@ nova::api::enabled_apis: 'ec2,osapi_compute'
 
 nova::compute::libvirt::libvirt_virt_type: kvm
 
+apache::default_vhost: false
+
 # NOTE: Uncomment the following with appropriate values if using mongo
 # as backend for ceilometer
 # mongo replica set name

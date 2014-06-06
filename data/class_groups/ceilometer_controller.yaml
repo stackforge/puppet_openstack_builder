@@ -6,6 +6,7 @@ classes:
   - ceilometer::keystone::auth
   - ceilometer::db
   - ceilometer::collector
+  - ceilometer::agent::auth
   - ceilometer::agent::central
   - ceilometer::api
   - ceilometer::alarm::notifier

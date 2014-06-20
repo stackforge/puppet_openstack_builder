@@ -89,6 +89,9 @@ public_interface: eth1
 # be set to the same interface as public_interface.
 private_interface: eth1
 
+# iSCSI listener interface. Set this the s ame as public_interface.
+cinder::volume::iscsi::iscsi_ip_address: "%{ipaddress_eth1}"
+
 ### Cobbler config
 # The IP address of the node on which Cobbler will be installed and
 # on which it will listen.

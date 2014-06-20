@@ -148,10 +148,6 @@ openstack::test_file::image_type: cirros
 # This is often overridden in higher-layer yaml files.
 openstack::client::ceilometer: false
 
-# The ISCSI IP address given to initiators when using the iSCSI driver
-# for Cinder.  This should generally match the public IP address.
-cinder::volume::iscsi::iscsi_ip_address: 0.0.0.0
-
 # How to set the swift_store_user directive in swift.conf.
 # This should be an account name and a username separated by
 # a colon.

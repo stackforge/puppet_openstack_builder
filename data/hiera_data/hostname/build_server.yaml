@@ -1,0 +1,7 @@
+# Settings which apply only to the build server
+# This file should not need to be used for AIO installs but will need
+# customization for other scenarios.
+#
+# Apache default hosts are needed on standalone build servers
+# or any other scenario where the build server is not a load balancer
+apache::default_vhost: true

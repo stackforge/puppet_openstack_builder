@@ -36,6 +36,7 @@ control_servers_private:
   - galera::galera_servers
   - openstacklib::loadbalance::haproxy::mysql::cluster_addresses
   - openstacklib::loadbalance::haproxy::rabbitmq::cluster_addresses
+  - openstacklib::loadbalance::haproxy::keystone::cluster_addresses
 
 control_servers_public:
   - openstacklib::loadbalance::haproxy::cluster_addresses
@@ -44,7 +45,6 @@ control_servers_public:
   - openstacklib::loadbalance::haproxy::dashboard::cluster_addresses
   - openstacklib::loadbalance::haproxy::glance::cluster_addresses
   - openstacklib::loadbalance::haproxy::heat::cluster_addresses
-  - openstacklib::loadbalance::haproxy::keystone::cluster_addresses
   - openstacklib::loadbalance::haproxy::neutron::cluster_addresses
   - openstacklib::loadbalance::haproxy::nova::cluster_addresses
 
@@ -88,7 +88,6 @@ public_bind_ip:
   - heat::api_cfn::bind_host
   - heat::api_cloudwatch::bind_host
   - heat::api::bind_host
-  - keystone::public_bind_host
   - neutron::bind_host
   - nova::api::api_bind_address
   - nova::api::metadata_listen
@@ -102,6 +101,7 @@ private_bind_ip:
   - galera::local_ip
   - rabbitmq::node_ip_address
   - keystone::admin_bind_host
+  - keystone::public_bind_host
 
 public_vip:
   - glance::api::registry_host
@@ -182,6 +182,17 @@ private_vip:
   - neutron::keystone::auth::admin_address
   - swift::keystone::auth::admin_address
   - ceilometer::keystone::auth::admin_address
+  - openstacklib::openstack::auth_file::controller_node
 
 openstack_release:
-  - openstacklib::compat::openstack_release
+  - openstacklib::compat::nova::openstack_release
+  - openstacklib::compat::keystone::openstack_release
+
+"%{private_protocol}://%{private_vip}:8774/v2":
+  - neutron::server::notifications::nova_url
+
+"%{private_protocol}://%{private_vip}:35357/v2.0/":
+  - neutron::server::notifications::nova_admin_auth_url
+
+admin_password:
+  - openstacklib::openstack::auth_file::admin_password

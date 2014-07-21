@@ -11,6 +11,7 @@ roles:
       - dnsmasq
       - openstacklib::firewall::edeploy
       - openstacklib::firewall::puppet
+
 # Control and compute are for a standard single region deployment
   control:
     classes:
@@ -21,14 +22,17 @@ roles:
       - openstacklib::openstack::endpoints
       - openstacklib::openstack::provider
       - openstacklib::openstack::netns
+      - openstacklib::openstack::auth_file
+      - openstacklib::openstack::test_file
       - openstacklib::repo
       - openstacklib::hosts
-      - openstacklib::compat
+      - openstacklib::compat::keystone
+      - openstacklib::compat::nova
       - neutron::server
       - keystone
       - keystone::roles::admin
     class_groups:
-      - network_controller
+      - network_controller_ml2
       - glance_all
       - cinder_controller
       - nova_controller
@@ -36,17 +40,19 @@ roles:
       - heat_all
       - firewall_control
       - loadbalance_control
-      - test_file
 
   compute:
     class_groups:
-      - nova_compute
       - cinder_volume
       - ceilometer_compute
+      - nova_compute_ml2
     classes:
       - openstacklib::repo
       - openstacklib::hosts
+      - openstacklib::openstack::netns
+      - openstacklib::compat::nova
       - mysql::bindings
+      - openstacklib::firewall::compute
 
 # This role is used by multi-region installations
 # to share horizon, keystone and glance

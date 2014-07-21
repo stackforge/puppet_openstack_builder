@@ -93,8 +93,8 @@ private_control_firewall_source: '10.3.3.0/24'
 openstacklib::repo::apt_proxy_host: '192.168.0.18'
 openstacklib::repo::apt_proxy_port: '8000'
 openstacklib::repo::yum_http_proxy: 'http://192.168.0.18:8000'
-openstacklib::repo::yum_epel_mirror: 'http://mirror.aarnet.edu.au'
-openstacklib::repo::yum_base_mirror: 'http://mirror.aarnet.edu.au'
+openstacklib::repo::yum_epel_mirror: 'http://fedora.mirror.uber.com.au/epel'
+openstacklib::repo::yum_base_mirror: 'http://centos.mirror.uber.com.au'
 
 enabled_services: &enabled_services
   - keystone
@@ -102,6 +102,12 @@ enabled_services: &enabled_services
   - nova
   - neutron
   - cinder
+
+# Openstack version to install
+openstack_release: icehouse
+openstacklib::repo::uca::release: icehouse
+openstacklib::repo::rdo::release: icehouse
+openstacklib::compat::release: icehouse
 
 #########################################
 # Anchor mappings for non-string elements
@@ -134,6 +140,7 @@ openstacklib::loadbalance::haproxy::nova::cluster_addresses: *control_servers_pu
 
 openstacklib::loadbalance::haproxy::mysql::cluster_addresses: *control_servers_private
 openstacklib::loadbalance::haproxy::rabbitmq::cluster_addresses: *control_servers_private
+openstacklib::loadbalance::haproxy::keystone::cluster_addresses: *control_servers_private
 galera::galera_servers: *control_servers_private
 
 openstacklib::openstack::databases::enabled_services: *enabled_services

@@ -41,6 +41,12 @@ public_vip: 10.2.3.5
 # The private VIP, where services are exposed to openstack services.
 private_vip: 10.3.3.5
 
+# The protocol to use for public API services
+public_protocol: http
+
+# The protocol to use for internal API services
+private_protocol: http
+
 # List of IP addresses for controllers on the public network
 control_servers_public: [ '10.2.3.10', '10.2.3.11', '10.2.3.12']
 
@@ -145,9 +151,9 @@ rabbitmq::config_kernel_variables:
   inet_dist_listen_max: 9105
 
 # Openstack version to install
-openstack_release: havana
-openstack::repo::uca::release: 'havana'
-openstack::repo::rdo::release: 'havana'
+openstack_release: icehouse
+openstack::repo::uca::release: 'icehouse'
+openstack::repo::rdo::release: 'icehouse'
 
 # Proxy configuration of either apt or yum
 openstacklib::repo::apt_proxy_host: '192.168.0.18'
@@ -171,6 +177,9 @@ openstacklib::loadbalance::haproxy::cluster_master: 'control1.domain.name'
 deploy_control_firewall_source: '192.168.242.0/24'
 public_control_firewall_source: '10.2.3.0/24'
 private_control_firewall_source: '10.3.3.0/24'
+
+# Allow internal comms on compute node
+openstacklib::firewall::compute::interface: eth3
 
 # Store reports in puppetdb
 puppet::master::reports: 'store,puppetdb'

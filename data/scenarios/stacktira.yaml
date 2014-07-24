@@ -46,6 +46,7 @@ roles:
       - cinder_volume
       - ceilometer_compute
       - nova_compute_ml2
+      - firewall_compute
     classes:
       - openstacklib::repo
       - openstacklib::hosts

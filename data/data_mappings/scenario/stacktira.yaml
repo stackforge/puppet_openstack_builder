@@ -54,10 +54,7 @@ domain_name:
 deploy_control_firewall_source:
   - openstacklib::firewall::edeploy::source
   - openstacklib::firewall::puppet::source
-
-deploy_control_firewall_source:
-  - openstacklib::firewall::edeploy::source
-  - openstacklib::firewall::puppet::source
+  - openstacklib::firewall::ssh::source
 
 public_control_firewall_source:
   - openstacklib::firewall::cinder::source
@@ -74,7 +71,7 @@ private_control_firewall_source:
   - galera::firewall::source
   - openstacklib::firewall::cinder::internal_source
   - openstacklib::firewall::ceilometer::internal_source
-  - openstacklib::firewall::dashboard::internal_source
+  - openstacklib::firewall::memcached::source
   - openstacklib::firewall::glance::internal_source
   - openstacklib::firewall::heat::internal_source
   - openstacklib::firewall::keystone::internal_source

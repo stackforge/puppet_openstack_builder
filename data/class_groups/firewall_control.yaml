@@ -1,5 +1,8 @@
 classes:
   - openstacklib::firewall
+  - openstacklib::firewall::base
+  - openstacklib::firewall::ssh
+  - openstacklib::firewall::memcached
   - openstacklib::firewall::nova
   - openstacklib::firewall::dhcp
   - openstacklib::firewall::keystone

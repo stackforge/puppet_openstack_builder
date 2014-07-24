@@ -38,7 +38,7 @@ while getopts "h?p:r:o:t:u:n:e:d:" opt; do
     esac
 done
 
-# Set wgetrc and either yum or apt to use an http proxy.
+# Set either yum or apt to use an http proxy.
 if [ $proxy ] ; then
     echo 'setting proxy'
     export http_proxy=$proxy
@@ -55,12 +55,25 @@ if [ $proxy ] ; then
     else
         echo "OS not detected! Weirdness inbound!"
     fi
+else
+    echo 'not setting proxy'
+fi
 
+# Install wget if necessary
+hash wget 2>/dev/null || {
+    echo 'installing wget'
+    if [ -f /etc/redhat-release ] ; then
+        yum install -y wget -q
+    elif [ -f /etc/debian_version] ; then
+        apt-get install wget -y
+    fi
+}
+
+# Set wget proxy if desired
+if [ $proxy ] ; then
     if [ ! $(cat /etc/wgetrc | grep '^http_proxy =') ] ; then
         echo "http_proxy = $proxy" >> /etc/wgetrc
     fi
-else
-    echo 'not setting proxy'
 fi
 
 cd $dest

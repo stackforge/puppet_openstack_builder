@@ -143,7 +143,7 @@ if ! gem list | grep ruby-augeas ; then
     yum install -y -q gcc
 
     if [ -f $dest/stacktira/contrib/aptira/gemcache/ruby-augeas* ] ; then
-        gem install --force --local $dest/stacktira/contrib/aptira/gemcache/ruby-augeas*
+        gem install --no-ri --no-rdoc --force --local $dest/stacktira/contrib/aptira/gemcache/ruby-augeas*
     else
         gem install ruby-augeas --no-ri --no-rdoc
     fi
@@ -165,11 +165,13 @@ if [ "${puppet_version}" != "${desired_puppet}" ] ; then
     if [ -f $dest/stacktira/contrib/aptira/gemcache/puppet-$desired_puppet.gem ] ; then
         echo "installing from local gem cache"
         cd $dest/stacktira/contrib/aptira/gemcache
-        gem install --force --local *.gem
+        for i in $(ls | grep -v augeas); do
+            gem install --no-ri --no-rdoc --force --local $i
+        done
         cd -
     else
         echo "no local gem cache found, installing puppet gem from internet"
-        gem install puppet ruby-augeas --no-ri --no-rdoc
+        gem install puppet --no-ri --no-rdoc
     fi
 else
     echo "puppet version $desired_puppet already installed"

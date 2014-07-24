@@ -109,7 +109,11 @@ if ! yum list installed | grep libyaml ; then
     yum install -y libyaml -q
 fi
 
-ruby_version=$(ruby --version | cut -d ' ' -f 2)
+if hash ruby 2>/dev/null; then
+  ruby_version=$(ruby --version | cut -d ' ' -f 2)
+else
+  ruby_version=0
+fi
 # Ruby 1.8.7 (standard on rhel 6) can give segfaults, so
 # purge and install ruby 2.0.0
 if [ "${ruby_version}" != "${desired_ruby}" ] ; then

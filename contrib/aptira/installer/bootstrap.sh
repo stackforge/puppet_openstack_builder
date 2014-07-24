@@ -280,7 +280,7 @@ fi
 # Ensure puppet isn't going to sign a cert with the wrong time or
 # name
 ipaddress=$(facter ipaddress_$network)
-fqdn=$(hostname).$(hiera domain_name)
+fqdn=$(facter hostname).$(hiera domain_name)
 # If it doesn't match what puppet will be setting for fqdn, just redo
 # to the point where we can see the master and have fqdn
 if ! grep -q "$ipaddress\s$fqdn" /etc/hosts ; then

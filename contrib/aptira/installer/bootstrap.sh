@@ -11,6 +11,7 @@ network="${network:-eth1}"
 dest="${destination:-$HOME}"
 environment="${environment:-}"
 role="${role:-}"
+loose_facts="${loose_facts:-}"
 tarball_source="${tarball_source:-https://bitbucket.org/michaeltchapman/puppet_openstack_builder/downloads/stacktira.tar}"
 
 while getopts "h?p:r:o:t:u:n:e:d:" opt; do
@@ -24,6 +25,8 @@ while getopts "h?p:r:o:t:u:n:e:d:" opt; do
     r)  desired_ruby=$OPTARG
         ;;
     o)  role=$OPTARG
+        ;;
+    l)  loose_facts=$OPTARG
         ;;
     t)  tarball_source=$OPTARG
         ;;
@@ -321,6 +324,13 @@ if [ ! -d $dest/stacktira/contrib/aptira/site ] ; then
     if [ ! -f /etc/puppet/data/hiera_data/user.yaml ] ; then
         echo 'No user.yaml found: installing sample'
         cp $dest/stacktira/contrib/aptira/puppet/user.yaml /etc/puppet/data/hiera_data/user.yaml
+    fi
+fi
+
+if ! $loose_facts; then
+    if [ ! -f '/etc/facter/facts.d/ipaddress.yaml' ] ; then
+        facter | grep ipaddress_ > /etc/facter/facts.d/ipaddress.yaml
+        sed -i 's/\ =>/:/' /etc/facter/facts.d/ipaddress.yaml
     fi
 fi
 

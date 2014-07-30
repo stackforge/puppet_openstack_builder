@@ -20,6 +20,7 @@ roles:
       - openstacklib::openstack::databases
       - openstacklib::openstack::endpoints
       - openstacklib::openstack::provider
+      - openstacklib::openstack::netns
       - openstacklib::repo
       - openstacklib::hosts
       - openstacklib::compat
@@ -100,4 +101,5 @@ roles:
       - "openstacklib::hosts"
       - "openstacklib::compat"
       - "openstacklib::openstack::provider"
+      - "openstacklib::openstack::netns"
       - "neutron::server"

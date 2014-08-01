@@ -148,6 +148,8 @@ controller_public_address:
   - swift::keystone::auth::public_address
   - ceilometer::keystone::auth::public_address
   - openstack::swift::proxy::swift_proxy_net_ip
+  - horizon::fqdn
+  - horizon::servername
 controller_public_protocol:
   - ceilometer::keystone::auth::public_protocol
   - cinder::keystone::auth::public_protocol

@@ -2,3 +2,4 @@ classes:
   - "%{network_service}"
   - "%{network_service}::agents::dhcp"
   - "%{network_service}::agents::%{network_plugin}"
+  - "%{network_service}::server::notifications"

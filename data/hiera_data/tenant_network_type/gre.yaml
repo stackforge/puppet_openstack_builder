@@ -2,7 +2,24 @@ quantum::agents::ovs::bridge_mappings:
   - "default:br-ex"
 neutron::agents::ovs::bridge_mappings:
   - "default:br-ex"
+
 quantum::agents::ovs::enable_tunneling: true
 neutron::agents::ovs::enable_tunneling: true
+
 quantum::plugins::ovs::tenant_network_type: gre
 neutron::plugins::ovs::tenant_network_type: gre
+
+# ML2 Agent
+neutron::agents::ml2::ovs::bridge_mappings:
+  - "default:br-ex"
+neutron::agents::ml2::ovs::enable_tunneling: true
+neutron::agents::ml2::ovs::tunnel_types:
+  - gre
+
+# ML2 Plugin
+neutron::plugins::ml2::type_drivers:
+  - gre
+neutron::plugins::ml2::tenant_network_types:
+  - gre
+neutron::plugins::ml2::mechanism_drivers:
+  - openvswitch

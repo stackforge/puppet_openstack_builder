@@ -356,11 +356,16 @@ enable_fwaas: true
 # Service feature.
 enable_vpnaas: true
 
+# Neutron core plugin to use. This should always be
+# ML2 from Juno onwards
+neutron::core_plugin: ml2
+
 # An array of Neutron service plugins to enable.
-service_plugins:
-  - 'neutron.services.loadbalancer.plugin.LoadBalancerPlugin'
-  - 'neutron.services.firewall.fwaas_plugin.FirewallPlugin'
-  - 'neutron.services.vpn.plugin.VPNDriverPlugin'
+neutron::service_plugins:
+  - router
+  - lbaas 
+  - vpnaas
+  - firewall
 
 # Set the interface driver
 interface_driver: 'neutron.agent.linux.interface.OVSInterfaceDriver'

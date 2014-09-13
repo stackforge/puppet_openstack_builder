@@ -9,3 +9,4 @@ classes:
   - nova::conductor
   - "nova::network::%{network_service}"
   - nova::vncproxy
+  - nova::scheduler::filter

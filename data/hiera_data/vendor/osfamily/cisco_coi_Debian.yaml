@@ -1,5 +1,0 @@
-# Cisco COI parameters overriding Debian / Ubuntu specific settings
-#
-
-puppet::master::version: latest
-puppet::agent::version: latest

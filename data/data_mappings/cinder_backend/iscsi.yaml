@@ -1,2 +1,0 @@
-cinder_volumes_name:
-  - cinder::volume::iscsi::volume_group

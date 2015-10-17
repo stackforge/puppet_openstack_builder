@@ -1,8 +1,0 @@
-classes:
-  - keystone
-  - keystone::roles::admin
-  - keystone::config
-  # the endpoint additions and database additions
-  # are a little difficult for me
-  # I am not sure how it fits into the ideal model
-  - coi::profiles::openstack::endpoints

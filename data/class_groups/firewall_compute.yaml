@@ -1,5 +1,0 @@
-classes:
-  - openstacklib::firewall
-  - openstacklib::firewall::base
-  - openstacklib::firewall::ssh
-  - openstacklib::firewall::compute

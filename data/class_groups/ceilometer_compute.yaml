@@ -1,4 +1,0 @@
-classes:
-  - ceilometer
-  - ceilometer::agent::auth
-  - ceilometer::agent::compute

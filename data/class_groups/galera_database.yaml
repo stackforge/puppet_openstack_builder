@@ -1,4 +1,0 @@
-classes:
-  - galera
-  - mysql::server::account_security
-  - coi::profiles::openstack::databases::mysql

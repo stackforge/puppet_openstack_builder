@@ -1,4 +1,0 @@
-openstack::swift::storage-node::swift_zone: 3
-coe::network::interface::interface_name: "%{swift_storage_interface}"
-coe::network::interface::ipaddress: "%{swift_local_net_ip}"
-coe::network::interface::netmask: "%{swift_storage_netmask}"

@@ -1,7 +1,0 @@
-classes:
-  - apache
-  - collectd
-  # - coi::profiles::cobbler_server
-  - coi::profiles::cache_server
-  - coi::profiles::puppet::master
-  - graphite

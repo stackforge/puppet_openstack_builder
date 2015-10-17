@@ -1,8 +1,0 @@
-modules
-module/*
-.tmp
-.vagrant
-*.log*
-data/hiera_data/jenkins.yaml
-data/global_hiera_params/jenkins.yaml
-*.pyc

@@ -1,2 +1,0 @@
-openstack-ha::load-balancer::controller_state: BACKUP
-openstack-ha::load-balancer::swift_proxy_state: MASTER
